@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "46751421957",
+    "project_id": "beautysiyaa",
+    "storage_bucket": "beautysiyaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46751421957:android:69737c0974a189db8cee6c",
+        "android_client_info": {
+          "package_name": "com.beautisyiaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46751421957-5t21ctmpe8p3rvq0ahdlaa9racuv7apm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.beautisyiaa",
+            "certificate_hash": "c504c3ceff4f85cc88a2694959eec7c68d22be34"
+          }
+        },
+        {
+          "client_id": "46751421957-qtf17hrs36k83buh0eek6ro0hgvmkter.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.beautisyiaa",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "46751421957-6b0thpinj911m2tt2lv8hegmrbh682fc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATLEmoAeMHbcFBHT3k8iP9y2pijd9TLoA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46751421957-6b0thpinj911m2tt2lv8hegmrbh682fc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

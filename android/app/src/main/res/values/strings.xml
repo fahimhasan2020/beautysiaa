@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Beautysiaa</string>
+    <string name="facebook_app_id">347508344386184</string>
+    <string name="fb_login_protocol_scheme">fb347508344386184</string>
+    <string name="facebook_client_token">38097015b99377a3fb3f59539b81f1b1</string>
+</resources>
