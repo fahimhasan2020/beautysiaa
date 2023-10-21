@@ -1,10 +1,16 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react'
-import { View } from 'react-native'
+import './src/utils/ignorewarning'
+import BootSplash from "react-native-bootsplash"
 import Index from "./src/navigation/Index"
 import { Provider } from 'react-redux';
 import store from './src/store/store';
 import { hideNavigationBar } from 'react-native-navigation-bar-color';
+import { encode } from 'base-64';
+
+if (!global.btoa) {
+  global.btoa = encode;
+}
 const App = () => {
   useEffect(()=>{
     hideNavigationBar();

@@ -1,22 +1,34 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React,{useEffect} from 'react'
+import { StyleSheet, Text, View,Image,ScrollView } from 'react-native'
+import React,{useEffect,useState} from 'react'
 import BootSplash from "react-native-bootsplash"
 import Container from '../components/Container';
 import TabContainer from '../components/TabContainer';
+import { useDispatch,useSelector } from 'react-redux';
+import CarouselOffers from '../components/CarouselOffers';
+import ProductListView from '../components/ProductListView';
+import HomeCategories from '../components/HomeCategories';
+
 const Home = () => {
+  const dispatch = useDispatch();
+  const host = useSelector(state=>state.auth.host);
   useEffect(() => {
     const init = async () => {
       
     };
-
     init().finally(async () => {
-      await BootSplash.hide({ fade: true });
+      BootSplash.hide({ fade: true });
+      
     });
+
   }, []);
   return (
     <Container>
       <TabContainer>
-        <Text>Hello world</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <CarouselOffers />
+          <HomeCategories />
+        </ScrollView>
+        
       </TabContainer>
     </Container>
   )

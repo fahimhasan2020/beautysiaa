@@ -1,12 +1,16 @@
-import { View } from 'react-native'
 import {NavigationContainer} from "@react-navigation/native"
-import React from 'react'
+import React,{useEffect} from 'react'
+import { useDispatch,useSelector } from "react-redux";
 import { createStackNavigator } from '@react-navigation/stack';
 import {Cart, Categories, Checkout, Home,Login, Offers, ProductDetails, Profile, Success} from "./src"
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import {Svg,Path,Ellipse} from "react-native-svg"
+import CustomDrawerContent from './CustomDrawerComponent';
+import carouselOffersApi from "../api/CarouselOfferApi";
+import randomProducts from "../api/RandomProducts";
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -98,7 +102,7 @@ function HomeTabs() {
 }
 function HomeDrawer() {
   return (
-    <Drawer.Navigator initialRouteName="HomeTabs" screenOptions={{headerShown:false}}>
+    <Drawer.Navigator initialRouteName="HomeTabs" screenOptions={{headerShown:false}} drawerContent={(props) => <CustomDrawerContent {...props}/>}>
         <Drawer.Screen name="HomeTabs" component={HomeTabs} />
       </Drawer.Navigator>
   );
@@ -119,7 +123,19 @@ function BaseStack() {
 }
 
 
-const Index = () => {
+const Index =() => {
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    const init = async() =>{
+      const [imageApi,randomProductFetch] = await Promise.all([
+      carouselOffersApi(dispatch),
+      randomProducts()
+    ]);
+    }
+    init().finally(async () => {
+      
+    });
+  },[])
   return <NavigationContainer><BaseStack /></NavigationContainer>
 }
 

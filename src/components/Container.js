@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,StatusBar } from 'react-native'
-import React from 'react'
+import React,{memo} from 'react'
 import { colors } from '../constants'
 
 const Container = ({children}) => {
@@ -11,7 +11,7 @@ const Container = ({children}) => {
   )
 }
 
-export default Container
+export default memo(Container);
 
 const styles = StyleSheet.create({
     container:{

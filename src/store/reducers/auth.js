@@ -1,10 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const data = {
-    'host': 'https://vipsattak.com/api/v1/',
+    'host': 'https://demo.beautysiaa.com/wp-json/',
     'accessToken': '',
     'loggedIn': false,
     "userId": null,
     "loader": false,
+    "mainCarouselImages":[],
+    "allProducts":[]
 };
 
 const reducer = (state = data, action) => {
@@ -31,6 +33,11 @@ const reducer = (state = data, action) => {
             return {
                 ...state,
                 userId: action.userId
+            };
+        case 'UPDATE_CAROUSEL':
+            return {
+                ...state,
+                mainCarouselImages: action.mainCarouselImages
             };
         default:
             return state;
