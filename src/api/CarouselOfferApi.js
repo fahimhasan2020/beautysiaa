@@ -24,7 +24,7 @@ const carouselOffersApi = async(dispatch) =>{
         //other time
         
         const structuredImages = await JSON.parse(carouselImages);
-        console.log('data from parse',structuredImages);
+        //console.log('data from parse',structuredImages);
         await dispatch({ type: 'UPDATE_CAROUSEL', mainCarouselImages: structuredImages });
         const imagesData = await fetch(baseUri.host + "home-banner/v1/slider?id=48752")
         const htmlContent = await imagesData.text();

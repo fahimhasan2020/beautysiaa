@@ -6,7 +6,10 @@ const data = {
     "userId": null,
     "loader": false,
     "mainCarouselImages":[],
-    "allProducts":[]
+    "allProducts":[],
+    "brands":[],
+    "newArrivals":[],
+    "bestSelling":[]
 };
 
 const reducer = (state = data, action) => {
@@ -38,6 +41,26 @@ const reducer = (state = data, action) => {
             return {
                 ...state,
                 mainCarouselImages: action.mainCarouselImages
+            };
+        case 'UPDATE_ALL_PRODUCTS':
+            return {
+                ...state,
+                allProducts: action.allProducts
+            };
+        case 'UPDATE_ALL_BRANDS':
+            return {
+                ...state,
+                brands: action.brands
+            };
+        case 'UPDATE_NEW_ARRIVALS':
+            return {
+                ...state,
+                newArrivals: action.newArrivals
+            };
+        case 'UPDATE_BEST_SELLING':
+            return {
+                ...state,
+                bestSelling: action.bestSelling
             };
         default:
             return state;

@@ -4,13 +4,19 @@ import { sizes } from '../constants'
 import FastImage from 'react-native-fast-image'
 import AntDesign from "react-native-vector-icons/AntDesign"
 import { Svg,Path,Circle } from 'react-native-svg'
-const SingleProductList = () => {
+import { useNavigation } from '@react-navigation/native'
+import Animated from 'react-native-reanimated'
+const SingleProductList = ({datas={}}) => {
+  const navigation = useNavigation();
   const [loved,setLoved] = useState(false);
   return (
-    <View style={styles.productCard}>
-    
+    <Pressable
+    onPress={()=>{
+        navigation.navigate('ProductDetails',{productId:datas.id,details:datas});
+    }}
+    style={styles.productCard}>
       <FastImage
-      source={{uri:'https://demo.beautysiaa.com/wp-content/uploads/2023/10/SOME-BY-MI-Yuja-Niacin-Brightening-Moisture-Gel-Cream-100ml-1.jpg'}}
+      source={{uri:datas.images[0].src}}
       style={styles.cardImage}
       resizeMode={FastImage.resizeMode.contain}
       />
@@ -24,16 +30,15 @@ const SingleProductList = () => {
         {loved?<AntDesign name={'heart'} size={15} color="#691883" />:<AntDesign name={'hearto'} size={15} color="#691883" />}
         </Pressable>
     </View>
-      <View style={styles.brand}><Text style={styles.brandText}>PAXMOLY</Text></View>
-      <Text style={styles.productName}>Pax moly Doctor Whitening
-Cream - 70ml Korean..............</Text>
+      {datas.brands.length>0?<View style={styles.brand}><Text style={styles.brandText}>{datas.brands[0].name}</Text></View>:<View style={{height:35,width:20}}></View>}
+      <Text style={styles.productName}>{datas.name.slice(0,40)}...</Text>
       <View style={styles.priceSection}>
         <View style={styles.valuePrice}>
-            <Text style={styles.originalPrice}>৳ 770</Text>
-            <Text style={styles.discountedPrice}>৳ 780</Text>
+            <Text style={styles.originalPrice}>৳ {datas.regular_price}</Text>
+            <Text style={styles.discountedPrice}>৳ {datas.sale_price}</Text>
         </View>
         <View style={styles.valuePrice}>
-            <Text style={styles.ratingText}>4.8</Text>
+            <Text style={styles.ratingText}>{Math.floor(parseInt(datas.average_rating))}</Text>
             <AntDesign name="star" size={15} color={'#FFA902'} />
         </View>
       </View>
@@ -46,11 +51,13 @@ Cream - 70ml Korean..............</Text>
             <Path d="M17.6344 22.3633C18.626 22.3633 19.4298 21.5594 19.4298 20.5679C19.4298 19.5763 18.626 18.7725 17.6344 18.7725C16.6428 18.7725 15.839 19.5763 15.839 20.5679C15.839 21.5594 16.6428 22.3633 17.6344 22.3633Z" fill="#691883"/>
         </Svg>
         </Pressable>
-        <Pressable style={styles.buyNowButton}>
+        <Pressable onPress={()=>{
+             navigation.navigate('Checkout');
+                }} style={styles.buyNowButton}>
             <Text style={styles.buyNowText}>Buy Now</Text>
         </Pressable>
       </View>
-    </View>
+    </Pressable>
   )
 }
 
@@ -58,7 +65,7 @@ export default memo(SingleProductList)
 
 const styles = StyleSheet.create({
     productCard:{
-        width:sizes.width/2-10,
+        width:sizes.width/2.1-10,
         margin:10,
         backgroundColor:'#fff',
         elevation:2,

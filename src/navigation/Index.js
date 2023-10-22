@@ -1,7 +1,7 @@
 import {NavigationContainer} from "@react-navigation/native"
 import React,{useEffect} from 'react'
 import { useDispatch,useSelector } from "react-redux";
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
 import {Cart, Categories, Checkout, Home,Login, Offers, ProductDetails, Profile, Success} from "./src"
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,6 +10,9 @@ import {Svg,Path,Ellipse} from "react-native-svg"
 import CustomDrawerContent from './CustomDrawerComponent';
 import carouselOffersApi from "../api/CarouselOfferApi";
 import randomProducts from "../api/RandomProducts";
+import brandsApi from "../api/BrandsApi";
+import newArrivalsApi from "../api/NewArrivalApi";
+import bestSellingApi from "../api/BestSellingApi";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -115,8 +118,56 @@ function BaseStack() {
       }}>
       <Stack.Screen name="HomeScreen" component={HomeDrawer} />
       <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="ProductDetails" component={ProductDetails} />
-      <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen
+      options={{
+        transitionSpec: {
+          open: {
+            animation: 'timing',
+            config: {
+              duration: 500,
+            },
+          },
+          close: {
+            animation: 'timing',
+            config: {
+              duration: 500,
+            },
+          },
+        },
+        cardStyleInterpolator: ({ current, layouts }) => {
+          return {
+            cardStyle: {
+              transform: [
+                {
+                  translateY: current.progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [layouts.screen.height, 0],
+                  }),
+                },
+              ],
+            },
+          };
+        },
+      }}
+      name="ProductDetails" component={ProductDetails} />
+      <Stack.Screen name="Checkout"  options={{
+      cardStyleInterpolator: ({ current, layouts }) => {
+        return {
+          cardStyle: {
+            transform: [
+              {
+                translateX: current.progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [layouts.screen.width, 0],
+                }),
+              },
+            ],
+          },
+        };
+      },
+    }}
+    
+    component={Checkout} />
       <Stack.Screen name="Success" component={Success} />
     </Stack.Navigator>
   );
@@ -127,9 +178,12 @@ const Index =() => {
   const dispatch = useDispatch();
   useEffect(()=>{
     const init = async() =>{
-      const [imageApi,randomProductFetch] = await Promise.all([
+      const [imageApi,randomProductFetch,allBrands,newArrival,bestSelling] = await Promise.all([
       carouselOffersApi(dispatch),
-      randomProducts()
+      randomProducts(dispatch),
+      brandsApi(dispatch),
+      newArrivalsApi(dispatch),
+      bestSellingApi(dispatch)
     ]);
     }
     init().finally(async () => {

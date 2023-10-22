@@ -1,15 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View,FlatList } from 'react-native'
+import React,{memo} from 'react'
 import SingleProductList from './SingleProductList'
-
-const ProductListView = () => {
+import { useDispatch,useSelector } from 'react-redux'
+import LottieView from "lottie-react-native";
+import { sizes } from '../constants';
+const ProductListView = ({products = [],productLimit = null}) => {  
   return (
     <View>
-      <SingleProductList />
+      {products.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'center',paddingLeft:10}}><LottieView
+      style={{width:150,height:180,marginTop:10}}
+      autoPlay loop
+      source={require("../assets/productloader.json")}
+    /><LottieView
+    style={{width:200,height:180,marginTop:10}}
+    autoPlay loop
+    source={require("../assets/productloader.json")}
+  /><LottieView
+  style={{width:200,height:180,marginTop:10}}
+  autoPlay loop
+  source={require("../assets/productloader.json")}
+/></View>:<FlatList
+      showsVerticalScrollIndicator={false}
+      data={productLimit?products.slice(0,productLimit):products}
+      numColumns={2}
+      renderItem={({item,index})=>(<SingleProductList datas={item} />)}
+      keyExtractor={(item,index)=>index.toString()}
+      />}
+      
     </View>
   )
 }
 
-export default ProductListView
+export default memo(ProductListView)
 
 const styles = StyleSheet.create({})

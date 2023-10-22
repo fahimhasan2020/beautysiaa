@@ -7,10 +7,20 @@ import { useDispatch,useSelector } from 'react-redux';
 import CarouselOffers from '../components/CarouselOffers';
 import ProductListView from '../components/ProductListView';
 import HomeCategories from '../components/HomeCategories';
+import BrandsList from '../components/BrandsList';
+import NewArrival from '../components/NewArrival';
+import BannerOne from '../components/BannerOne';
+import BestSellingList from '../components/BestSellingList';
+import ComboBySkinConcern from '../components/ComboBySkinConcern';
+import FilterButton from '../components/FilterButton';
 
 const Home = () => {
   const dispatch = useDispatch();
   const host = useSelector(state=>state.auth.host);
+  const allProducts = useSelector(state=>state.auth.allProducts);
+  const allBrands = useSelector(state=>state.auth.brands);
+  const newArrivals = useSelector(state=>state.auth.newArrivals);
+  const bestSelling = useSelector(state=>state.auth.bestSelling);
   useEffect(() => {
     const init = async () => {
       
@@ -24,11 +34,18 @@ const Home = () => {
   return (
     <Container>
       <TabContainer>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
           <CarouselOffers />
           <HomeCategories />
+          <ProductListView products={allProducts} productLimit={2} />
+          <BrandsList brands={allBrands} />
+          <NewArrival products={newArrivals} productLimit={4} />
+          <BannerOne />
+          <BestSellingList products={bestSelling} productLimit={2} />
+          <ComboBySkinConcern products={bestSelling} productLimit={2} />
+          <FilterButton />
+          <ProductListView products={allProducts} />
         </ScrollView>
-        
       </TabContainer>
     </Container>
   )

@@ -196,7 +196,6 @@ const HomeCategories = () => {
       {activeCategory !== index?item.icon:item.iconActive}
         <Text style={[styles.categoryText,{color:activeCategory !== index?'#DE0C77':'#FFFFFF'}]}>{item.name}</Text>
       </Pressable>))}
-      
     </View>
   )
 }
