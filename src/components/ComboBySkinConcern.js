@@ -3,12 +3,18 @@ import React,{useEffect} from 'react'
 import { sizes } from '../constants'
 import LottieView from "lottie-react-native";
 import SingleProductList from './SingleProductList';
+import { useNavigation } from '@react-navigation/native';
 const ComboBySkinConcern = ({products=[],productLimit=null}) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.brandSection}>
       <View style={styles.brandTitleSection}>
         <Text style={styles.brandText}>Combo By Skin Concern</Text>
-        <Pressable style={styles.seemoreButton}><Text style={styles.seeMoreButtonText}>See More</Text></Pressable>
+        <Pressable
+        onPress={()=>{
+          navigation.navigate('SingleCategory',{title:'Combo By Skin Concern',categoryId:772})
+        }}
+        style={styles.seemoreButton}><Text style={styles.seeMoreButtonText}>See More</Text></Pressable>
       </View>
       <View style={styles.productSection}>
         {products.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'center',paddingLeft:10}}><LottieView

@@ -1,10 +1,15 @@
 import { StyleSheet, Text, View,Pressable} from 'react-native'
 import React from 'react'
 import FastImage from 'react-native-fast-image'
-
+import { useNavigation } from '@react-navigation/native'
 const BrandSingle = ({brandSingle,position}) => {
+  const navigation = useNavigation();
   return (
-    <View style={[styles.brandContainer,{backgroundColor:position === 0?'#691883':'#FFFFFF',paddingRight:position ===0?10:0}]}>
+    <Pressable
+    onPress={()=>{
+      navigation.navigate('SingleBrand',{title:brandSingle.name,categoryId:brandSingle.slug})
+    }}
+    style={[styles.brandContainer,{backgroundColor:position === 0?'#691883':'#FFFFFF',paddingRight:position ===0?10:0}]}>
       <View style={[styles.brandLogoLayer,{borderColor:position ===0?'#691883':'#DE0C77',}]}>
         <FastImage
       source={{uri:brandSingle.brand_logo_url}}
@@ -13,7 +18,7 @@ const BrandSingle = ({brandSingle,position}) => {
       />
       </View>
       {position === 0?<Text style={styles.brandName}>{brandSingle.name}</Text>:null}
-    </View>
+    </Pressable>
   )
 }
 

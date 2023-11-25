@@ -6,9 +6,23 @@ import AntDesign from "react-native-vector-icons/AntDesign"
 import { Svg,Path,Circle } from 'react-native-svg'
 import { useNavigation } from '@react-navigation/native'
 import Animated from 'react-native-reanimated'
+import { useDispatch,useSelector } from 'react-redux'
 const SingleProductList = ({datas={}}) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const favourites = useSelector(state=>state.auth.favourites);
   const [loved,setLoved] = useState(false);
+  const toggleFavorite = (value) => {
+    const index = favourites.indexOf(value);
+    let updatedFavorites = [...favourites];
+    if (index === -1) {
+      updatedFavorites.push(value);
+    } else {
+        updatedFavorites = updatedFavorites.filter(item => item !== value);
+    }
+    dispatch({type: 'UPDATE_FAVOURITES',favourites:updatedFavorites});
+    console.log(updatedFavorites);
+  }
   return (
     <Pressable
     onPress={()=>{
@@ -21,13 +35,14 @@ const SingleProductList = ({datas={}}) => {
       resizeMode={FastImage.resizeMode.contain}
       />
       <View style={styles.topContents}>
-        <View style={[styles.badge,{backgroundColor:'#54B435'}]}>
+        <View style={[styles.badge,{backgroundColor:'#54B435',height:20}]}>
             <Text style={styles.badgeFont}>Sale</Text>
         </View>
         <Pressable
-        onPress={()=>setLoved(!loved)}
+        style={{paddingLeft:25,paddingBottom:25}}
+        onPress={()=>toggleFavorite(datas.id)}
         >
-        {loved?<AntDesign name={'heart'} size={15} color="#691883" />:<AntDesign name={'hearto'} size={15} color="#691883" />}
+        {favourites.includes(datas.id)?<AntDesign name={'heart'} size={15} color="#691883" />:<AntDesign name={'hearto'} size={15} color="#691883" />}
         </Pressable>
     </View>
       {datas.brands.length>0?<View style={styles.brand}><Text style={styles.brandText}>{datas.brands[0].name}</Text></View>:<View style={{height:35,width:20}}></View>}

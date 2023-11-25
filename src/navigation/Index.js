@@ -2,7 +2,7 @@ import {NavigationContainer} from "@react-navigation/native"
 import React,{useEffect} from 'react'
 import { useDispatch,useSelector } from "react-redux";
 import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
-import {Cart, Categories, Checkout, Home,Login, Offers, ProductDetails, Profile, Success} from "./src"
+import {About, Cart, Categories, Checkout, Home,Login, Offers, ProductDetails, Profile, ReturnPolicy, SingleBrand, SingleCategory, Success, TermsAndConditions} from "./src"
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -110,7 +110,22 @@ function HomeDrawer() {
       </Drawer.Navigator>
   );
 }
-
+const slideRightToLeftAnimation = {
+  cardStyleInterpolator: ({ current, layouts }) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            translateX: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [layouts.screen.width, 0],
+            }),
+          },
+        ],
+      },
+    };
+  },
+}
 function BaseStack() {
   return (
     <Stack.Navigator screenOptions={{
@@ -150,24 +165,17 @@ function BaseStack() {
         },
       }}
       name="ProductDetails" component={ProductDetails} />
-      <Stack.Screen name="Checkout"  options={{
-      cardStyleInterpolator: ({ current, layouts }) => {
-        return {
-          cardStyle: {
-            transform: [
-              {
-                translateX: current.progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [layouts.screen.width, 0],
-                }),
-              },
-            ],
-          },
-        };
-      },
-    }}
-    
-    component={Checkout} />
+      <Stack.Screen name="Checkout"  options={slideRightToLeftAnimation}
+        component={Checkout} />
+      <Stack.Screen name="About"  options={slideRightToLeftAnimation}
+        component={About} />
+      <Stack.Screen name="TermsAndConditions"  options={slideRightToLeftAnimation} component={TermsAndConditions} />
+      <Stack.Screen name="ReturnPolicy"  options={slideRightToLeftAnimation}
+        component={ReturnPolicy} />
+      <Stack.Screen name="SingleCategory"  options={slideRightToLeftAnimation}
+        component={SingleCategory} />
+      <Stack.Screen name="SingleBrand"  options={slideRightToLeftAnimation}
+        component={SingleBrand} />
       <Stack.Screen name="Success" component={Success} />
     </Stack.Navigator>
   );

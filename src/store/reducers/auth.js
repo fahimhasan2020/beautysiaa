@@ -9,7 +9,8 @@ const data = {
     "allProducts":[],
     "brands":[],
     "newArrivals":[],
-    "bestSelling":[]
+    "bestSelling":[],
+    "favourites":[47984]
 };
 
 const reducer = (state = data, action) => {
@@ -61,6 +62,11 @@ const reducer = (state = data, action) => {
             return {
                 ...state,
                 bestSelling: action.bestSelling
+            };
+        case 'UPDATE_FAVOURITES':
+            return {
+                ...state,
+                favourites: action.favourites
             };
         default:
             return state;

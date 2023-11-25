@@ -1,13 +1,18 @@
 import { StyleSheet, Text, View,Pressable,FlatList } from 'react-native'
 import React,{useEffect} from 'react'
 import BrandSingle from './BrandSingle'
-
+import { useNavigation } from '@react-navigation/native'
 const BrandsList = ({brands=[]}) => {
+  const navigation = useNavigation()
   return (
     <View style={styles.brandSection}>
       <View style={styles.brandTitleSection}>
         <Text style={styles.brandText}>Choose Brand</Text>
-        <Pressable style={styles.seemoreButton}><Text style={styles.seeMoreButtonText}>See More</Text></Pressable>
+        <Pressable
+         onPress={()=>{
+          navigation.navigate('SingleBrand',{title:'3W Clinic',categoryId:'3w-clinic'})
+         }}
+         style={styles.seemoreButton}><Text style={styles.seeMoreButtonText}>See More</Text></Pressable>
       </View>
       <FlatList
       data={brands}

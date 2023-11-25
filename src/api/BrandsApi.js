@@ -13,6 +13,7 @@ const brandsApi = async(dispatch) =>{
     }else{
         //other time
         const structuredDatas = await JSON.parse(allBrands);
+        
         await dispatch({ type: 'UPDATE_ALL_BRANDS', brands: structuredDatas });
         const fetchBrands = await fetch(baseUri.host + "wc/v1/products/brands");
         const brandsFormatted = await fetchBrands.json();

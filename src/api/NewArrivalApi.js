@@ -12,7 +12,7 @@ const newArrivalsApi = async(dispatch) => {
           },
       })
       .then(response => {
-        console.log('new arrivals api',response.data);
+        //console.log('new arrivals api',response.data);
         dispatch({ type: 'UPDATE_NEW_ARRIVALS', newArrivals: response.data });
         AsyncStorage.setItem('newArrival',JSON.stringify(response.data));
       })
@@ -29,7 +29,7 @@ const newArrivalsApi = async(dispatch) => {
               },
           })
           .then(response => {
-            console.log('new arrivals api',response.data);
+            //console.log('new arrivals api',response.data);
             AsyncStorage.setItem('newArrival',JSON.stringify(response.data));
           })
           .catch(error => {

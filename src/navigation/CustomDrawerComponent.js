@@ -74,7 +74,7 @@ const CustomDrawerContent =({ navigation })=> {
         <Circle cx="10" cy="10" r="7" fill="#E26262" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#E26262"/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => navigation.navigate('About')}
       />
       <DrawerItem
         label="Terms & Conditions"
@@ -82,7 +82,7 @@ const CustomDrawerContent =({ navigation })=> {
         <Circle cx="10" cy="10" r="7" fill="#4877F2" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#4877F2"/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => navigation.navigate('TermsAndConditions')}
       />
       <DrawerItem
         label="Return Policy"
@@ -90,7 +90,7 @@ const CustomDrawerContent =({ navigation })=> {
         <Circle cx="10" cy="10" r="7" fill="#B148F2" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#B148F2"/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => navigation.navigate('ReturnPolicy')}
       />
       </View>
       

@@ -7,5 +7,9 @@ import Success from "../screens/Success";
 import Offers from "../screens/Offers";
 import Profile from "../screens/Profile";
 import Login from "../screens/Login";
-
-export {Home,Categories,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login}
+import About from "../screens/About";
+import TermsAndConditions from "../screens/TermsAndConditions";
+import ReturnPolicy from "../screens/ReturnPolicy";
+import SingleCategory from "../screens/SingleCategory";
+import SingleBrand from "../screens/SingleBrand";
+export {Home,Categories,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory}

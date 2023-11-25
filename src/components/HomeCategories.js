@@ -2,10 +2,11 @@ import { StyleSheet, Text, View,Pressable } from 'react-native'
 import React,{useState,memo} from 'react'
 import { sizes } from '../constants'
 import {Svg,Path} from 'react-native-svg'
+import { useNavigation } from '@react-navigation/native'
 const categories = [
     {
         id:0,
-        categoryId:0,
+        categoryId:227,
         name:'Facewash',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="21" height="22" viewBox="0 0 21 22" fill="none">
         <Path d="M4.01459 11.4602C4.51668 10.3724 4.76772 9.95395 5.26982 9.03345" stroke="#DE0C77" stroke-width="0.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -24,7 +25,7 @@ const categories = [
     },
     {
         id:1,
-        categoryId:0,
+        categoryId:60,
         name:'Serum',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="17" height="21" viewBox="0 0 17 21" fill="none">
         <Path d="M10.7373 9.56421H6.6275V16.7377H10.7373V9.56421Z" stroke="#DE0C77" stroke-width="0.58" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -51,7 +52,7 @@ const categories = [
     },
     {
         id:2,
-        categoryId:0,
+        categoryId:57,
         name:'Cream',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="8" height="22" viewBox="0 0 8 22" fill="none">
         <Path d="M7.15801 20.9221H0.5V12.2735C0.5 11.6558 0.980459 11.1753 1.59821 11.1753H6.05977C6.67753 11.1753 7.15801 11.6558 7.15801 12.2735V20.9221Z" stroke="#DE0C77" stroke-width="0.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -68,7 +69,7 @@ const categories = [
     },
     {
         id:3,
-        categoryId:0,
+        categoryId:174,
         name:'Shampoo',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="17" height="21" viewBox="0 0 17 21" fill="none">
         <Path d="M10.7373 9.56421H6.6275V16.7377H10.7373V9.56421Z" stroke="#DE0C77" stroke-width="0.58" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -95,7 +96,7 @@ const categories = [
     },
     {
         id:4,
-        categoryId:0,
+        categoryId:58,
         name:'Moisturizer',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="17" height="21" viewBox="0 0 17 21" fill="none">
         <Path d="M10.7373 9.56421H6.6275V16.7377H10.7373V9.56421Z" stroke="#DE0C77" stroke-width="0.58" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -122,7 +123,7 @@ const categories = [
     },
     {
         id:5,
-        categoryId:0,
+        categoryId:81,
         name:'Soap',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="8" height="22" viewBox="0 0 8 22" fill="none">
         <Path d="M7.15801 20.9221H0.5V12.2735C0.5 11.6558 0.980459 11.1753 1.59821 11.1753H6.05977C6.67753 11.1753 7.15801 11.6558 7.15801 12.2735V20.9221Z" stroke="#DE0C77" stroke-width="0.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -139,7 +140,7 @@ const categories = [
     },
     {
         id:6,
-        categoryId:0,
+        categoryId:73,
         name:'Eye Care',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="21" height="22" viewBox="0 0 21 22" fill="none">
         <Path d="M4.01459 11.4602C4.51668 10.3724 4.76772 9.95395 5.26982 9.03345" stroke="#DE0C77" stroke-width="0.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -158,7 +159,7 @@ const categories = [
     },
     {
         id:7,
-        categoryId:0,
+        categoryId:52,
         name:'Makeup',
         icon: <Svg xmlns="http://www.w3.org/2000/svg" width="17" height="21" viewBox="0 0 17 21" fill="none">
         <Path d="M10.7373 9.56421H6.6275V16.7377H10.7373V9.56421Z" stroke="#DE0C77" stroke-width="0.58" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -187,12 +188,14 @@ const categories = [
 ]
 const HomeCategories = () => {
   const [activeCategory,setActiveCategory] = useState(0);
-  const changeIndex = (indexNumber) =>{
-    setActiveCategory(indexNumber);
+  const navigation = useNavigation();
+  const changeIndex = (content,indexNumber) =>{
+    //setActiveCategory(indexNumber);
+    navigation.navigate('SingleCategory',{title:content.name,categoryId:content.categoryId})
   }
   return (
     <View style={styles.mainDiv}>
-      {categories.map((item,index)=>(<Pressable onPress={()=>changeIndex(index)} key={index} style={[styles.singleCategoryDiv,{backgroundColor:activeCategory == index?'#DE0C77':'#FFFFFF'}]}>
+      {categories.map((item,index)=>(<Pressable onPress={()=>changeIndex(item,index)} key={index} style={[styles.singleCategoryDiv,{backgroundColor:activeCategory == index?'#DE0C77':'#FFFFFF'}]}>
       {activeCategory !== index?item.icon:item.iconActive}
         <Text style={[styles.categoryText,{color:activeCategory !== index?'#DE0C77':'#FFFFFF'}]}>{item.name}</Text>
       </Pressable>))}

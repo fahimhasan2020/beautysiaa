@@ -6,8 +6,9 @@ import Index from "./src/navigation/Index"
 import { Provider } from 'react-redux';
 import store from './src/store/store';
 import { hideNavigationBar } from 'react-native-navigation-bar-color';
+import { enableFreeze } from 'react-native-screens';
+enableFreeze(true);
 import { encode } from 'base-64';
-
 if (!global.btoa) {
   global.btoa = encode;
 }
