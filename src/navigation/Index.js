@@ -20,7 +20,7 @@ const Drawer = createDrawerNavigator();
 
 function HomeTabs() {
   return (
-    <Tab.Navigator screenOptions={{headerShown:false,tabBarShowLabel:false,tabBarStyle:{backgroundColor:'#000',height:68,borderTopLeftRadius:8,borderTopRightRadius:8},tabBarActiveTintColor:'#fff',tabBarInactiveTintColor:'#fff'}}>
+    <Tab.Navigator screenOptions={{headerShown:false,tabBarShowLabel:false,tabBarStyle:{height:68,borderTopLeftRadius:8,borderTopRightRadius:8,backgroundColor:'rgba(0,0,0,1)'}}}>
        <Tab.Screen
           name="Home"
           component={Home}
@@ -34,6 +34,7 @@ function HomeTabs() {
               :<Svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
   <Path d="M10.0305 0.410029C9.45226 -0.136676 8.54774 -0.136676 7.96949 0.410029L0.70422 7.27904C0.2547 7.70405 0 8.29538 0 8.91399V17.2679C0 18.5105 1.00735 19.5179 2.25 19.5179H4.5C5.74264 19.5179 6.75 18.5105 6.75 17.2679V13.5179C6.75 13.1037 7.08579 12.7679 7.5 12.7679H10.5C10.9142 12.7679 11.25 13.1037 11.25 13.5179V17.2679C11.25 18.5105 12.2574 19.5179 13.5 19.5179H15.75C16.9926 19.5179 18 18.5105 18 17.2679V8.91399C18 8.29538 17.7453 7.70405 17.2957 7.27904L10.0305 0.410029Z" fill="white"/>
 </Svg>
+
             ),
           }}
         />

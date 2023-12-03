@@ -5,7 +5,7 @@ import BootSplash from "react-native-bootsplash"
 import Index from "./src/navigation/Index"
 import { Provider } from 'react-redux';
 import store from './src/store/store';
-import { hideNavigationBar } from 'react-native-navigation-bar-color';
+import changeNavigationBarColor,{ hideNavigationBar } from 'react-native-navigation-bar-color';
 import { enableFreeze } from 'react-native-screens';
 enableFreeze(true);
 import { encode } from 'base-64';
@@ -14,7 +14,7 @@ if (!global.btoa) {
 }
 const App = () => {
   useEffect(()=>{
-    hideNavigationBar();
+    changeNavigationBarColor("#000000");
   },[])
   return(<Provider store={store}><Index /></Provider>)
 }

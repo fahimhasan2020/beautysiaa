@@ -6,7 +6,9 @@ const Cart = () => {
   return (
     <Container>
       <TabContainer>
-        <Text>Cart</Text>
+        <View>
+          
+        </View>
       </TabContainer>
     </Container>
   )
