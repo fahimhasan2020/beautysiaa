@@ -12,4 +12,5 @@ import TermsAndConditions from "../screens/TermsAndConditions";
 import ReturnPolicy from "../screens/ReturnPolicy";
 import SingleCategory from "../screens/SingleCategory";
 import SingleBrand from "../screens/SingleBrand";
-export {Home,Categories,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory}
+import Favourites from "../screens/Favourites"
+export {Home,Categories,Favourites,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory}

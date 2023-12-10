@@ -7,19 +7,23 @@ import { useDispatch,useSelector } from 'react-redux';
 import ProductListView from '../components/ProductListView';
 const Categories = () => {
   const allProducts = useSelector(state=>state.auth.allProducts);
-  return (
-    <Container>
-      <TabContainer>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
+  //return (<View style={styles.container}><Text>Home</Text></View>)
+  return (<TabContainer>
+        {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
           <CarouselOffers />
           <ProductListView products={allProducts} />
-        </ScrollView>
-        
+        </ScrollView> */}
       </TabContainer>
-    </Container>
+   
   )
 }
 
 export default Categories
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center'
+  }
+})

@@ -10,7 +10,9 @@ const data = {
     "brands":[],
     "newArrivals":[],
     "bestSelling":[],
-    "favourites":[47984]
+    "favourites":[],
+    "favouritesList":[],
+    "cartProducts":[]
 };
 
 const reducer = (state = data, action) => {
@@ -20,6 +22,11 @@ const reducer = (state = data, action) => {
             return {
                 ...state,
                 loggedIn: action.logged,
+            };
+        case 'UPDATE_CART':
+            return {
+                ...state,
+                cartProducts: action.cartProducts,
             };
         case 'LOGIN':
             AsyncStorage.setItem('loggedIn', 'true')
@@ -67,6 +74,11 @@ const reducer = (state = data, action) => {
             return {
                 ...state,
                 favourites: action.favourites
+            };
+        case 'UPDATE_FAVOURITES_LIST':
+            return {
+                ...state,
+                favouritesList: action.favouritesList
             };
         default:
             return state;

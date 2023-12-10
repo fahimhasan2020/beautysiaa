@@ -6,8 +6,8 @@ const {height,width} = Dimensions.get("window");
 const StackContainer = ({children,title=''}) => {
   const navigation = useNavigation();
   return (
-    <View style={{width:width}}>
-      <View style={{width:width,height:62+StatusBar.currentHeight,backgroundColor:'#fff',padding:5,paddingTop:StatusBar.currentHeight}}>
+    <View style={{width:width,flex:1,backgroundColor:'#fff'}}>
+      <View style={{width:width,height:62,backgroundColor:'#fff',padding:5,}}>
         <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between',paddingLeft:13,paddingRight:13,paddingTop:11,paddingBottom:9}}>
           <Pressable onPress={()=>{navigation.goBack()}}>
           <Svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">

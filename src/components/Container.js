@@ -5,7 +5,6 @@ import { colors } from '../constants'
 const Container = ({children}) => {
   return (
     <View style={styles.container}>
-    <StatusBar barStyle={'light-content'} backgroundColor={colors.pinkStatusBar} />
     {children}
     </View>
   )

@@ -2,13 +2,12 @@ import { StyleSheet, Text, View,Dimensions,StatusBar,TextInput,ScrollView,Pressa
 import React,{memo} from 'react'
 import { Svg ,Path,Circle} from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
-
-const {height,width} = Dimensions.get("window");
 const TabContainer = ({children}) => {
   const navigation = useNavigation();
   return (
-    <View style={{width:width}}>
-      <View style={{width:width,height:122+StatusBar.currentHeight,backgroundColor:'#fff',padding:5,paddingTop:StatusBar.currentHeight}}>
+    <View style={{flex:1,
+      backgroundColor:'#fff'}}>
+      <View style={{height:128,backgroundColor:'#fff',padding:5}}>
         <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between',paddingLeft:13,paddingRight:13,paddingTop:11,paddingBottom:9}}>
           <Pressable onPress={()=>{navigation.toggleDrawer()}}><Svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
   <Path d="M21.7208 11.9167H4.27917C3.71077 11.9167 3.25 12.3775 3.25 12.9459V13.0542C3.25 13.6226 3.71077 14.0834 4.27917 14.0834H21.7208C22.2892 14.0834 22.75 13.6226 22.75 13.0542V12.9459C22.75 12.3775 22.2892 11.9167 21.7208 11.9167Z" fill="#231F20"/>
@@ -17,10 +16,16 @@ const TabContainer = ({children}) => {
 </Svg></Pressable>
         
           <Text style={styles.tabHeaderStyle}>BEAUTYSIAA</Text>
-          <View style={{flexDirection:'row',justifyContent:'space-between',width:70}}><Svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <View style={{flexDirection:'row',justifyContent:'space-between',width:70}}>
+            <Pressable onPress={()=>{
+              navigation.navigate('Favourites');
+            }}>
+               <Svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
   <Circle cx="15" cy="15" r="15" fill="#D9D9D9"/>
   <Path d="M14 21.7501C13.9013 21.7507 13.8035 21.7318 13.7121 21.6945C13.6207 21.6571 13.5376 21.6021 13.4675 21.5326L7.64003 15.6976C6.90905 14.959 6.49902 13.9618 6.49902 12.9226C6.49902 11.8835 6.90905 10.8863 7.64003 10.1476C8.37672 9.41302 9.37465 9.00049 10.415 9.00049C11.4554 9.00049 12.4533 9.41302 13.19 10.1476L14 10.9576L14.81 10.1476C15.5467 9.41302 16.5447 9.00049 17.585 9.00049C18.6254 9.00049 19.6233 9.41302 20.36 10.1476C21.091 10.8863 21.501 11.8835 21.501 12.9226C21.501 13.9618 21.091 14.959 20.36 15.6976L14.5325 21.5326C14.4624 21.6021 14.3793 21.6571 14.288 21.6945C14.1966 21.7318 14.0987 21.7507 14 21.7501Z" fill="#F06BA2"/>
 </Svg>
+            </Pressable>
+           
 <Svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
   <Circle cx="15" cy="15" r="15" fill="#D9D9D9"/>
   <Path d="M15 6C12.525 6 10.5 8.025 10.5 10.5C10.5 12.84 9.33 14.955 7.485 16.485C6.5625 17.25 6 18.33 6 19.5H24C24 18.33 23.46 17.25 22.515 16.485C20.67 14.955 19.5 12.84 19.5 10.5C19.5 8.025 17.4975 6 15 6ZM12.75 21.75C12.75 22.9875 13.7625 24 15 24C16.2375 24 17.25 22.9875 17.25 21.75H12.75Z" fill="#F06BA2"/>

@@ -13,6 +13,7 @@ import BannerOne from '../components/BannerOne';
 import BestSellingList from '../components/BestSellingList';
 import ComboBySkinConcern from '../components/ComboBySkinConcern';
 import FilterButton from '../components/FilterButton';
+import { sizes } from '../constants';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -32,25 +33,29 @@ const Home = () => {
 
   }, []);
   return (
-    <Container>
       <TabContainer>
         <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
           <CarouselOffers />
-          <HomeCategories />
-          <ProductListView products={allProducts} productLimit={2} />
+          {/* <HomeCategories /> */}
+          {/* <ProductListView products={allProducts} productLimit={2} /> */}
+          <BestSellingList products={bestSelling} productLimit={3} />
           <BrandsList brands={allBrands} />
-          <NewArrival products={newArrivals} productLimit={4} />
+          {/* <NewArrival products={newArrivals} productLimit={4} /> */}
           <BannerOne />
-          <BestSellingList products={bestSelling} productLimit={2} />
-          <ComboBySkinConcern products={bestSelling} productLimit={2} />
+          {/* <ComboBySkinConcern products={bestSelling} productLimit={2} /> */}
           <FilterButton />
           <ProductListView products={allProducts} />
         </ScrollView>
       </TabContainer>
-    </Container>
   )
 }
 
 export default Home
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center'
+  }
+})

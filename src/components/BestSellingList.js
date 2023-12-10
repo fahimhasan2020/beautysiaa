@@ -32,7 +32,7 @@ const BestSellingList = ({products=[],productLimit=null}) => {
 /></View>:<FlatList
       showsVerticalScrollIndicator={false}
       data={productLimit?products.slice(0,productLimit):products}
-      numColumns={2}
+      numColumns={3}
       renderItem={({item,index})=>(<SingleProductList datas={item} />)}
       keyExtractor={(item,index)=>index.toString()}
       />}

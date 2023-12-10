@@ -7,7 +7,7 @@ import { sizes } from '../constants';
 const ProductListView = ({products = [],productLimit = null}) => {  
   return (
     <View>
-      {products.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',paddingLeft:10}}><LottieView
+      {products.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',paddingLeft:10,width:sizes.width}}><LottieView
       style={{width:150,height:180,marginTop:10}}
       autoPlay loop
       source={require("../assets/productloader.json")}
@@ -18,7 +18,7 @@ const ProductListView = ({products = [],productLimit = null}) => {
   /></View>:<FlatList
       showsVerticalScrollIndicator={false}
       data={productLimit?products.slice(0,productLimit):products}
-      numColumns={2}
+      numColumns={3}
       renderItem={({item,index})=>(<SingleProductList datas={item} />)}
       keyExtractor={(item,index)=>index.toString()}
       />}
