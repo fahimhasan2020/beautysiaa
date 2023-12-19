@@ -12,6 +12,7 @@ import {colors, sizes, typo} from '../constants';
 import {pixeltopt} from '../functions/pixeltoptconverter';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
 
 export const PrimaryInput = ({
   placeholder,
@@ -50,6 +51,32 @@ export const PrimaryInput = ({
           />
         </Svg>
       ) : null}
+    </View>
+  );
+};
+export const PrimaryInputPhoneNumber = ({
+  placeholder,
+  onChangeText,
+  getFocus,
+  data = '',
+  dateIcon = false,
+  keyboardType = 'default',
+}) => {
+  return (
+    <View>
+      <TextInput
+        keyboardType={keyboardType}
+        value={data}
+        onFocus={getFocus}
+        onChangeText={value => onChangeText(value)}
+        placeholder={placeholder}
+        style={[primaryInput, typo.placeholder,{paddingLeft:80}]}
+        placeholderTextColor={colors.lightBlack}
+      />
+      {dateIcon ? (
+        <Feather style={{position:'absolute',left:35,top:24}} color="#000" name="phone" />
+      ) : null}
+      <Text style={{position:'absolute',top:20,left:55,color:'#000'}}>+880 - </Text>
     </View>
   );
 };

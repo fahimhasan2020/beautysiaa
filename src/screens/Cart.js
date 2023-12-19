@@ -1,13 +1,15 @@
-import { StyleSheet, Text, View,Pressable,Image,TextInput,FlatList } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View,Pressable,Image,TextInput,FlatList,ActivityIndicator,ToastAndroid } from 'react-native'
+import React,{useState} from 'react'
 import Container from '../components/Container';
 import TabContainer from '../components/TabContainer';
-import { sizes } from '../constants';
+import { colors, sizes } from '../constants';
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import {Svg,Path} from "react-native-svg"
 import StackContainer from '../components/StackContainer';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch,useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const discountedProducts = [
   {id:1,image:require('../assets/image-18.png')},
   {id:2,image:require('../assets/image-18.png')},
@@ -16,88 +18,153 @@ const discountedProducts = [
   {id:5,image:require('../assets/image-18.png')},
 ];
 const Cart = () => {
+  const dispatch = useDispatch();
+  const [voucher,setVoucher] = useState("");
+  const [loadingState,setLoadingState] = useState(false);
+  const cartProducts = useSelector(state=>state.auth.cartProducts);
+  const allProducts = useSelector(state=>state.auth.allProducts);
+  const loggedIn = useSelector(state=>state.auth.loggedIn);
+  const theme = useSelector(state=>state.auth.theme);
   const navigation = useNavigation();
- // return (<View style={styles.container}><Text>Cart</Text></View>)
-  return ( <StackContainer title={'Cart'}>
-        {/* <View style={styles.signinContainer}>
+  const totalPrice = cartProducts.reduce((acc, item) => {
+    return acc + item.price;
+  }, 0);
+  const removeItemFromCart = (indexNumber)=>{
+    const updatedCart = [...cartProducts];
+    updatedCart.splice(indexNumber, 1);
+    dispatch({ type: 'UPDATE_CART', cartProducts: updatedCart });
+    ToastAndroid.show("Item removed", ToastAndroid.SHORT);
+    AsyncStorage.setItem("cartItems",JSON.stringify(updatedCart));
+  }
+
+  const incrementItem = (itemData) => {
+    const updatedCart = cartProducts.map(item => {
+      if (item.id === itemData.id) {
+        const newQuantity = parseInt(item.quantity) + 1;
+        const unitPrice = parseInt(item.price)/parseInt(item.quantity);
+        const newPrice = newQuantity *  parseInt(unitPrice);
+        return { ...item, quantity: newQuantity, price: newPrice };
+      }
+      return item;
+    });
+
+    dispatch({ type: 'UPDATE_CART', cartProducts: updatedCart });
+    AsyncStorage.setItem("cartItems",JSON.stringify(updatedCart));
+  }
+
+  const decrementItem = (itemData) => {
+    const updatedCart = cartProducts
+      .map((item) => {
+        if (item.id === itemData.id) {
+          if (parseInt(item.quantity) > 1) {
+            const newQuantity = parseInt(item.quantity) - 1;
+            const unitPrice = parseInt(item.price) / parseInt(item.quantity);
+            const newPrice = newQuantity * parseInt(unitPrice);
+            return { ...item, quantity: newQuantity, price: newPrice };
+          } else {
+            // Do nothing when quantity is 1 or less
+            return null;
+          }
+        }
+        return item;
+      })
+      .filter((item) => item !== null);
+  
+    dispatch({ type: 'UPDATE_CART', cartProducts: updatedCart });
+    AsyncStorage.setItem("cartItems",JSON.stringify(updatedCart));
+  };
+  
+
+
+  const addVoucher = ()=>{
+    setLoadingState(true);
+    setTimeout(()=>{
+      setVoucher("");
+      setLoadingState(false);
+      ToastAndroid.show("Invalid voucher. Please try again later",ToastAndroid.SHORT);
+    },3000);
+  }
+ 
+  return ( <StackContainer isTab={true} title={'Cart'}>
+{!loggedIn? <View style={styles.signinContainer}>
           <Text style={styles.regularText}>Sign in</Text>
           <Pressable onPress={()=>{
             navigation.navigate("Login");
           }} style={styles.signinButton}><Text style={styles.signInButtonText}>Sign in Now</Text></Pressable>
-        </View>
+        </View>:null}
+       
         <View style={styles.productsContainer}>
-          <View style={styles.singleProductContainer}>
-            <Image source={require('../assets/image-1.png')} style={styles.cartImage} />
+          <FlatList
+          data={cartProducts}
+          keyExtractor={(item,index)=>item.id.toString()}
+          renderItem={({item,index})=>(<View style={styles.singleProductContainer}>
+            <Image source={{uri:item.picture}} style={styles.cartImage} />
             <View style={styles.productDetailsContainer}>
-              <Text style={styles.regularText}>Pax moly Doctor Whitening Cream</Text>
+              <Text style={[styles.regularText,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{item.name}</Text>
               <View style={styles.priceAndCounter}>
-                <Text style={styles.priceText}>৳ 780</Text>
+                <Text style={styles.priceText}>৳ {item.price.toString()}</Text>
                 <View style={styles.counterContainer}>
                 <View style={styles.minusButton}>
-                   <Svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <Pressable onPress={()=>{decrementItem(item)}}><Svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <Path d="M10.3904 7.98462H2.73413C2.58909 7.98462 2.44999 7.927 2.34743 7.82444C2.24487 7.72188 2.18726 7.58278 2.18726 7.43774C2.18726 7.2927 2.24487 7.1536 2.34743 7.05105C2.44999 6.94849 2.58909 6.89087 2.73413 6.89087H10.3904C10.5354 6.89087 10.6745 6.94849 10.7771 7.05105C10.8796 7.1536 10.9373 7.2927 10.9373 7.43774C10.9373 7.58278 10.8796 7.72188 10.7771 7.82444C10.6745 7.927 10.5354 7.98462 10.3904 7.98462Z" fill="#231F20"/>
-                  </Svg>
-                </View>
-               <Text>1</Text>
-                  <MaterialIcons name={'add-box'} size={20} color={'#DE0C77'}  />
-                </View>
-              </View>
-            </View>
-             <View style={styles.trashContainer}>
-            <Text>L</Text>
-            <EvilIcons name="trash" color={'#DE0C77'} size={20} />
-          </View>
-          </View>
-          <View style={styles.singleProductContainer}>
-            <Image source={require('../assets/image-1.png')} style={styles.cartImage} />
-            <View style={styles.productDetailsContainer}>
-              <Text style={styles.regularText}>Pax moly Doctor Whitening Cream</Text>
-              <View style={styles.priceAndCounter}>
-                <Text style={styles.priceText}>৳ 780</Text>
-                <View style={styles.counterContainer}>
-                <View style={styles.minusButton}>
-                   <Svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <Path d="M10.3904 7.98462H2.73413C2.58909 7.98462 2.44999 7.927 2.34743 7.82444C2.24487 7.72188 2.18726 7.58278 2.18726 7.43774C2.18726 7.2927 2.24487 7.1536 2.34743 7.05105C2.44999 6.94849 2.58909 6.89087 2.73413 6.89087H10.3904C10.5354 6.89087 10.6745 6.94849 10.7771 7.05105C10.8796 7.1536 10.9373 7.2927 10.9373 7.43774C10.9373 7.58278 10.8796 7.72188 10.7771 7.82444C10.6745 7.927 10.5354 7.98462 10.3904 7.98462Z" fill="#231F20"/>
-                  </Svg>
-                </View>
-               <Text>1</Text>
-                  <MaterialIcons name={'add-box'} size={20} color={'#DE0C77'}  />
+                  </Svg></Pressable>
                   
-                 
+                </View>
+               <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{item.quantity.toString()}</Text>
+               <Pressable onPress={()=>{
+                incrementItem(item);
+               }}>
+                <MaterialIcons name={'add-box'} size={20} color={'#DE0C77'}  />
+               </Pressable>
+                  
                 </View>
               </View>
             </View>
              <View style={styles.trashContainer}>
-            <Text>L</Text>
-            <EvilIcons name="trash" color={'#DE0C77'} size={20} />
+            {/* <Text>L</Text> */}
+            <Pressable onPress={()=>{removeItemFromCart(index)}}>
+              <EvilIcons name="trash" color={'#DE0C77'} size={20} />
+            </Pressable>
+            
           </View>
-          </View>
+          </View>)}
+          />
+          
         </View>
         <View style={styles.totalPriceContainer}>
-          <Text style={styles.regularText}>Total Amounts</Text>
-          <Text style={styles.priceText}>৳ 1610.00</Text>
+          <Text style={[styles.regularText,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Total Amounts</Text>
+          <Text style={styles.priceText}>৳ {totalPrice.toString()}</Text>
         </View> 
         <View style={styles.voucherContainer}>
-          <TextInput placeholderTextColor={'#DE0C77'} placeholder='Enter Voucher Code...' style={styles.voucherInput}/>
-          <Pressable style={[styles.signinButton,{height:35,margin:0}]}><Text style={styles.signInButtonText}>Apply</Text></Pressable>
+          <TextInput value={voucher} onChangeText={(value)=>setVoucher(value)} placeholderTextColor={'#DE0C77'} placeholder='Enter Voucher Code...' style={styles.voucherInput} />
+          <Pressable onPress={()=>addVoucher()} style={[styles.signinButton,{height:35,margin:0}]}>{loadingState?<ActivityIndicator color={'#fff'} />:<Text style={styles.signInButtonText}>Apply</Text>}</Pressable>
         </View>
         <View>
           <View style={styles.discountedContainer}>
-            <Text>Discounted Products</Text>
+            <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Discounted Products</Text>
             <Pressable style={styles.seeMoreButton}><Text style={styles.seeMore}>See more</Text></Pressable>
           </View>
           <FlatList
           horizontal={true}
-          data={discountedProducts}
-          renderItem={({item,index})=>(<View style={{marginLeft:10}}>
-            <Image source={item.image} />
+          data={allProducts}
+          renderItem={({item,index})=>(<View style={{marginLeft:10,marginBottom:20,backgroundColor:'#fff',elevation:3}}>
+            <Image source={{uri:item.images[0].src}} style={{height:100,width:100}} />
           </View>)}
           />
         </View>
-        <Pressable style={styles.checkoutButton}>
+        <Pressable
+        onPress={()=>{
+          if(loggedIn){
+            navigation.navigate("Checkout");
+          }else{
+            navigation.navigate("Login");
+            ToastAndroid.show("Login first", ToastAndroid.SHORT);
+          }
+        }}
+        style={styles.checkoutButton}>
           <Text style={styles.signInButtonText}>Proceed to Checkout</Text>
         </Pressable>
-        <Pressable style={styles.continueShoppingButton}>
+        {/* <Pressable onPress={()=>{navigation.navigate("Home");}} style={styles.continueShoppingButton}>
           <Text style={styles.continueSHoppingText}>Continue Shopping</Text>
         </Pressable> */}
       </StackContainer>

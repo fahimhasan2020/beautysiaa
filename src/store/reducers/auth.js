@@ -3,6 +3,12 @@ const data = {
     'host': 'https://demo.beautysiaa.com/wp-json/',
     'accessToken': '',
     'loggedIn': false,
+    'phoneNumber':'',
+    'email':'',
+    'firstName':'',
+    'lastName':'',
+    'address':'',
+    'postCode':'',
     "userId": null,
     "loader": false,
     "mainCarouselImages":[],
@@ -12,7 +18,8 @@ const data = {
     "bestSelling":[],
     "favourites":[],
     "favouritesList":[],
-    "cartProducts":[]
+    "cartProducts":[],
+    "theme":'light'
 };
 
 const reducer = (state = data, action) => {
@@ -23,10 +30,51 @@ const reducer = (state = data, action) => {
                 ...state,
                 loggedIn: action.logged,
             };
+        case 'UPDATE_PHONE_NUMBER':
+            AsyncStorage.setItem('phone', action.phone.toString())
+            return {
+                ...state,
+                phoneNumber: action.phone,
+            };
+        case 'UPDATE_EMAIL':
+            AsyncStorage.setItem('email', action.email.toString())
+            return {
+                ...state,
+                email: action.email,
+            };
+        case 'UPDATE_FIRST_NAME':
+            AsyncStorage.setItem('firstName', action.firstName.toString())
+            return {
+                ...state,
+                firstName: action.firstName,
+            };
+        case 'UPDATE_LAST_NAME':
+            AsyncStorage.setItem('lastName', action.lastName.toString())
+            return {
+                ...state,
+                lastName: action.lastName,
+            };
+        case 'UPDATE_ADDRESS':
+            AsyncStorage.setItem('address', action.address.toString())
+            return {
+                ...state,
+                address: action.address,
+            };
+        case 'UPDATE_POSTCODE':
+            AsyncStorage.setItem('postCode', action.postCode.toString())
+            return {
+                ...state,
+                postCode: action.postCode,
+            };
         case 'UPDATE_CART':
             return {
                 ...state,
                 cartProducts: action.cartProducts,
+            };
+        case 'UPDATE_THEME':
+            return {
+                ...state,
+                theme: action.theme,
             };
         case 'LOGIN':
             AsyncStorage.setItem('loggedIn', 'true')

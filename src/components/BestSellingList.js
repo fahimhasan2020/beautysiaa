@@ -47,8 +47,8 @@ export default BestSellingList
 const styles = StyleSheet.create({
     productSection:{
         width:sizes.width,
-        flexDirection:'row',
-        flexWrap:'wrap'
+        alignItems:'center',
+        justifyContent:'center',
     },
     brandSection:{
         padding:10,

@@ -13,4 +13,5 @@ import ReturnPolicy from "../screens/ReturnPolicy";
 import SingleCategory from "../screens/SingleCategory";
 import SingleBrand from "../screens/SingleBrand";
 import Favourites from "../screens/Favourites"
-export {Home,Categories,Favourites,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory}
+import OrderDetails from "../screens/OrderDetails";
+export {Home,Categories,Favourites,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory,OrderDetails}

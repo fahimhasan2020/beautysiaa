@@ -36,14 +36,9 @@ const Home = () => {
       <TabContainer>
         <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
           <CarouselOffers />
-          {/* <HomeCategories /> */}
-          {/* <ProductListView products={allProducts} productLimit={2} /> */}
           <BestSellingList products={bestSelling} productLimit={3} />
           <BrandsList brands={allBrands} />
-          {/* <NewArrival products={newArrivals} productLimit={4} /> */}
           <BannerOne />
-          {/* <ComboBySkinConcern products={bestSelling} productLimit={2} /> */}
-          <FilterButton />
           <ProductListView products={allProducts} />
         </ScrollView>
       </TabContainer>

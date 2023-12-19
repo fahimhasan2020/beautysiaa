@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo,useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Animated, {
@@ -13,14 +13,14 @@ import { getPathXCenter } from '../utils/Path';
 import TabItem from './TabItem';
 import AnimatedCircle from './AnimatedCiscle';
 import { sizes } from '../constants';
-
+import { useSelector,useDispatch } from 'react-redux';
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const CustomBottomTab = ({ state, descriptors, navigation }) => {
   const { containerPath, curvedPaths, tHeight } = usePath();
   const circleXCoordinate = useSharedValue(0);
   const progress = useSharedValue(1);
-
+  const loggedIn = useSelector(state=>state.auth.loggedIn);
   const handleMoveCircle = (currentPath) => {
     circleXCoordinate.value = getPathXCenter(currentPath);
   };
@@ -55,9 +55,25 @@ const CustomBottomTab = ({ state, descriptors, navigation }) => {
   });
 
   const handleTabPress = (index, tab) => {
-    navigation.navigate(tab);
-    progress.value = withTiming(index);
+    console.log(index);
+    if(index === 5){
+      if(!loggedIn){
+        navigation.navigate('Login');
+      }else{
+        navigation.navigate(tab);
+        progress.value = withTiming(index);
+      }
+    }else{
+      navigation.navigate(tab);
+      progress.value = withTiming(index);
+    }
+    
+    
   };
+
+  useEffect(() => {
+    progress.value = withTiming(0);
+  }, []);
 
   return (
     <View style={styles.tabBarContainer}>

@@ -6,7 +6,7 @@ import LottieView from "lottie-react-native";
 import { sizes } from '../constants';
 const ProductListView = ({products = [],productLimit = null}) => {  
   return (
-    <View>
+    <View style={{alignItems:'center',width:sizes.width,justifyContent:'center'}}>
       {products.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',paddingLeft:10,width:sizes.width}}><LottieView
       style={{width:150,height:180,marginTop:10}}
       autoPlay loop

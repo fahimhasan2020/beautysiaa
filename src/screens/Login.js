@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View, Image,Pressable } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image,Pressable,ToastAndroid } from 'react-native';
+import React, { useEffect, useState,useRef } from 'react';
 import {
   PrimaryInput,
-  PrimaryInputGray,
-  PrimaryInputGrayEx,
+  PrimaryInputPhoneNumber
 } from '../components/Inputs';
 import NetInfo from '@react-native-community/netinfo';
 import { NetworkProvider, NetworkConsumer } from 'react-native-offline';
@@ -11,18 +10,78 @@ import { PrimaryButton, PrimaryButtonDownload } from '../components/Buttons';
 import BootSplash from 'react-native-bootsplash';
 import Container from '../components/Container';
 import EvilIcons from "react-native-vector-icons/EvilIcons"
+
 import { sizes } from '../constants';
 import { Svg,Path } from 'react-native-svg';
 import OTPTextInput from 'react-native-otp-textinput';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useNavigation } from '@react-navigation/native';
+import auth from "@react-native-firebase/auth"
+import app from "@react-native-firebase/app"
+import { useDispatch } from 'react-redux';
 const Login = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [otpState,setOtpState] = useState(false);
-  const [otpInput, setOtpInput] = useState("");
+  const [loading,setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [partialNumber, setPartialNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [confirmation, setConfirmation] = useState(null);
+
   useEffect(() => {
     
   }, []);
+
+  const onAuthStateChanged = user => {
+    if (user) {
+      console.log(user);
+    }
+  };
+  const loginAction  = async() =>{
+    setLoading(true); 
+    if (!otpState) {
+      if(phone === ''){
+      setLoading(false);
+      return ToastAndroid.show('Please enter phone number',ToastAndroid.SHORT);
+    }
+    if(phone.length > 10 || phone.length <10){
+      setLoading(false);
+      return ToastAndroid.show('Phone number should be 10 digits',ToastAndroid.SHORT);
+    }
+    // setErrorMessage('');
+    try{
+       const confirm = await auth().signInWithPhoneNumber(
+        '+880'+phone
+      );
+      await setConfirmation(confirm);
+      setPartialNumber(phone.substring(3).replace(/\d/g, 'X'));
+      setOtpState(true);
+      setLoading(false);
+    }catch(e){
+      ToastAndroid.show("Failed to login. Try again later", ToastAndroid.SHORT);
+      setLoading(false);
+    }
+     
+    } else {
+      console.log('otp value',otp);
+      try {
+        await confirmation.confirm(otp);
+        await dispatch({type:'LOGIN',logged:true});
+        await dispatch({type:'UPDATE_PHONE_NUMBER',phone:phone});
+        navigation.navigate('OrderDetails');
+       
+      } catch (error) {
+        ToastAndroid.show("OTP did not matched", ToastAndroid.SHORT);
+        console.log('Invalid code.',error);
+        setLoading(false);
+      }
+      setOtpState(false);
+      setLoading(false);
+    }
+  }
+
+
 
   return (<NetworkProvider>
     <Container>
@@ -30,12 +89,13 @@ const Login = () => {
         <Image source={require('../assets/logohorizontal.png')} style={styles.brandLogo} />
         {!otpState?<Text style={styles.brandText}>Sign Up With A Phone Number</Text>:null}
       </View>
-      {!otpState? <View >
+      {!otpState?<View >
         <View>
-        <PrimaryInput placeholder={'Enter phone number'} dateIcon={true} />
+        <PrimaryInputPhoneNumber dateIcon={true} keyboardType='numeric' data={phone} onChangeText={value=>setPhone(value)} placeholder={'Enter phone number'} />
         <Pressable
         onPress={()=>{
-          setOtpState(true);
+          
+          loginAction();
         }}
         style={styles.generateCodeButton}><Text style={styles.generateCodeText}>Generate Code</Text></Pressable>
       </View>
@@ -51,16 +111,19 @@ const Login = () => {
       <Pressable style={[styles.generateCodeButton,{backgroundColor:'#1877F2',borderWidth:0.5,borderColor:'#1877F2',flexDirection:'row',justifyContent:'flex-start',paddingLeft:20}]}>
         <EvilIcons name="sc-facebook" size={30} color={'#fff'} />
         <Text style={[styles.generateCodeText,{marginLeft:20}]}>CONTINUE WITH FACEBOOK</Text></Pressable>
-        <Pressable style={[styles.generateCodeButton,{backgroundColor:'#DE0C77'}]}><Text style={styles.generateCodeText}>Guest Login</Text></Pressable>
+        <Pressable onPress={()=>{
+           dispatch({type:'LOGIN',logged:true});
+           navigation.navigate('OrderDetails');
+        }} style={[styles.generateCodeButton,{backgroundColor:'#DE0C77'}]}><Text style={styles.generateCodeText}>Guest Login</Text></Pressable>
       </View>
       <Svg width="375" height="182" viewBox="0 0 375 182" fill="none" xmlns="http://www.w3.org/2000/svg">
       <Path d="M12.0279 116.439L-28.7609 56.0515C-56.6927 14.6988 -121.293 40.2793 -113.342 89.544L-9.44736 733.269C-3.4261 770.576 28.7788 798 66.5689 798H330C372.526 798 407 763.526 407 721V113.229C407 109.139 406.572 105.06 405.722 101.059L391.189 32.6099C382.549 -8.08689 325.446 -10.6931 313.134 29.0474L308.113 45.2555C298.05 77.7346 252.233 78.1647 241.562 45.8803C229.986 10.8532 179.075 15.3417 173.805 51.854L167.208 97.5634C163.176 125.5 126.178 132.699 111.965 108.313L101.659 90.6302C89.1808 69.22 56.415 78.0714 56.415 102.853C56.415 126.792 25.4278 136.277 12.0279 116.439Z" fill="#DE0C77"/>
       </Svg>
       </View>:<View style={{flex:1}}>
-      <OTPTextInput offTintColor="#F6F6F7" tintColor="#691883" inputCount={6} textInputStyle={styles.textOtpStyle} ref={e => setOtpInput(e)} />
+      <OTPTextInput autoFocus offTintColor="#F6F6F7" tintColor="#691883" inputCount={6} textInputStyle={styles.textOtpStyle} handleTextChange={e=>setOtp(e)} />
       <View style={styles.centerContainer}>
         <Text style={styles.codeSent}>Code was send your number</Text>
-        <Text style={styles.otpHint}>+880 17XX-XXX XXX</Text>
+        <Text style={styles.otpHint}>+880 {partialNumber}</Text>
       </View>
       <Svg style={{position:'absolute',bottom:0,left:0}} width="375" height="406" viewBox="0 0 375 406" fill="none" xmlns="http://www.w3.org/2000/svg">
       <Path d="M24.0279 116.439L-16.7609 56.0515C-44.6927 14.6988 -109.293 40.2793 -101.342 89.544L2.55264 733.269C8.5739 770.576 40.7788 798 78.5689 798H342C384.526 798 419 763.526 419 721V113.229C419 109.139 418.572 105.06 417.722 101.059L403.189 32.6099C394.549 -8.08689 337.446 -10.6931 325.134 29.0474L320.113 45.2555C310.05 77.7346 264.233 78.1647 253.562 45.8803C241.986 10.8532 191.075 15.3417 185.805 51.854L179.208 97.5634C175.176 125.5 138.178 132.699 123.965 108.313L113.659 90.6302C101.181 69.22 68.415 78.0714 68.415 102.853C68.415 126.792 37.4278 136.277 24.0279 116.439Z" fill="#DE0C77"/>
@@ -69,16 +132,17 @@ const Login = () => {
         <Text style={styles.expirationMessage}>This code will expire on <Text style={{fontWeight:'bold',fontSize:15}}>5 minutes</Text></Text>
         <Pressable
         onPress={()=>{
-          navigation.navigate('HomeTabs');
+          loginAction();
         }}
         style={styles.generateCodeButton}><Text style={styles.generateCodeText}>VERIFY CODE</Text></Pressable>
-        <Pressable style={[styles.generateCodeButton,{backgroundColor:'#fff'}]}><Text style={[styles.generateCodeText,{color:'#DE0C77'}]}>RESEND CODE</Text></Pressable>
+        <Pressable
+        onPress={()=>{
+         setPhone("");
+         setOtpState(false);
+        }}
+        style={[styles.generateCodeButton,{backgroundColor:'#fff'}]}><Text style={[styles.generateCodeText,{color:'#DE0C77'}]}>RESEND CODE</Text></Pressable>
       </View>
-
-        </View>}
-     
-      
-
+   </View>}
     </Container>
     </NetworkProvider>
    
@@ -151,7 +215,8 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     marginTop:50,
-    marginBottom:50
+    marginBottom:50,
+    
   },
   brandLogo: {},
   brandText:{

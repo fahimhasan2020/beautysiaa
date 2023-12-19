@@ -1,32 +1,126 @@
-import { StyleSheet, Text, View,TextInput,Pressable } from 'react-native'
-import React,{useState,useMemo} from 'react'
+import { StyleSheet, Text, View,TextInput,Pressable,ActivityIndicator, ToastAndroid } from 'react-native'
+import React,{useState,useMemo,useEffect} from 'react'
 import Container from '../components/Container'
 import StackContainer from '../components/StackContainer'
-import { sizes } from '../constants'
+import { sizes,colors } from '../constants'
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import RadioGroup,{RadioButton} from 'react-native-radio-buttons-group';
+import { useDispatch,useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
+import baseUri from '../constants/urls'
+const axios = require('axios');
 const Checkout = () => {
 const navigation = useNavigation();
-
+const theme = useSelector(state=>state.auth.theme);
+const cartProducts = useSelector(state=>state.auth.cartProducts);
+const address = useSelector(state=>state.auth.address);
+const postCode = useSelector(state=>state.auth.postCode);
+const email = useSelector(state=>state.auth.email);
+const phoneNumber = useSelector(state=>state.auth.phoneNumber);
+const firstName = useSelector(state=>state.auth.firstName);
+const lastName = useSelector(state=>state.auth.lastName);
+const totalPrice = cartProducts.reduce((acc, item) => {
+  return acc + item.price;
+}, 0);
 const [selectedId, setSelectedId] = useState('1');
+const [finalAddress, setFinalAddress] = useState('');
+const [loadingState, setLoadingState] = useState(false);
+useEffect(()=>{
+setFinalAddress(address);
+},[]);
+const placeOrder = async()=>{
+  console.log(cartProducts);
+  setLoadingState(true);
+  let data = JSON.stringify({
+    "payment_method": "cod",
+    "payment_method_title": "Cash on Delivery",
+    "set_paid": false,
+    "billing": {
+      "first_name":firstName,
+      "last_name": lastName,
+      "address_1": address,
+      "address_2": "",
+      "city": "Dhaka",
+      "state": "BD",
+      "postcode": postCode,
+      "country": "BD",
+      "email": email,
+      "phone": phoneNumber
+    },
+    "shipping": {
+      "first_name":firstName,
+      "last_name": lastName,
+      "address_1": address,
+      "address_2": "",
+      "city": "Dhaka",
+      "state": "BD",
+      "postcode": postCode,
+      "country": "BD",
+    },
+    "line_items":cartProducts.map(product => {
+      return {
+        "product_id": product.id,
+        "quantity": product.quantity
+      };
+    }),
+    "shipping_lines": [
+      {
+        "method_id": "flat_rate",
+        "method_title": "Flat Rate",
+        "total": (parseInt(totalPrice)+50).toFixed(2)
+      }
+    ]
+  });
+
+  try {
+    const response = await fetch(
+      baseUri.hostExtend+'orders',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${btoa(`${baseUri.consumerKey}:${baseUri.consumerSecret}`)}`,
+        },
+        body: data,
+      }
+    );
+
+    if (!response.ok) {
+      setLoadingState(false);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+      
+    }
+
+    const responseData = await response.json();
+    console.log(JSON.stringify(responseData));
+    
+    ToastAndroid.show("Order completed",ToastAndroid.SHORT);
+    setTimeout(()=>{
+      setLoadingState(false);
+      navigation.navigate('Success')
+    },3000);
+  } catch (error) {
+    console.log('Error:', error);
+    setLoadingState(false);
+  }
+
+}
   return (
     <Container>
       <StackContainer title="Checkout">
         <View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10}}>
-          <Text style={{fontSize:20,color:'#000'}}>Address</Text>
-        <Text style={{fontSize:20,color:'#DE0C77'}}>Change Address</Text>
+          <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Address</Text>
+        <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Change Address</Text>
         </View>
-        <TextInput editable={false} value='Firs Cottage, Adams Road, Kirk Langley, DE6
-4LW' style={{width:sizes.width-20,alignSelf:'center',padding:10,borderWidth:1,borderColor:'#ccc'}} />
+        <TextInput editable={false} value={finalAddress} onChangeText={(value)=>{setFinalAddress(value)}} style={{width:sizes.width-20,alignSelf:'center',padding:10,borderWidth:1,borderColor:'#ccc', color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}} />
 <View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10}}>
-          <Text style={{fontSize:20,color:'#000'}}>Payment Method</Text>
-        <Text style={{fontSize:20,color:'#DE0C77'}}>Show All</Text>
+          <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Payment Method</Text>
+        <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Show All</Text>
         </View>
         <View>
           <View style={{flexDirection:'row',padding:10}}>
-            <EvilIcons name="image" size={30} color="#000" />
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.3}}>Cash on Delivery (COD)</Text>
+            <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.3}}>Cash on Delivery (COD)</Text>
             <RadioButton
             onPress={()=>setSelectedId('1')}
             selected={selectedId === '1'?true:false}
@@ -36,8 +130,8 @@ const [selectedId, setSelectedId] = useState('1');
             id="1"  />
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <EvilIcons name="image" size={30} color="#000" />
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.3}}>Bkash/Nagad/Rocket</Text>
+            <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.3}}>Bkash/Nagad/Rocket</Text>
             <RadioButton
             onPress={()=>setSelectedId('2')}
             selected={selectedId === '2'?true:false}
@@ -47,8 +141,8 @@ const [selectedId, setSelectedId] = useState('1');
             id="2"  />
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <EvilIcons name="image" size={30} color="#000" />
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.3}}>Card Method</Text>
+            <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.3}}>Card Method</Text>
             <RadioButton
             color={selectedId === '3'?'#DE0C77':'#CCCCCC'}
             borderColor={selectedId === '3'?'#DE0C77':'#CCCCCC'}
@@ -61,33 +155,36 @@ const [selectedId, setSelectedId] = useState('1');
         </View>
         <View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.5,fontWeight:'bold'}}>Subtotal</Text>
-            <Text style={{fontSize:16,color:'#DE0C77'}}>৳ 1560.00</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>Subtotal</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ {totalPrice}</Text>
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.5}}>Delivery Charges</Text>
-            <Text style={{fontSize:16,color:'#DE0C77'}}>৳ 50.00</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>Delivery Charges</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ 50.00</Text>
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.5}}>Vat & taxes</Text>
-            <Text style={{fontSize:16,color:'#DE0C77'}}>৳ 0.00</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>Vat & taxes</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ 0.00</Text>
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:'#000',width:sizes.width/1.5,fontWeight:'bold'}}>Total Amounts</Text>
-            <Text style={{fontSize:16,color:'#DE0C77'}}>৳ 1610.00</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>Total Amounts</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ {(parseInt(totalPrice)+50).toString()}</Text>
           </View>
           
           
         </View>
         <Pressable onPress={()=>{
-        navigation.navigate('Success');
+          placeOrder();
+        //navigation.navigate('Success');
+
       }}  style={{backgroundColor:'#691883',width:sizes.width-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
-        <Text style={{fontSize:20,fontWeight:600,color:'#FFFFFF'}}>Order Confirmed</Text>
+        {loadingState?<ActivityIndicator color={theme === 'dark'?colors.lightModeBg:colors.lightModeBg} />:<Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.lightModeBg}}>Order Confirmed</Text>}
+        
       </Pressable>
         <Pressable onPress={()=>{
-        navigation.navigate('Home');
+        navigation.navigate('HomeTabs');
       }}  style={{marginTop:10,borderWidth:1,borderColor:'#691883',width:sizes.width-30,borderRadius:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
-        <Text style={{fontSize:20,fontWeight:600,color:'#691883'}}>Continue Shopping</Text>
+        <Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Continue Shopping</Text>
       </Pressable>
       </StackContainer>
       

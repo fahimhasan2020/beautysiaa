@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View,Pressable } from 'react-native'
 import React,{memo,useState} from 'react'
-import { sizes } from '../constants'
+import { colors, sizes } from '../constants'
 import FastImage from 'react-native-fast-image'
 import AntDesign from "react-native-vector-icons/AntDesign"
 import { Svg,Path,Circle } from 'react-native-svg'
@@ -12,6 +12,7 @@ const SingleProductList = ({datas={}}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const favourites = useSelector(state=>state.auth.favourites);
+  const theme = useSelector(state=>state.auth.theme);
   const favouritesList = useSelector(state=>state.auth.favouritesList);
   const [loved,setLoved] = useState(false);
   const toggleFavorite = (value) => {
@@ -37,7 +38,7 @@ const SingleProductList = ({datas={}}) => {
     onPress={()=>{
         navigation.navigate('ProductDetails',{productId:datas.id,details:datas});
     }}
-    style={styles.productCard}>
+    style={[styles.productCard,{backgroundColor:theme === 'dark'?'#adadad':colors.lightModeBg}]}>
       <FastImage
       source={{uri:datas.images[0].src}}
       style={styles.cardImage}
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     productCard:{
         width:sizes.width/3.1-10,
         margin:5,
-        backgroundColor:'#fff',
         elevation:2,
         height:280,
         padding:5,

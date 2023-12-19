@@ -12,7 +12,7 @@ const Offers = () => {
   return ( <TabContainer>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
           <CarouselOffers />
-          <BestSellingList products={bestSelling} productLimit={2} />
+          <BestSellingList products={bestSelling} productLimit={3} />
           <NewArrival products={newArrivals} productLimit={4} />
         </ScrollView>
       </TabContainer>

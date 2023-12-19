@@ -2,17 +2,19 @@ import { StyleSheet, Text, View,Dimensions,StatusBar,TextInput,ScrollView,Pressa
 import React,{memo} from 'react'
 import { Svg ,Path,Circle} from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { colors } from '../constants';
 const TabContainer = ({children}) => {
+  const theme = useSelector(state=>state.auth.theme);
   const navigation = useNavigation();
   return (
-    <View style={{flex:1,
-      backgroundColor:'#fff'}}>
-      <View style={{height:128,backgroundColor:'#fff',padding:5}}>
+    <View style={{flex:1,backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}}>
+      <View style={{height:128,backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg,padding:5}}>
         <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between',paddingLeft:13,paddingRight:13,paddingTop:11,paddingBottom:9}}>
           <Pressable onPress={()=>{navigation.toggleDrawer()}}><Svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
-  <Path d="M21.7208 11.9167H4.27917C3.71077 11.9167 3.25 12.3775 3.25 12.9459V13.0542C3.25 13.6226 3.71077 14.0834 4.27917 14.0834H21.7208C22.2892 14.0834 22.75 13.6226 22.75 13.0542V12.9459C22.75 12.3775 22.2892 11.9167 21.7208 11.9167Z" fill="#231F20"/>
-  <Path d="M21.7208 17.3333H4.27917C3.71077 17.3333 3.25 17.794 3.25 18.3624V18.4708C3.25 19.0391 3.71077 19.4999 4.27917 19.4999H21.7208C22.2892 19.4999 22.75 19.0391 22.75 18.4708V18.3624C22.75 17.794 22.2892 17.3333 21.7208 17.3333Z" fill="#231F20"/>
-  <Path d="M21.7208 6.5H4.27917C3.71077 6.5 3.25 6.96077 3.25 7.52917V7.6375C3.25 8.20589 3.71077 8.66667 4.27917 8.66667H21.7208C22.2892 8.66667 22.75 8.20589 22.75 7.6375V7.52917C22.75 6.96077 22.2892 6.5 21.7208 6.5Z" fill="#231F20"/>
+  <Path d="M21.7208 11.9167H4.27917C3.71077 11.9167 3.25 12.3775 3.25 12.9459V13.0542C3.25 13.6226 3.71077 14.0834 4.27917 14.0834H21.7208C22.2892 14.0834 22.75 13.6226 22.75 13.0542V12.9459C22.75 12.3775 22.2892 11.9167 21.7208 11.9167Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
+  <Path d="M21.7208 17.3333H4.27917C3.71077 17.3333 3.25 17.794 3.25 18.3624V18.4708C3.25 19.0391 3.71077 19.4999 4.27917 19.4999H21.7208C22.2892 19.4999 22.75 19.0391 22.75 18.4708V18.3624C22.75 17.794 22.2892 17.3333 21.7208 17.3333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
+  <Path d="M21.7208 6.5H4.27917C3.71077 6.5 3.25 6.96077 3.25 7.52917V7.6375C3.25 8.20589 3.71077 8.66667 4.27917 8.66667H21.7208C22.2892 8.66667 22.75 8.20589 22.75 7.6375V7.52917C22.75 6.96077 22.2892 6.5 21.7208 6.5Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
 </Svg></Pressable>
         
           <Text style={styles.tabHeaderStyle}>BEAUTYSIAA</Text>
@@ -33,12 +35,14 @@ const TabContainer = ({children}) => {
           
         </View>
         <View>
-        <Svg style={{position:'absolute',top:6,left:18}} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+       
+          <TextInput 
+          placeholderTextColor={theme === 'dark'?colors.lightModeBg:colors.darkModeBg}
+          style={[styles.inputBox,{backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}]} placeholder='Search Products' /><Svg style={{position:'absolute',top:6,left:18}} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
   <Path d="M14 14L18 18L14 14Z" fill="white"/>
   <Path d="M14 14L18 18" stroke="#DE0C77" stroke-width="2.30786" stroke-linecap="round" stroke-linejoin="round"/>
-  <Path d="M2 8.85714C2 12.6442 5.07005 15.7143 8.85714 15.7143C10.7539 15.7143 12.471 14.9441 13.7123 13.6994C14.9495 12.4591 15.7143 10.7474 15.7143 8.85714C15.7143 5.07005 12.6442 2 8.85714 2C5.07005 2 2 5.07005 2 8.85714Z" fill="white" stroke="#DE0C77" stroke-width="2.30786" stroke-linecap="round" stroke-linejoin="round"/>
+  <Path d="M2 8.85714C2 12.6442 5.07005 15.7143 8.85714 15.7143C10.7539 15.7143 12.471 14.9441 13.7123 13.6994C14.9495 12.4591 15.7143 10.7474 15.7143 8.85714C15.7143 5.07005 12.6442 2 8.85714 2C5.07005 2 2 5.07005 2 8.85714Z" fill="none" stroke="#DE0C77" stroke-width="2.30786" stroke-linecap="round" stroke-linejoin="round"/>
 </Svg>
-          <TextInput style={styles.inputBox} placeholder='Search Products' />
           <Svg style={{position:'absolute',top:6,right:18}} xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
   <Path d="M19.0469 10.8933H21.5401" stroke="#DE0C77" stroke-width="1.32854"/>
   <Path d="M0 10.8933H13.7326" stroke="#DE0C77" stroke-width="1.32854"/>

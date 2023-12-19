@@ -1,8 +1,8 @@
-import {NavigationContainer} from "@react-navigation/native"
+import {NavigationContainer, useNavigation} from "@react-navigation/native"
 import React,{useEffect} from 'react'
 import { useDispatch,useSelector } from "react-redux";
 import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
-import {About, Cart, Categories, Checkout, Favourites, Home,Login, Offers, ProductDetails, Profile, ReturnPolicy, SingleBrand, SingleCategory, Success, TermsAndConditions} from "./src"
+import {About, Cart, Categories, Checkout, Favourites, Home,Login, Offers, OrderDetails, ProductDetails, Profile, ReturnPolicy, SingleBrand, SingleCategory, Success, TermsAndConditions} from "./src"
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -11,17 +11,23 @@ import CustomDrawerContent from './CustomDrawerComponent';
 import carouselOffersApi from "../api/CarouselOfferApi";
 import randomProducts from "../api/RandomProducts";
 import brandsApi from "../api/BrandsApi";
+import basicValues from "../api/BasicValues";
 import newArrivalsApi from "../api/NewArrivalApi";
 import bestSellingApi from "../api/BestSellingApi";
 import favouritesApi from "../api/FavouritesApi";
 import CustomBottomTab from "./CustomBottomTab";
 import { StatusBar } from "react-native";
 import { colors } from "../constants";
+import cartApi from "../api/cartApi";
+import { useColorScheme } from "react-native";
+import initialTheme from "../api/InitialTheme";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
 function HomeTabs() {
+  const loggedIn = useSelector(state=>state.auth.loggedIn);
+  const navigation = useNavigation();
   return (
     <Tab.Navigator tabBar={props => <CustomBottomTab {...props} />}>
       <Tab.Group
@@ -126,6 +132,8 @@ function BaseStack() {
       name="ProductDetails" component={ProductDetails} />
       <Stack.Screen name="Checkout"  options={slideRightToLeftAnimation}
         component={Checkout} />
+      <Stack.Screen name="OrderDetails"  options={slideRightToLeftAnimation}
+        component={OrderDetails} />
       <Stack.Screen name="Favourites"  options={slideRightToLeftAnimation}
         component={Favourites} />
       <Stack.Screen name="About"  options={slideRightToLeftAnimation}
@@ -145,15 +153,19 @@ function BaseStack() {
 
 const Index =() => {
   const dispatch = useDispatch();
+  const currentTheme = useColorScheme();
   useEffect(()=>{
     const init = async() =>{
-      const [imageApi,randomProductFetch,allBrands,newArrival,bestSelling,favourites] = await Promise.all([
+      const [imageApi,randomProductFetch,allBrands,newArrival,bestSelling,favourites,colorSceme,storeValues] = await Promise.all([
       carouselOffersApi(dispatch),
       randomProducts(dispatch),
       brandsApi(dispatch),
       newArrivalsApi(dispatch),
       bestSellingApi(dispatch),
       favouritesApi(dispatch),
+      cartApi(dispatch),
+      initialTheme(dispatch,currentTheme),
+      basicValues(dispatch)
     ]);
     }
     init().finally(async () => {

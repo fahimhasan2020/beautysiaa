@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     },
     bannerContainer:{
         padding:10,
-        backgroundColor:'#fff',
         width:sizes.width
     }
 })

@@ -9,10 +9,10 @@ const Categories = () => {
   const allProducts = useSelector(state=>state.auth.allProducts);
   //return (<View style={styles.container}><Text>Home</Text></View>)
   return (<TabContainer>
-        {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
           <CarouselOffers />
           <ProductListView products={allProducts} />
-        </ScrollView> */}
+        </ScrollView>
       </TabContainer>
    
   )
