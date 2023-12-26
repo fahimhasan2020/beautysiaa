@@ -32,7 +32,7 @@ const BestSellingList = ({products=[],productLimit=null}) => {
 /></View>:<FlatList
       showsVerticalScrollIndicator={false}
       data={productLimit?products.slice(0,productLimit):products}
-      numColumns={2}
+      numColumns={3}
       renderItem={({item,index})=>(<SingleProductList datas={item} />)}
       keyExtractor={(item,index)=>index.toString()}
       />}
@@ -47,8 +47,8 @@ export default BestSellingList
 const styles = StyleSheet.create({
     productSection:{
         width:sizes.width,
-        flexDirection:'row',
-        flexWrap:'wrap'
+        alignItems:'center',
+        justifyContent:'center',
     },
     brandSection:{
         padding:10,

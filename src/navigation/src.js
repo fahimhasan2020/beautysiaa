@@ -12,4 +12,15 @@ import TermsAndConditions from "../screens/TermsAndConditions";
 import ReturnPolicy from "../screens/ReturnPolicy";
 import SingleCategory from "../screens/SingleCategory";
 import SingleBrand from "../screens/SingleBrand";
-export {Home,Categories,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory}
+import Favourites from "../screens/Favourites"
+import OrderDetails from "../screens/OrderDetails";
+import MyOrders from "../screens/MyOrders";
+import SingleOrderHistory from "../screens/SingleOrderHistory";
+import PaymentWindow from "../screens/PaymentWindow";
+import Settings from "../screens/Settings";
+import Support from "../screens/Support";
+import EditProfile from "../screens/EditProfile";
+import Voucher from "../screens/Voucher";
+import MyVideo from "../screens/MyVideo";
+import Delivery from "../screens/Delivery";
+export {Home,Categories,Favourites,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory,OrderDetails,MyOrders,SingleOrderHistory,PaymentWindow,Settings,Support,EditProfile,Voucher,Delivery,MyVideo}

@@ -9,21 +9,22 @@ import BestSellingList from '../components/BestSellingList';
 const Offers = () => {
   const newArrivals = useSelector(state=>state.auth.newArrivals);
   const bestSelling = useSelector(state=>state.auth.bestSelling);
-  return (
-    <Container>
-      <TabContainer>
+  return ( <TabContainer>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
           <CarouselOffers />
-          <BestSellingList products={bestSelling} productLimit={2} />
+          <BestSellingList products={bestSelling} productLimit={3} />
           <NewArrival products={newArrivals} productLimit={4} />
         </ScrollView>
-        
-
       </TabContainer>
-    </Container>
   )
 }
 
 export default Offers
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center'
+  }
+})

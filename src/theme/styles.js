@@ -79,12 +79,12 @@ export const primaryInputGrey = {
 
 export const primaryInputGreyShort = {
   padding: sizes.pdxl,
-  width: sizes.width - 250,
+  width: sizes.width - 210,
   alignSelf: 'center',
   margin: sizes.mr,
   borderRadius: 7,
   color: colors.black,
-  backgroundColor: 'white',
+  backgroundColor: '#F3F2F2',
 };
 
 export const authHeader = {

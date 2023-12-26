@@ -1,76 +1,72 @@
 import { StyleSheet, Text, View,Pressable } from 'react-native'
 import React,{memo,useState} from 'react'
-import { sizes } from '../constants'
+import { colors, sizes } from '../constants'
 import FastImage from 'react-native-fast-image'
 import AntDesign from "react-native-vector-icons/AntDesign"
 import { Svg,Path,Circle } from 'react-native-svg'
 import { useNavigation } from '@react-navigation/native'
 import Animated from 'react-native-reanimated'
 import { useDispatch,useSelector } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const SingleProductList = ({datas={}}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const favourites = useSelector(state=>state.auth.favourites);
+  const theme = useSelector(state=>state.auth.theme);
+  const favouritesList = useSelector(state=>state.auth.favouritesList);
   const [loved,setLoved] = useState(false);
   const toggleFavorite = (value) => {
-    const index = favourites.indexOf(value);
+    const index = favourites.indexOf(value.id);
     let updatedFavorites = [...favourites];
+    let updatedFavoritesList = [...favouritesList];
     if (index === -1) {
-      updatedFavorites.push(value);
+      updatedFavorites.push(value.id);
+      updatedFavoritesList.push(value);
     } else {
-        updatedFavorites = updatedFavorites.filter(item => item !== value);
+        updatedFavorites = updatedFavorites.filter(item => item !== value.id);
+        updatedFavoritesList.splice(index, 1);
     }
     dispatch({type: 'UPDATE_FAVOURITES',favourites:updatedFavorites});
+    dispatch({type: 'UPDATE_FAVOURITES_LIST',favouritesList:updatedFavoritesList});
+    AsyncStorage.setItem("favourites",JSON.stringify(updatedFavorites));
+    AsyncStorage.setItem("favouritesList",JSON.stringify(updatedFavoritesList));
     console.log(updatedFavorites);
+    console.log(updatedFavoritesList);
   }
   return (
     <Pressable
     onPress={()=>{
         navigation.navigate('ProductDetails',{productId:datas.id,details:datas});
     }}
-    style={styles.productCard}>
+    style={[styles.productCard,{backgroundColor:theme === 'dark'?'#adadad':colors.lightModeBg}]}>
       <FastImage
       source={{uri:datas.images[0].src}}
       style={styles.cardImage}
       resizeMode={FastImage.resizeMode.contain}
       />
       <View style={styles.topContents}>
-        <View style={[styles.badge,{backgroundColor:'#54B435',height:20}]}>
-            <Text style={styles.badgeFont}>Sale</Text>
+        <View style={[styles.badge,{height:20}]}>
         </View>
         <Pressable
-        style={{paddingLeft:25,paddingBottom:25}}
-        onPress={()=>toggleFavorite(datas.id)}
+        style={{padding:5,margin:3,borderRadius:10,backgroundColor:'rgba(222, 12, 119, 0.15)'}}
+        onPress={()=>toggleFavorite(datas)}
         >
         {favourites.includes(datas.id)?<AntDesign name={'heart'} size={15} color="#691883" />:<AntDesign name={'hearto'} size={15} color="#691883" />}
         </Pressable>
     </View>
-      {datas.brands.length>0?<View style={styles.brand}><Text style={styles.brandText}>{datas.brands[0].name}</Text></View>:<View style={{height:35,width:20}}></View>}
-      <Text style={styles.productName}>{datas.name.slice(0,40)}...</Text>
+      <Text style={styles.productName}>{datas.name.slice(0,30)}...</Text>
+      <View style={[styles.brand,{backgroundColor:'rgba(105, 24, 131, 0.20)'}]}><Text style={[styles.brandText,{color:'#691883'}]}>FREE SHIPPING</Text></View>
       <View style={styles.priceSection}>
         <View style={styles.valuePrice}>
-            <Text style={styles.originalPrice}>৳ {datas.regular_price}</Text>
-            <Text style={styles.discountedPrice}>৳ {datas.sale_price}</Text>
-        </View>
-        <View style={styles.valuePrice}>
-            <Text style={styles.ratingText}>{Math.floor(parseInt(datas.average_rating))}</Text>
-            <AntDesign name="star" size={15} color={'#FFA902'} />
+            <Text style={styles.discountedPrice}>৳ <Text style={{color:'#691883',fontWeight:"bold",fontSize:20}}>{datas.sale_price}</Text></Text>
         </View>
       </View>
-      <View style={styles.buttonSection}>
-        <Pressable>
-        <Svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <Circle cx="15.5" cy="15" r="15" fill="#F5F5F5"/>
-            <Path d="M8.05893 8C7.7284 8 7.46045 8.26795 7.46045 8.59848C7.46045 8.929 7.7284 9.19695 8.05893 9.19695H8.35302C8.62022 9.19695 8.85506 9.37409 8.92846 9.63102L10.8263 16.2734C11.0465 17.0442 11.751 17.5756 12.5526 17.5756H18.0212C18.7553 17.5756 19.4155 17.1286 19.6882 16.447L21.4528 12.0354C21.7673 11.2492 21.1882 10.3939 20.3415 10.3939H10.3913L10.0794 9.30219C9.85914 8.53141 9.15464 8 8.35302 8H8.05893Z" fill="#691883"/>
-            <Path d="M12.8467 22.3633C13.8383 22.3633 14.6421 21.5594 14.6421 20.5679C14.6421 19.5763 13.8383 18.7725 12.8467 18.7725C11.8551 18.7725 11.0513 19.5763 11.0513 20.5679C11.0513 21.5594 11.8551 22.3633 12.8467 22.3633Z" fill="#691883"/>
-            <Path d="M17.6344 22.3633C18.626 22.3633 19.4298 21.5594 19.4298 20.5679C19.4298 19.5763 18.626 18.7725 17.6344 18.7725C16.6428 18.7725 15.839 19.5763 15.839 20.5679C15.839 21.5594 16.6428 22.3633 17.6344 22.3633Z" fill="#691883"/>
-        </Svg>
-        </Pressable>
-        <Pressable onPress={()=>{
-             navigation.navigate('Checkout');
-                }} style={styles.buyNowButton}>
-            <Text style={styles.buyNowText}>Buy Now</Text>
-        </Pressable>
+      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+      {datas.brands.length>0?<Text style={{fontSize:8,color:'#691883'}}>{datas.brands[0].name.slice(0,10)}</Text>:null}
+      <View style={{paddingHorizontal:10,paddingVertical:3,backgroundColor:'#691883',borderRadius:10,flexDirection:'row',marginLeft:10}}>
+      <AntDesign name="star" size={12} color={'#fff'} />
+      <Text style={{color:'#fff',fontSize:10}}>{Math.floor(parseInt(datas.average_rating))}</Text>
+      </View>      
       </View>
     </Pressable>
   )
@@ -80,17 +76,16 @@ export default memo(SingleProductList)
 
 const styles = StyleSheet.create({
     productCard:{
-        width:sizes.width/2.1-10,
-        margin:10,
-        backgroundColor:'#fff',
+        width:sizes.width/3.1-10,
+        margin:5,
         elevation:2,
-        height:261,
+        height:280,
         padding:5,
         borderRadius:5
     },
     cardImage:{
         height:120,
-        width:sizes.width/2-20,
+        width:sizes.width/3-20,
     },
     brandText:{
         color:'#fff',
@@ -109,7 +104,10 @@ const styles = StyleSheet.create({
     },
     productName:{
         fontSize:11,
+        alignSelf:'center',
+        textAlign:'center',
         lineHeight:12,
+        letterSpacing:1.3,
         color:'#303733'
     },
     originalPrice:{
@@ -128,8 +126,7 @@ const styles = StyleSheet.create({
         color:'#303733',
         fontSize:12
     },
-    priceSection:{
-        flexDirection:'row',
+    priceSection:{alignItems:'center',
         justifyContent:'space-between',
         marginTop:10
     },
@@ -169,7 +166,6 @@ const styles = StyleSheet.create({
     topContents:{
         flexDirection:'row',
         justifyContent:'space-between',
-        padding:10,
         position:'absolute',
         top:0,
         left:0,
