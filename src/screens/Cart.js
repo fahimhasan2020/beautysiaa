@@ -10,6 +10,7 @@ import StackContainer from '../components/StackContainer';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch,useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FastImage from 'react-native-fast-image';
 const discountedProducts = [
   {id:1,image:require('../assets/image-18.png')},
   {id:2,image:require('../assets/image-18.png')},
@@ -86,7 +87,7 @@ const Cart = () => {
   }
  
   return ( <StackContainer isTab={true} title={'Cart'}>
-{!loggedIn? <View style={styles.signinContainer}>
+{!loggedIn && cartProducts.length>0? <View style={styles.signinContainer}>
           <Text style={styles.regularText}>Sign in</Text>
           <Pressable onPress={()=>{
             navigation.navigate("Login");
@@ -131,15 +132,16 @@ const Cart = () => {
           />
           
         </View>
-        <View style={styles.totalPriceContainer}>
+        {cartProducts.length>0?<View style={styles.totalPriceContainer}>
           <Text style={[styles.regularText,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Total Amounts</Text>
           <Text style={styles.priceText}>৳ {totalPrice.toString()}</Text>
-        </View> 
-        <View style={styles.voucherContainer}>
+        </View>:null}
+        {cartProducts.length>0?<View style={styles.voucherContainer}>
           <TextInput value={voucher} onChangeText={(value)=>setVoucher(value)} placeholderTextColor={'#DE0C77'} placeholder='Enter Voucher Code...' style={styles.voucherInput} />
           <Pressable onPress={()=>addVoucher()} style={[styles.signinButton,{height:35,margin:0}]}>{loadingState?<ActivityIndicator color={'#fff'} />:<Text style={styles.signInButtonText}>Apply</Text>}</Pressable>
-        </View>
-        <View>
+        </View>:null}
+        
+        {cartProducts.length>0?<View>
           <View style={styles.discountedContainer}>
             <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Discounted Products</Text>
             <Pressable style={styles.seeMoreButton}><Text style={styles.seeMore}>See more</Text></Pressable>
@@ -151,22 +153,24 @@ const Cart = () => {
             <Image source={{uri:item.images[0].src}} style={{height:100,width:100}} />
           </View>)}
           />
-        </View>
-        <Pressable
+        </View>:null} 
+        {cartProducts.length>0?<Pressable
         onPress={()=>{
           if(loggedIn){
-            navigation.navigate("Checkout");
+            navigation.navigate("OrderDetails");
           }else{
+            dispatch({type:'UPDATE_LOGIN_CONDITION',loginCondition:'order'});
             navigation.navigate("Login");
             ToastAndroid.show("Login first", ToastAndroid.SHORT);
           }
         }}
         style={styles.checkoutButton}>
           <Text style={styles.signInButtonText}>Proceed to Checkout</Text>
-        </Pressable>
-        {/* <Pressable onPress={()=>{navigation.navigate("Home");}} style={styles.continueShoppingButton}>
-          <Text style={styles.continueSHoppingText}>Continue Shopping</Text>
-        </Pressable> */}
+        </Pressable>:null}
+        {cartProducts.length<1?<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+          <Image source={require('../assets/cartempty.jpg')} style={{height:150,width:150,opacity:0.3}} />
+          <Text style={{fontSize:20,marginTop:20,color:'#ccc',fontWeight:'bold'}}>No items available</Text>
+        </View>:null}
       </StackContainer>
    
   )

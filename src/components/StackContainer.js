@@ -31,7 +31,7 @@ const StackContainer = ({children,title='',isTab=false}) => {
 </Svg></View>
         </View>
       </View>
-      <ScrollView contentContainerStyle={{paddingBottom:200}}>
+      <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
       

@@ -1,12 +1,24 @@
 import { StyleSheet, Text, View,Pressable } from 'react-native'
-import React from 'react'
+import React,{useEffect} from 'react'
 import Container from '../components/Container'
 import StackContainer from '../components/StackContainer'
 import {Svg,Path,Circle} from "react-native-svg"
 import { sizes } from '../constants'
+import { useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 const Success = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const initiator = async()=>{
+    dispatch({ type: 'UPDATE_PAYMENT_SUCCESS', payload: false });
+  }
+  useEffect(()=>{
+    dispatch({ type: 'UPDATE_LOADING_STATE', loadingState: false });
+    setTimeout(()=>{
+      initiator();
+    },3000);
+  },[])
+  
   return (
     <Container>
       <StackContainer title="Success">
@@ -18,7 +30,7 @@ const Success = () => {
           <Text style={{color:'#8F9BB3',fontSize:14,fontWeight:'bold',marginTop:10,width:200,textAlign:'center'}}>Thank you for purchasing. Your order will be shipped 2 - 4 working days.</Text>
         </View>
         <Pressable onPress={()=>{
-        navigation.navigate('Home');
+        navigation.navigate('HomeScreen');
       }}  style={{marginTop:20,backgroundColor:'#691883',width:sizes.width-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
         <Text style={{fontSize:20,fontWeight:600,color:'#FFFFFF'}}>Continue Shopping</Text>
       </Pressable>

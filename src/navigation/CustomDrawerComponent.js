@@ -1,24 +1,51 @@
-import React from 'react';
-import { View, Text, TouchableOpacity,Image,Pressable } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, TouchableOpacity,Image,Pressable,StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { Svg,Path,Circle,Ellipse, G } from 'react-native-svg';
 import { useDispatch,useSelector } from 'react-redux';
 import { colors, sizes } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 const CustomDrawerContent =({ navigation })=> {
+  const { t, i18n } = useTranslation();
   const theme = useSelector(state=>state.auth.theme);
+  const categoriesFromStore = useSelector(state=>state.auth.categories);
   const dispatch = useDispatch();
+  const [showCat,setShowCat] = useState(false);
+  const toggleCat = ()=>{
+    setShowCat(!showCat);
+  }
+  const CustomDrawerItem = ({ label, onPress, icon, rightIcon }) => (
+    <Pressable onPress={onPress}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10,paddingLeft:20 }}>
+      {icon && (
+        <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <Path fill-rule="evenodd" clip-rule="evenodd" d="M1.66663 5.83325C1.66663 4.45254 2.78591 3.33325 4.16663 3.33325H8.33329C9.714 3.33325 10.8333 4.45254 10.8333 5.83325V13.3333C10.8333 14.2537 10.0871 14.9999 9.16663 14.9999H6.66663V13.3333H9.16663V5.83325C9.16663 5.37301 8.79353 4.99992 8.33329 4.99992H4.16663C3.70639 4.99992 3.33329 5.37301 3.33329 5.83325V12.4999C3.33329 12.9602 3.70639 13.3333 4.16663 13.3333H4.99996V14.9999H4.16663C2.78591 14.9999 1.66663 13.8806 1.66663 12.4999V5.83325Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
+        <Path fill-rule="evenodd" clip-rule="evenodd" d="M9.16663 5.83325H13.5209C14.1441 5.83325 14.7448 6.066 15.2053 6.48586L17.5177 8.59424C18.0372 9.06795 18.3333 9.73854 18.3333 10.4416V12.4999C18.3333 13.8806 17.214 14.9999 15.8333 14.9999H15V13.3333H15.8333C16.2935 13.3333 16.6666 12.9602 16.6666 12.4999V10.4416C16.6666 10.2073 16.5679 9.98373 16.3948 9.82583L14.0823 7.71745C13.9288 7.5775 13.7286 7.49992 13.5209 7.49992H10.8333V13.3333H13.3333V14.9999H9.16663V5.83325Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
+        <Path fill-rule="evenodd" clip-rule="evenodd" d="M6.66671 14.1667C6.66671 14.627 6.29361 15.0001 5.83337 15.0001C5.37314 15.0001 5.00004 14.627 5.00004 14.1667C5.00004 13.7065 5.37314 13.3334 5.83337 13.3334C6.29361 13.3334 6.66671 13.7065 6.66671 14.1667ZM8.33337 14.1667C8.33337 15.5475 7.21409 16.6667 5.83337 16.6667C4.45266 16.6667 3.33337 15.5475 3.33337 14.1667C3.33337 12.786 4.45266 11.6667 5.83337 11.6667C7.21409 11.6667 8.33337 12.786 8.33337 14.1667ZM15 14.1667C15 14.627 14.6269 15.0001 14.1667 15.0001C13.7065 15.0001 13.3334 14.627 13.3334 14.1667C13.3334 13.7065 13.7065 13.3334 14.1667 13.3334C14.6269 13.3334 15 13.7065 15 14.1667ZM16.6667 14.1667C16.6667 15.5475 15.5474 16.6667 14.1667 16.6667C12.786 16.6667 11.6667 15.5475 11.6667 14.1667C11.6667 12.786 12.786 11.6667 14.1667 11.6667C15.5474 11.6667 16.6667 12.786 16.6667 14.1667Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
+      </Svg>
+      )}
+        <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,marginLeft:30,fontWeight:'bold'}}>{label}</Text>
+        {rightIcon && (
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            {rightIcon}
+          </View>
+        )}
+      </View>
+    </Pressable>
+  );
   return (
-    <DrawerContentScrollView contentContainerStyle={{backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg,minHeight:sizes.height}}>
+    <DrawerContentScrollView contentContainerStyle={{backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg,minHeight:sizes.height,paddingBottom:100}} showsVerticalScrollIndicator={false}>
       <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, padding: 15,paddingLeft:5 }}>
         <Image source={require('../assets/logohorizontal.png')} />
       </View>
       <View style={{paddingLeft:30}}>
-        <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>Home</Text></View>
+        <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>{t('home')}</Text></View>
       <DrawerItem
-        label="Home"
+        label={t('home')}
         labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M14.1933 2.5H14.14C13.7745 2.49999 13.4591 2.49998 13.198 2.51779C12.9232 2.53655 12.6482 2.5778 12.3766 2.6903C11.7641 2.94404 11.2774 3.43072 11.0236 4.04329C10.9111 4.3149 10.8699 4.58983 10.8511 4.86468C10.8333 5.12572 10.8333 5.44112 10.8333 5.80664V5.85999C10.8333 6.22551 10.8333 6.54095 10.8511 6.80199C10.8699 7.07684 10.9111 7.35177 11.0236 7.62338C11.2774 8.23595 11.7641 8.72263 12.3766 8.97637C12.6482 9.08887 12.9232 9.13012 13.198 9.14888C13.4591 9.16669 13.7744 9.16668 14.14 9.16667H14.1933C14.5588 9.16668 14.8743 9.16669 15.1353 9.14888C15.4102 9.13012 15.6851 9.08887 15.9567 8.97637C16.5693 8.72263 17.056 8.23595 17.3097 7.62338C17.4222 7.35177 17.4635 7.07684 17.4822 6.80199C17.5 6.54094 17.5 6.22553 17.5 5.85999V5.80668C17.5 5.44114 17.5 5.12573 17.4822 4.86468C17.4635 4.58983 17.4222 4.3149 17.3097 4.04329C17.056 3.43072 16.5693 2.94404 15.9567 2.6903C15.6851 2.5778 15.4102 2.53655 15.1353 2.51779C14.8743 2.49998 14.5588 2.49999 14.1933 2.5ZM13.0144 4.2301C13.0491 4.21574 13.1215 4.19356 13.3115 4.18059C13.509 4.16712 13.767 4.16667 14.1667 4.16667C14.5664 4.16667 14.8244 4.16712 15.0219 4.18059C15.2119 4.19356 15.2842 4.21574 15.3189 4.2301C15.5231 4.31468 15.6853 4.47691 15.7699 4.6811C15.7843 4.71578 15.8064 4.78814 15.8194 4.97813C15.8329 5.17562 15.8333 5.43365 15.8333 5.83333C15.8333 6.23302 15.8329 6.49105 15.8194 6.68853C15.8064 6.87853 15.7843 6.95089 15.7699 6.98557C15.6853 7.18976 15.5231 7.35199 15.3189 7.43657C15.2842 7.45093 15.2119 7.47311 15.0219 7.48608C14.8244 7.49955 14.5664 7.5 14.1667 7.5C13.767 7.5 13.509 7.49955 13.3115 7.48608C13.1215 7.47311 13.0491 7.45093 13.0144 7.43657C12.8102 7.35199 12.648 7.18976 12.5634 6.98557C12.5491 6.95089 12.5269 6.87853 12.5139 6.68853C12.5005 6.49105 12.5 6.23302 12.5 5.83333C12.5 5.43365 12.5005 5.17562 12.5139 4.97813C12.5269 4.78814 12.5491 4.71578 12.5634 4.6811C12.648 4.47691 12.8102 4.31468 13.0144 4.2301Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
@@ -28,19 +55,35 @@ const CustomDrawerContent =({ navigation })=> {
       </Svg>}
         onPress={() => navigation.navigate('HomeScreen')}
       />
-      <DrawerItem
-        label="Categories"
+       
+      <CustomDrawerItem
+        label={t('categories')}
         labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
-        icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <Path fill-rule="evenodd" clip-rule="evenodd" d="M1.66663 5.83325C1.66663 4.45254 2.78591 3.33325 4.16663 3.33325H8.33329C9.714 3.33325 10.8333 4.45254 10.8333 5.83325V13.3333C10.8333 14.2537 10.0871 14.9999 9.16663 14.9999H6.66663V13.3333H9.16663V5.83325C9.16663 5.37301 8.79353 4.99992 8.33329 4.99992H4.16663C3.70639 4.99992 3.33329 5.37301 3.33329 5.83325V12.4999C3.33329 12.9602 3.70639 13.3333 4.16663 13.3333H4.99996V14.9999H4.16663C2.78591 14.9999 1.66663 13.8806 1.66663 12.4999V5.83325Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
-        <Path fill-rule="evenodd" clip-rule="evenodd" d="M9.16663 5.83325H13.5209C14.1441 5.83325 14.7448 6.066 15.2053 6.48586L17.5177 8.59424C18.0372 9.06795 18.3333 9.73854 18.3333 10.4416V12.4999C18.3333 13.8806 17.214 14.9999 15.8333 14.9999H15V13.3333H15.8333C16.2935 13.3333 16.6666 12.9602 16.6666 12.4999V10.4416C16.6666 10.2073 16.5679 9.98373 16.3948 9.82583L14.0823 7.71745C13.9288 7.5775 13.7286 7.49992 13.5209 7.49992H10.8333V13.3333H13.3333V14.9999H9.16663V5.83325Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
-        <Path fill-rule="evenodd" clip-rule="evenodd" d="M6.66671 14.1667C6.66671 14.627 6.29361 15.0001 5.83337 15.0001C5.37314 15.0001 5.00004 14.627 5.00004 14.1667C5.00004 13.7065 5.37314 13.3334 5.83337 13.3334C6.29361 13.3334 6.66671 13.7065 6.66671 14.1667ZM8.33337 14.1667C8.33337 15.5475 7.21409 16.6667 5.83337 16.6667C4.45266 16.6667 3.33337 15.5475 3.33337 14.1667C3.33337 12.786 4.45266 11.6667 5.83337 11.6667C7.21409 11.6667 8.33337 12.786 8.33337 14.1667ZM15 14.1667C15 14.627 14.6269 15.0001 14.1667 15.0001C13.7065 15.0001 13.3334 14.627 13.3334 14.1667C13.3334 13.7065 13.7065 13.3334 14.1667 13.3334C14.6269 13.3334 15 13.7065 15 14.1667ZM16.6667 14.1667C16.6667 15.5475 15.5474 16.6667 14.1667 16.6667C12.786 16.6667 11.6667 15.5475 11.6667 14.1667C11.6667 12.786 12.786 11.6667 14.1667 11.6667C15.5474 11.6667 16.6667 12.786 16.6667 14.1667Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
-      </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        rightIcon={!showCat?(
+          <TouchableOpacity style={{paddingRight:15}} onPress={()=>toggleCat()}>
+           <Entypo name="chevron-small-down" size={20} color={theme === 'dark'?colors.lightModeBg:'#262E3D'}  />
+          </TouchableOpacity>
+        ):(
+          <TouchableOpacity style={{paddingRight:15}} onPress={()=>toggleCat()}>
+           <Entypo name="chevron-small-up" size={20} color={theme === 'dark'?colors.lightModeBg:'#262E3D'} />
+          </TouchableOpacity>
+        )}
+        icon
+     
+        onPress={() => toggleCat()}
       />
-      <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>Video</Text></View>
+      {showCat?<View style={{paddingLeft:35,paddingVertical:10}}>
+        {categoriesFromStore.length>0?categoriesFromStore.map((item,index)=>(<Pressable
+        onPress={()=>{ navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id})}}
+        key={item.id.toString()}  style={styles.subCategories}>
+          <Text style={{color:'#83899F'}}>{item.name.slice(0,10)}</Text>
+        </Pressable>)):null}
+        
+      </View>:null}
+      
+      <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>{t('video')}</Text></View>
       <DrawerItem
-        label="Live Video"
+        label={t('liveVideo')}
         labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M8.63099 2.5H11.6963C12.4477 2.49999 13.0539 2.49999 13.5472 2.53365C14.0545 2.56826 14.5031 2.64123 14.9278 2.81717C15.9488 3.24006 16.7599 4.0512 17.1828 5.07215C17.3588 5.4969 17.4317 5.94547 17.4663 6.45276C17.5 6.94609 17.5 7.55227 17.5 8.30373V8.36294C17.5 9.1144 17.5 9.72057 17.4663 10.2139C17.4317 10.7212 17.3588 11.1698 17.1828 11.5945C16.7599 12.6155 15.9488 13.4266 14.9278 13.8495C14.5031 14.0254 14.0545 14.0984 13.5472 14.133C13.0539 14.1667 12.4477 14.1667 11.6963 14.1667H9.52381C9.14082 14.1667 9.06446 14.1705 9.00217 14.1831C8.85702 14.2123 8.72229 14.2797 8.61182 14.3782C8.56441 14.4205 8.51551 14.4793 8.28571 14.7857L8.26776 14.8097C7.76299 15.4827 7.36075 16.019 7.0316 16.4068C6.7222 16.7713 6.37247 17.1378 5.95507 17.3104C4.80656 17.7852 3.48366 17.3442 2.84972 16.2753C2.61933 15.8868 2.55949 15.3837 2.53066 14.9065C2.49999 14.3988 2.5 13.7284 2.5 12.8871V8.63099C2.49999 7.72784 2.49999 6.99938 2.54818 6.40948C2.59781 5.80211 2.70265 5.26862 2.95414 4.77504C3.35361 3.99103 3.99103 3.35361 4.77504 2.95414C5.26862 2.70265 5.80211 2.59781 6.40948 2.54818C6.99938 2.49999 7.72784 2.49999 8.63099 2.5ZM6.5452 4.20931C6.04089 4.25052 5.75115 4.32733 5.53169 4.43915C5.06129 4.67883 4.67883 5.06129 4.43915 5.53169C4.32733 5.75115 4.25052 6.04089 4.20931 6.5452C4.16732 7.05924 4.16667 7.7195 4.16667 8.66667V12.8571C4.16667 13.7351 4.16704 14.3548 4.19429 14.806C4.20778 15.0292 4.22663 15.1861 4.24878 15.2967C4.26756 15.3904 4.28393 15.4255 4.28484 15.4278C4.49624 15.7812 4.93427 15.9272 5.31547 15.7713C5.31754 15.7701 5.3517 15.7518 5.42297 15.6881C5.50703 15.6129 5.61626 15.4987 5.76098 15.3282C6.05352 14.9836 6.42561 14.4881 6.95238 13.7857C6.96446 13.7696 6.97642 13.7536 6.98829 13.7378C7.1619 13.5059 7.31445 13.3022 7.50212 13.1347C7.83352 12.839 8.23773 12.6369 8.67316 12.5492C8.91976 12.4995 9.17428 12.4997 9.46394 12.5C9.48373 12.5 9.50368 12.5 9.52381 12.5H11.6667C12.4546 12.5 13.0039 12.4995 13.4338 12.4702C13.8562 12.4414 14.1022 12.3875 14.29 12.3097C14.9026 12.056 15.3893 11.5693 15.643 10.9567C15.7208 10.7689 15.7747 10.5229 15.8035 10.1005C15.8329 9.67055 15.8333 9.1213 15.8333 8.33333C15.8333 7.54536 15.8329 6.99612 15.8035 6.56621C15.7747 6.14378 15.7208 5.89778 15.643 5.70996C15.3893 5.09739 14.9026 4.6107 14.29 4.35697C14.1022 4.27917 13.8562 4.22527 13.4338 4.19645C13.0039 4.16712 12.4546 4.16667 11.6667 4.16667H8.66667C7.7195 4.16667 7.05924 4.16732 6.5452 4.20931Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
@@ -50,9 +93,10 @@ const CustomDrawerContent =({ navigation })=> {
       </Svg>}
         onPress={() => navigation.navigate('HomeScreen')}
       />
+     
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
-        label="My Players"
+        label={t('myPlays')}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M9.16671 6.66659C9.16671 6.20635 9.5398 5.83325 10 5.83325H13.3334C13.7936 5.83325 14.1667 6.20635 14.1667 6.66659C14.1667 7.12682 13.7936 7.49992 13.3334 7.49992H10C9.5398 7.49992 9.16671 7.12682 9.16671 6.66659ZM10 9.16659C9.5398 9.16659 9.16671 9.53968 9.16671 9.99992C9.16671 10.4602 9.5398 10.8333 10 10.8333H13.3334C13.7936 10.8333 14.1667 10.4602 14.1667 9.99992C14.1667 9.53968 13.7936 9.16659 13.3334 9.16659H10ZM10 12.4999C9.5398 12.4999 9.16671 12.873 9.16671 13.3333C9.16671 13.7935 9.5398 14.1666 10 14.1666H13.3334C13.7936 14.1666 14.1667 13.7935 14.1667 13.3333C14.1667 12.873 13.7936 12.4999 13.3334 12.4999H10ZM6.66671 14.1666C7.12694 14.1666 7.50004 13.7935 7.50004 13.3333C7.50004 12.873 7.12694 12.4999 6.66671 12.4999C6.20647 12.4999 5.83337 12.873 5.83337 13.3333C5.83337 13.7935 6.20647 14.1666 6.66671 14.1666ZM7.50004 9.99992C7.50004 10.4602 7.12694 10.8333 6.66671 10.8333C6.20647 10.8333 5.83337 10.4602 5.83337 9.99992C5.83337 9.53968 6.20647 9.16659 6.66671 9.16659C7.12694 9.16659 7.50004 9.53968 7.50004 9.99992ZM6.66671 7.49992C7.12694 7.49992 7.50004 7.12682 7.50004 6.66659C7.50004 6.20635 7.12694 5.83325 6.66671 5.83325C6.20647 5.83325 5.83337 6.20635 5.83337 6.66659C5.83337 7.12682 6.20647 7.49992 6.66671 7.49992Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M8.63099 2.5H11.369C12.2722 2.49999 13.0006 2.49999 13.5905 2.54818C14.1979 2.59781 14.7314 2.70265 15.225 2.95414C16.009 3.35361 16.6464 3.99103 17.0459 4.77504C17.2973 5.26862 17.4022 5.80211 17.4518 6.40948C17.5 6.99938 17.5 7.72783 17.5 8.63097V11.369C17.5 12.2722 17.5 13.0006 17.4518 13.5905C17.4022 14.1979 17.2973 14.7314 17.0459 15.225C16.6464 16.009 16.009 16.6464 15.225 17.0459C14.7314 17.2973 14.1979 17.4022 13.5905 17.4518C13.0006 17.5 12.2722 17.5 11.369 17.5H8.63097C7.72783 17.5 6.99937 17.5 6.40948 17.4518C5.80211 17.4022 5.26862 17.2973 4.77504 17.0459C3.99103 16.6464 3.35361 16.009 2.95414 15.225C2.70265 14.7314 2.59781 14.1979 2.54818 13.5905C2.49999 13.0006 2.49999 12.2722 2.5 11.369V8.63099C2.49999 7.72784 2.49999 6.99938 2.54818 6.40948C2.59781 5.80211 2.70265 5.26862 2.95414 4.77504C3.35361 3.99103 3.99103 3.35361 4.77504 2.95414C5.26862 2.70265 5.80211 2.59781 6.40948 2.54818C6.99938 2.49999 7.72784 2.49999 8.63099 2.5ZM6.5452 4.20931C6.04089 4.25052 5.75115 4.32733 5.53169 4.43915C5.06129 4.67883 4.67883 5.06129 4.43915 5.53169C4.32733 5.75115 4.25052 6.04089 4.20931 6.5452C4.16732 7.05924 4.16667 7.7195 4.16667 8.66667V11.3333C4.16667 12.2805 4.16732 12.9408 4.20931 13.4548C4.25052 13.9591 4.32733 14.2488 4.43915 14.4683C4.67883 14.9387 5.06129 15.3212 5.53169 15.5609C5.75115 15.6727 6.04089 15.7495 6.5452 15.7907C7.05924 15.8327 7.7195 15.8333 8.66667 15.8333H11.3333C12.2805 15.8333 12.9408 15.8327 13.4548 15.7907C13.9591 15.7495 14.2488 15.6727 14.4683 15.5609C14.9387 15.3212 15.3212 14.9387 15.5609 14.4683C15.6727 14.2488 15.7495 13.9591 15.7907 13.4548C15.8327 12.9408 15.8333 12.2805 15.8333 11.3333V8.66667C15.8333 7.7195 15.8327 7.05924 15.7907 6.5452C15.7495 6.04089 15.6727 5.75115 15.5609 5.53169C15.3212 5.06129 14.9387 4.67883 14.4683 4.43915C14.2488 4.32733 13.9591 4.25052 13.4548 4.20931C12.9408 4.16732 12.2805 4.16667 11.3333 4.16667H8.66667C7.7195 4.16667 7.05924 4.16732 6.5452 4.20931Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
@@ -61,7 +105,7 @@ const CustomDrawerContent =({ navigation })=> {
       />
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
-        label="Live Scheduled"
+        label={t('liveScheduled')}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M7.29892 4.16675H12.7011C13.3719 4.16674 13.9255 4.16673 14.3765 4.20358C14.8449 4.24185 15.2755 4.32398 15.68 4.53006C16.3072 4.84964 16.8171 5.35957 17.1367 5.98678C17.3428 6.39123 17.4249 6.82181 17.4632 7.29023C17.5 7.74122 17.5 8.29485 17.5 8.96565V12.7012C17.5 13.372 17.5 13.9256 17.4632 14.3766C17.4249 14.845 17.3428 15.2756 17.1367 15.6801C16.8171 16.3073 16.3072 16.8172 15.68 17.1368C15.2755 17.3428 14.8449 17.425 14.3765 17.4633C13.9255 17.5001 13.3719 17.5001 12.7011 17.5001H7.29894C6.62812 17.5001 6.07448 17.5001 5.62348 17.4633C5.15506 17.425 4.72448 17.3428 4.32003 17.1368C3.69283 16.8172 3.18289 16.3073 2.86331 15.6801C2.65724 15.2756 2.5751 14.845 2.53683 14.3766C2.49998 13.9256 2.49999 13.372 2.5 12.7012V8.96567C2.49999 8.29486 2.49998 7.74122 2.53683 7.29023C2.5751 6.82181 2.65724 6.39123 2.86331 5.98678C3.18289 5.35957 3.69283 4.84964 4.32003 4.53006C4.72448 4.32398 5.15506 4.24185 5.62348 4.20358C6.07448 4.16673 6.62811 4.16674 7.29892 4.16675ZM5.7592 5.86471C5.39385 5.89456 5.20702 5.94866 5.07668 6.01507C4.76308 6.17486 4.50811 6.42983 4.34832 6.74343C4.28191 6.87376 4.22781 7.0606 4.19796 7.42595C4.16732 7.80102 4.16667 8.28627 4.16667 9.00008V12.6667C4.16667 13.3806 4.16732 13.8658 4.19796 14.2409C4.22781 14.6062 4.28191 14.7931 4.34832 14.9234C4.50811 15.237 4.76308 15.492 5.07668 15.6518C5.20702 15.7182 5.39385 15.7723 5.7592 15.8021C6.13427 15.8328 6.61952 15.8334 7.33333 15.8334H12.6667C13.3805 15.8334 13.8657 15.8328 14.2408 15.8021C14.6061 15.7723 14.793 15.7182 14.9233 15.6518C15.2369 15.492 15.4919 15.237 15.6517 14.9234C15.7181 14.7931 15.7722 14.6062 15.802 14.2409C15.8327 13.8658 15.8333 13.3806 15.8333 12.6667V9.00008C15.8333 8.28627 15.8327 7.80102 15.802 7.42595C15.7722 7.0606 15.7181 6.87376 15.6517 6.74343C15.4919 6.42983 15.2369 6.17486 14.9233 6.01507C14.793 5.94866 14.6061 5.89456 14.2408 5.86471C13.8657 5.83406 13.3805 5.83342 12.6667 5.83342H7.33333C6.61952 5.83342 6.13427 5.83406 5.7592 5.86471Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
         <Path d="M7.50004 3.33333C7.50004 2.8731 7.12694 2.5 6.66671 2.5C6.20647 2.5 5.83337 2.8731 5.83337 3.33333V5C5.83337 5.46024 6.20647 5.83333 6.66671 5.83333C7.12694 5.83333 7.50004 5.46024 7.50004 5V3.33333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
@@ -70,10 +114,10 @@ const CustomDrawerContent =({ navigation })=> {
       </Svg>}
         onPress={() => navigation.navigate('HomeScreen')}
       />
-      <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>Company Profile</Text></View>
+      <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>{t('companyProfile')}</Text></View>
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
-        label="About Us"
+        label={t('aboutUs')}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Circle cx="10" cy="10" r="7" fill="#E26262" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#E26262"/>
@@ -82,7 +126,7 @@ const CustomDrawerContent =({ navigation })=> {
       />
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
-        label="Terms & Conditions"
+        label={t('termsAndConditions')}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Circle cx="10" cy="10" r="7" fill="#4877F2" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#4877F2"/>
@@ -91,7 +135,7 @@ const CustomDrawerContent =({ navigation })=> {
       />
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
-        label="Return Policy"
+        label={t('returnPolicy')}
         icon={() => <Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <Circle cx="10" cy="10" r="7" fill="#B148F2" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#B148F2"/>
@@ -107,7 +151,7 @@ const CustomDrawerContent =({ navigation })=> {
         }}
         style={{padding:10,backgroundColor:theme==='light'?'#fff':null,borderRadius:10,width:90,alignItems:'center',flexDirection:'row',elevation:theme ==='light'?3:0}}>
           <MaterialIcons name={'light-mode'} color={'#000'} size={20} />
-          <Text style={{color:'#000',marginLeft:5}}>Light</Text></Pressable>
+          <Text style={{color:'#000',marginLeft:5}}>{t('light')}</Text></Pressable>
         <Pressable
         onPress={()=>{
           dispatch({type:'UPDATE_THEME',theme:'dark'});
@@ -115,7 +159,7 @@ const CustomDrawerContent =({ navigation })=> {
         }}
         style={{padding:10,borderRadius:10,width:80,alignItems:'center',flexDirection:'row',backgroundColor:theme==='dark'?'#000':null,elevation:theme==='dark'?3:0}}>
         <MaterialIcons name={'dark-mode'} color={theme==='dark'?'#fff':'#000'} size={20} />
-          <Text style={{color:theme==='dark'?'#fff':'#000',marginLeft:5}}>Dark</Text></Pressable>
+          <Text style={{color:theme==='dark'?'#fff':'#000',marginLeft:5}}>{t('dark')}</Text></Pressable>
       </View>
       <Pressable
       onPress={()=>{
@@ -123,11 +167,19 @@ const CustomDrawerContent =({ navigation })=> {
       }}
       style={{marginHorizontal:45,padding:5,borderRadius:10,flexDirection:'row',marginTop:20}}>
       <Image source={require('../assets/collapse.png')} style={{height:20,width:20}} />
-      <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,marginLeft:15}}>Collapse menu</Text>
+      <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,marginLeft:15}}>{t('collapseMenu')}</Text>
       </Pressable>
       
     </DrawerContentScrollView>
   );
 }
+
+
+
+const styles = StyleSheet.create({
+  subCategories:{
+    padding:10
+  }
+})
 
 export default CustomDrawerContent;

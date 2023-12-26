@@ -3,6 +3,7 @@ const data = {
     'host': 'https://demo.beautysiaa.com/wp-json/',
     'accessToken': '',
     'loggedIn': false,
+    "loginCondition":'generel',
     'phoneNumber':'',
     'email':'',
     'firstName':'',
@@ -19,7 +20,11 @@ const data = {
     "favourites":[],
     "favouritesList":[],
     "cartProducts":[],
-    "theme":'light'
+    "categories":[],
+    "theme":'light',
+    "orders":[],
+    "loadingState":false,
+    "paymentSuccess":false
 };
 
 const reducer = (state = data, action) => {
@@ -36,6 +41,27 @@ const reducer = (state = data, action) => {
                 ...state,
                 phoneNumber: action.phone,
             };
+        case 'UPDATE_LOGIN_CONDITION':
+            return {
+                ...state,
+                loginCondition: action.loginCondition,
+            };
+        case 'UPDATE_LOADING_STATE':
+            return {
+                ...state,
+                loadingState: action.loadingState,
+            };
+        case 'UPDATE_PAYMENT_SUCCESS':
+            return {
+                ...state,
+                paymentSuccess: action.payload,
+            };
+        case 'UPDATE_ORDER':
+            
+            return {
+                ...state,
+                orders: action.orders,
+            };
         case 'UPDATE_EMAIL':
             AsyncStorage.setItem('email', action.email.toString())
             return {
@@ -47,6 +73,11 @@ const reducer = (state = data, action) => {
             return {
                 ...state,
                 firstName: action.firstName,
+            };
+        case 'UPDATE_CATEGORIES':
+            return {
+                ...state,
+                categories: action.categories,
             };
         case 'UPDATE_LAST_NAME':
             AsyncStorage.setItem('lastName', action.lastName.toString())

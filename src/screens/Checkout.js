@@ -8,10 +8,17 @@ import RadioGroup,{RadioButton} from 'react-native-radio-buttons-group';
 import { useDispatch,useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import baseUri from '../constants/urls'
+import SSLCommerzPayment  from "sslcommerz-lts"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const axios = require('axios');
+const store_id = 'beaut6587eb4330864'
+const store_passwd = 'beaut6587eb4330864@ssl'
+const is_live = false
 const Checkout = () => {
+const dispatch = useDispatch();
 const navigation = useNavigation();
 const theme = useSelector(state=>state.auth.theme);
+const orderLists = useSelector(state=>state.auth.orders);
 const cartProducts = useSelector(state=>state.auth.cartProducts);
 const address = useSelector(state=>state.auth.address);
 const postCode = useSelector(state=>state.auth.postCode);
@@ -28,6 +35,85 @@ const [loadingState, setLoadingState] = useState(false);
 useEffect(()=>{
 setFinalAddress(address);
 },[]);
+const checkoutNow = async() =>{
+  await dispatch({ type: 'UPDATE_LOADING_STATE', loadingState: true });
+  const data = {
+      total_amount: parseInt(totalPrice),
+      currency: 'BDT',
+      tran_id: 'REF123',
+      success_url: 'https://beautysiaa.com/terms-conditions/',
+      fail_url: 'https://beautysiaa.com/privacy-policy/',
+      cancel_url: 'https://beautysiaa.com/refund-returns/',
+      ipn_url: 'https://beautysiaa.com/',
+      shipping_method: 'Courier',
+      product_name: 'Computer.',
+      product_category: 'Electronic',
+      product_profile: 'general',
+      cus_name: firstName+" "+lastName,
+      cus_email: email,
+      cus_add1: address,
+      cus_add2: 'Dhaka',
+      cus_city: 'Dhaka',
+      cus_state: 'Dhaka',
+      cus_postcode: postCode,
+      cus_country: 'Bangladesh',
+      cus_phone: phoneNumber,
+      cus_fax: '01711111111',
+      ship_name: "Mohammadpur dhaka",
+      ship_add1: 'Dhaka',
+      ship_add2: 'Dhaka',
+      ship_city: 'Dhaka',
+      ship_state: 'Dhaka',
+      ship_postcode: 1000,
+      ship_country: 'Bangladesh',
+  };
+  const checkoutData =  JSON.stringify({
+    "payment_method": "bacs",
+    "payment_method_title": "Bank Transfer",
+    "set_paid": true,
+    "billing": {
+      "first_name":firstName,
+      "last_name": lastName,
+      "address_1": address,
+      "address_2": "",
+      "city": "Dhaka",
+      "state": "BD",
+      "postcode": postCode,
+      "country": "BD",
+      "email": email,
+      "phone": phoneNumber
+    },
+    "shipping": {
+      "first_name":firstName,
+      "last_name": lastName,
+      "address_1": address,
+      "address_2": "",
+      "city": "Dhaka",
+      "state": "BD",
+      "postcode": postCode,
+      "country": "BD",
+    },
+    "line_items":cartProducts.map(product => {
+      return {
+        "product_id": product.id,
+        "quantity": product.quantity
+      };
+    }),
+    "shipping_lines": [
+      {
+        "method_id": "flat_rate",
+        "method_title": "Flat Rate",
+        "total": (parseInt(totalPrice)+50).toFixed(2)
+      }
+    ]
+  });
+  const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live)
+  sslcz.init(data).then(apiResponse => {
+      console.log(apiResponse);
+      let GatewayPageURL = apiResponse.GatewayPageURL;
+      navigation.navigate('PaymentWindow',{uri:GatewayPageURL,checkoutData:checkoutData});
+  });
+}
 const placeOrder = async()=>{
   console.log(cartProducts);
   setLoadingState(true);
@@ -92,9 +178,14 @@ const placeOrder = async()=>{
     }
 
     const responseData = await response.json();
-    console.log(JSON.stringify(responseData));
-    
+    // console.log(JSON.stringify(responseData));
+    var orderLisitems = orderLists;
+    orderLisitems.push(responseData.id);
     ToastAndroid.show("Order completed",ToastAndroid.SHORT);
+    dispatch({ type: 'UPDATE_CART', cartProducts: [] });
+    dispatch({ type: 'UPDATE_ORDER', orders:orderLisitems });
+    AsyncStorage.setItem("cartItems","");
+    AsyncStorage.setItem("orders",JSON.stringify(orderLisitems));
     setTimeout(()=>{
       setLoadingState(false);
       navigation.navigate('Success')
@@ -104,6 +195,14 @@ const placeOrder = async()=>{
     setLoadingState(false);
   }
 
+}
+
+const confirmOrder = ()=>{
+  if(selectedId === "1"){
+    placeOrder();
+  }else{
+    checkoutNow();
+  }
 }
   return (
     <Container>
@@ -174,9 +273,7 @@ const placeOrder = async()=>{
           
         </View>
         <Pressable onPress={()=>{
-          placeOrder();
-        //navigation.navigate('Success');
-
+          confirmOrder();
       }}  style={{backgroundColor:'#691883',width:sizes.width-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
         {loadingState?<ActivityIndicator color={theme === 'dark'?colors.lightModeBg:colors.lightModeBg} />:<Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.lightModeBg}}>Order Confirmed</Text>}
         

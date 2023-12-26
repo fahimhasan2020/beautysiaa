@@ -9,6 +9,9 @@ const OrderDetails = () => {
 const dispatch = useDispatch();
   const navigation = useNavigation();
   const phoneNumber = useSelector(state=>state.auth.phoneNumber);
+  const firstNameStore = useSelector(state=>state.auth.firstName);
+  const lastNameStore = useSelector(state=>state.auth.lastName);
+  const emailStore = useSelector(state=>state.auth.email);
   const [phone,setPhone] = useState("");
   const [firstName,setFirstName] = useState("");
   const [lastName,setLastName] = useState("");
@@ -17,6 +20,9 @@ const dispatch = useDispatch();
   const [postCode,setPostCode] = useState("");
   useEffect(()=>{
     setPhone(phoneNumber);
+    setFirstName(firstNameStore);
+    setLastName(lastNameStore);
+    setEmail(emailStore);
   },[]);
 
   const proceedNext = ()=>{
@@ -42,7 +48,7 @@ const dispatch = useDispatch();
         dispatch({type:'UPDATE_EMAIL',email:email});
         dispatch({type:'UPDATE_FIRST_NAME',firstName:firstName});
         dispatch({type:'UPDATE_LAST_NAME',lastName:lastName});
-        dispatch({type:'UPDATE_PHONE_NUMBERE',phone:phone});
+        dispatch({type:'UPDATE_PHONE_NUMBER',phone:phone});
         dispatch({type:'UPDATE_ADDRESS',address:address});
         dispatch({type:'UPDATE_POSTCODE',postCode:postCode});
         navigation.navigate('Checkout');

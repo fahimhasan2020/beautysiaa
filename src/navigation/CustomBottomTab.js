@@ -72,7 +72,7 @@ const CustomBottomTab = ({ state, descriptors, navigation }) => {
   };
 
   useEffect(() => {
-    progress.value = withTiming(0);
+    progress.value = withTiming(1);
   }, []);
 
   return (

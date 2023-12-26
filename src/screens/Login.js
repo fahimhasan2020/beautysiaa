@@ -10,7 +10,7 @@ import { PrimaryButton, PrimaryButtonDownload } from '../components/Buttons';
 import BootSplash from 'react-native-bootsplash';
 import Container from '../components/Container';
 import EvilIcons from "react-native-vector-icons/EvilIcons"
-
+import { GoogleSignin, statusCodes, GoogleSigninButton, } from '@react-native-google-signin/google-signin';
 import { sizes } from '../constants';
 import { Svg,Path } from 'react-native-svg';
 import OTPTextInput from 'react-native-otp-textinput';
@@ -18,7 +18,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { useNavigation } from '@react-navigation/native';
 import auth from "@react-native-firebase/auth"
 import app from "@react-native-firebase/app"
-import { useDispatch } from 'react-redux';
+import { LoginManager,Profile,AccessToken } from "react-native-fbsdk-next";
+import { useDispatch,useSelector } from 'react-redux';
 const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -28,7 +29,42 @@ const Login = () => {
   const [partialNumber, setPartialNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [confirmation, setConfirmation] = useState(null);
+  const loginCondition = useSelector(state=>state.auth.loginCondition);
+  const googleLogin = async()=>{
 
+    try {
+      GoogleSignin.configure({
+
+      })
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+      if(userInfo.hasOwnProperty('idToken')){
+        
+        await dispatch({type:'UPDATE_FIRST_NAME',firstName:userInfo.user.givenName});
+        await dispatch({type:'UPDATE_LAST_NAME',lastName:userInfo.user.familyName});
+        await dispatch({type:'UPDATE_EMAIL',email:userInfo.user.email});
+        await dispatch({type:'LOGIN',logged:true});
+        if(loginCondition === 'generel'){
+          navigation.navigate('HomeScreen');
+        }else{
+          navigation.navigate('OrderDetails');
+        }
+       
+      }
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('cancelled');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('In progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('No play service');
+      } else {
+        console.log('details',error);
+      }
+    }
+
+  }
   useEffect(() => {
     
   }, []);
@@ -38,6 +74,65 @@ const Login = () => {
       console.log(user);
     }
   };
+  const initUser = async(token,details) => {
+    fetch('https://graph.facebook.com/v2.5/me?fields=email,name,friends&access_token=' + token)
+      .then((response) => response.json())
+      .then(async (json) => {
+      //dispatch({ type: 'SET_FULL_LOADING', payload: true }); 
+      if(details.hasOwnProperty('name')){
+        var name = details.name;
+        var nameParts = name.split(' ');
+        var firstName = nameParts[0];
+        var lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+        var email = json.email;
+        console.log('first name',firstName,'last name',lastName,'email',email);   
+        await dispatch({type:'UPDATE_FIRST_NAME',firstName:firstName});
+        await dispatch({type:'UPDATE_LAST_NAME',lastName:lastName});
+        await dispatch({type:'UPDATE_EMAIL',email:email});
+        await dispatch({type:'LOGIN',logged:true});
+        if(loginCondition === 'generel'){
+          navigation.navigate('HomeScreen');
+        }else{
+          navigation.navigate('OrderDetails');
+        }     
+      }})
+      .catch(() => {
+        reject('ERROR GETTING DATA FROM FACEBOOK');
+      })
+  }
+
+
+  const facebookLogin = () =>{
+    LoginManager.setLoginBehavior(Platform.OS === 'ios' ? 'web_only' : 'NATIVE_ONLY');
+    LoginManager.logInWithPermissions(["public_profile","email"]).then(
+      (result)=> {
+        console.log(result);
+        if (result.isCancelled) {
+          console.log("Login cancelled");
+        } else {
+          const currentProfile = Profile.getCurrentProfile().then(
+            async (currentProfile) => {
+              if (currentProfile) {
+                console.log('fb details',currentProfile);
+                var name = currentProfile.name;
+                var nameParts = name.split(' ');
+                var firstName = nameParts[0];
+                var lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+                await AccessToken.getCurrentAccessToken().then((data) => {
+                  const { accessToken } = data
+                  initUser(accessToken,currentProfile);
+                })
+                
+              }
+            }
+          );
+        }
+      },
+      (error)=> {
+        console.log("Login fail with error: " + error);
+      }
+    );
+  }
   const loginAction  = async() =>{
     setLoading(true); 
     if (!otpState) {
@@ -69,7 +164,11 @@ const Login = () => {
         await confirmation.confirm(otp);
         await dispatch({type:'LOGIN',logged:true});
         await dispatch({type:'UPDATE_PHONE_NUMBER',phone:phone});
-        navigation.navigate('OrderDetails');
+        if(loginCondition === 'generel'){
+          navigation.navigate('HomeScreen');
+        }else{
+          navigation.navigate('OrderDetails');
+        }
        
       } catch (error) {
         ToastAndroid.show("OTP did not matched", ToastAndroid.SHORT);
@@ -105,15 +204,19 @@ const Login = () => {
         <View style={styles.tile}></View>
       </View>
       <View>
-      <Pressable style={[styles.generateCodeButton,{backgroundColor:'#fff',borderWidth:0.5,borderColor:'#1877F2',flexDirection:'row',justifyContent:'flex-start',paddingLeft:20}]}>
+      <Pressable onPress={()=>googleLogin()} style={[styles.generateCodeButton,{backgroundColor:'#fff',borderWidth:0.5,borderColor:'#1877F2',flexDirection:'row',justifyContent:'flex-start',paddingLeft:20}]}>
         <Image source={require('../assets/google-logo.png')} />
         <Text style={[styles.generateCodeText,{color:'#1877F2',marginLeft:20}]}>CONTINUE WITH GOOGLE</Text></Pressable>
-      <Pressable style={[styles.generateCodeButton,{backgroundColor:'#1877F2',borderWidth:0.5,borderColor:'#1877F2',flexDirection:'row',justifyContent:'flex-start',paddingLeft:20}]}>
+      <Pressable onPress={()=>facebookLogin()} style={[styles.generateCodeButton,{backgroundColor:'#1877F2',borderWidth:0.5,borderColor:'#1877F2',flexDirection:'row',justifyContent:'flex-start',paddingLeft:20}]}>
         <EvilIcons name="sc-facebook" size={30} color={'#fff'} />
         <Text style={[styles.generateCodeText,{marginLeft:20}]}>CONTINUE WITH FACEBOOK</Text></Pressable>
         <Pressable onPress={()=>{
            dispatch({type:'LOGIN',logged:true});
-           navigation.navigate('OrderDetails');
+           if(loginCondition === 'generel'){
+            navigation.navigate('HomeScreen');
+          }else{
+            navigation.navigate('OrderDetails');
+          }
         }} style={[styles.generateCodeButton,{backgroundColor:'#DE0C77'}]}><Text style={styles.generateCodeText}>Guest Login</Text></Pressable>
       </View>
       <Svg width="375" height="182" viewBox="0 0 375 182" fill="none" xmlns="http://www.w3.org/2000/svg">

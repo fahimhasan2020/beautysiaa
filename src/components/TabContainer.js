@@ -55,7 +55,7 @@ const TabContainer = ({children}) => {
   <Path d="M9.44125 20.6491C10.9087 20.6491 12.0983 19.4595 12.0983 17.992C12.0983 16.5246 10.9087 15.335 9.44125 15.335C7.97379 15.335 6.78418 16.5246 6.78418 17.992C6.78418 19.4595 7.97379 20.6491 9.44125 20.6491Z" fill="white" stroke="#DE0C77" stroke-width="1.32854"/>
 </Svg>
         </View>
-        <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} horizontal={true} contentContainerStyle={{marginLeft:13,marginRight:13,marginTop:9,height:150}}>
+        {/* <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} horizontal={true} contentContainerStyle={{marginLeft:13,marginRight:13,marginTop:9,height:150}}>
           <View style={{backgroundColor:'#DE0C77',padding:3,borderRadius:2,width:'auto',paddingLeft:10,paddingRight:10,alignItems:'center',marginRight:10}}>
             <Text style={styles.activeBadgeText}>Cream</Text>
           </View>
@@ -83,7 +83,7 @@ const TabContainer = ({children}) => {
           <View style={{backgroundColor:'#F5F5F5',padding:3,borderRadius:2,width:'auto',paddingLeft:10,paddingRight:10,alignItems:'center',marginRight:10}}>
             <Text style={styles.inActiveBadgeText}>Night Cream</Text>
           </View>
-        </ScrollView>
+        </ScrollView> */}
         
       </View>
       {children}
