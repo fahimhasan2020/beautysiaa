@@ -3,7 +3,7 @@ import React,{memo} from 'react'
 import { Svg ,Path,Circle} from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch,useSelector } from 'react-redux';
-import { colors } from '../constants';
+import { colors, sizes } from '../constants';
 const {height,width} = Dimensions.get("window");
 const StackContainer = ({children,title='',isTab=false}) => {
   const navigation = useNavigation();
@@ -25,13 +25,17 @@ const StackContainer = ({children,title='',isTab=false}) => {
           
           <Text style={styles.tabHeaderStyle}>{title}</Text>
           <View>
+          <Pressable onPress={()=>{
+              navigation.navigate('Notifications');
+            }}>           
 <Svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
   <Circle cx="15" cy="15" r="15" fill="#D9D9D9"/>
   <Path d="M15 6C12.525 6 10.5 8.025 10.5 10.5C10.5 12.84 9.33 14.955 7.485 16.485C6.5625 17.25 6 18.33 6 19.5H24C24 18.33 23.46 17.25 22.515 16.485C20.67 14.955 19.5 12.84 19.5 10.5C19.5 8.025 17.4975 6 15 6ZM12.75 21.75C12.75 22.9875 13.7625 24 15 24C16.2375 24 17.25 22.9875 17.25 21.75H12.75Z" fill="#F06BA2"/>
-</Svg></View>
+</Svg></Pressable>
+</View>
         </View>
       </View>
-      <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{paddingBottom:100,minHeight:sizes.height-60}} showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
       

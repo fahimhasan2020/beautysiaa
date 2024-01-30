@@ -1,10 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const basicValues = async(dispatch) => {
+const basicValues = async(dispatch,i18n) => {
+    const currentLanguage = await AsyncStorage.getItem('currentLanguage');
     const loggedIn = await AsyncStorage.getItem("loggedIn");
     const firstName = await AsyncStorage.getItem("firstName");
     const lastName = await AsyncStorage.getItem("lastName");
     const phone = await AsyncStorage.getItem("phone");
     const email = await AsyncStorage.getItem("email");
+    const profilePicture = await AsyncStorage.getItem("profilePicture");
     if(loggedIn !== null && loggedIn !== undefined && loggedIn === 'true'){
         dispatch({type:'LOGIN',logged:true});
     }
@@ -19,6 +21,16 @@ const basicValues = async(dispatch) => {
     }
     if(phone !== null && phone !== undefined && phone !== ''){
         dispatch({type:'UPDATE_PHONE_NUMBER',phone:phone});
+    }
+    if(profilePicture !== null && profilePicture !== undefined && profilePicture !== ''){
+        dispatch({type:'UPDATE_PROFILE_PICTURE',profilePicture:profilePicture});
+    }
+    if(currentLanguage !== null && currentLanguage !== undefined && currentLanguage !== ''){
+        if(currentLanguage === 'en'){
+            i18n.changeLanguage('en');
+        }else{
+            i18n.changeLanguage('bd');
+        }
     }
     return;
     

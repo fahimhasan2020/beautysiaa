@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react'
 import './src/utils/ignorewarning'
-import BootSplash from "react-native-bootsplash"
 import Index from "./src/navigation/Index"
 import { Provider } from 'react-redux';
 import store from './src/store/store';

@@ -29,9 +29,11 @@ const CarouselOffers = () => {
                 autoPlay={true}
                 style={{borderRadius:10,marginTop:20,backgroundColor:'#fff',elevation:3}}
                 pagingEnabled={true}
+                panGestureHandlerProps={{
+                  activeOffsetX: [-10, 10],
+              }}
                 data={carouselImages}
                 scrollAnimationDuration={3000}
-                // onSnapToItem={(index) => console.log('current index:', index)}
                 renderItem={({item, index }) => (
                   <View style={{width:sizes.width-35,height:'auto',backgroundColor:'#fff',elevation:3}}><FastImage style={{width:sizes.width-35,height:sizes.width / 2}} source={{uri:item.toString()}} /></View>
                 )}

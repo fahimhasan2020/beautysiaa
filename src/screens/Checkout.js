@@ -2,6 +2,7 @@ import { StyleSheet, Text, View,TextInput,Pressable,ActivityIndicator, ToastAndr
 import React,{useState,useMemo,useEffect} from 'react'
 import Container from '../components/Container'
 import StackContainer from '../components/StackContainer'
+import { useTranslation } from 'react-i18next'
 import { sizes,colors } from '../constants'
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import RadioGroup,{RadioButton} from 'react-native-radio-buttons-group';
@@ -13,8 +14,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const axios = require('axios');
 const store_id = 'beaut6587eb4330864'
 const store_passwd = 'beaut6587eb4330864@ssl'
+
 const is_live = false
 const Checkout = () => {
+const {t,i18n} = useTranslation();
 const dispatch = useDispatch();
 const navigation = useNavigation();
 const theme = useSelector(state=>state.auth.theme);
@@ -178,7 +181,6 @@ const placeOrder = async()=>{
     }
 
     const responseData = await response.json();
-    // console.log(JSON.stringify(responseData));
     var orderLisitems = orderLists;
     orderLisitems.push(responseData.id);
     ToastAndroid.show("Order completed",ToastAndroid.SHORT);
@@ -206,20 +208,21 @@ const confirmOrder = ()=>{
 }
   return (
     <Container>
-      <StackContainer title="Checkout">
+      <StackContainer title={t('checkout')}>
         <View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10}}>
-          <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Address</Text>
-        <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Change Address</Text>
+          <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('address')}</Text>
+        {/* <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('changeAddress')}</Text> */}
         </View>
         <TextInput editable={false} value={finalAddress} onChangeText={(value)=>{setFinalAddress(value)}} style={{width:sizes.width-20,alignSelf:'center',padding:10,borderWidth:1,borderColor:'#ccc', color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}} />
-<View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10}}>
-          <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Payment Method</Text>
-        <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Show All</Text>
+        <View style={{borderWidth:1,borderColor:'#ccc',marginHorizontal:10,marginVertical:10}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10,}}>
+          <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('paymentMethod')}</Text>
+        {/* <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('showAll')}</Text> */}
         </View>
         <View>
           <View style={{flexDirection:'row',padding:10}}>
             <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.3}}>Cash on Delivery (COD)</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('cod')}</Text>
             <RadioButton
             onPress={()=>setSelectedId('1')}
             selected={selectedId === '1'?true:false}
@@ -230,7 +233,7 @@ const confirmOrder = ()=>{
           </View>
           <View style={{flexDirection:'row',padding:10}}>
             <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.3}}>Bkash/Nagad/Rocket</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('bkash')}</Text>
             <RadioButton
             onPress={()=>setSelectedId('2')}
             selected={selectedId === '2'?true:false}
@@ -241,7 +244,7 @@ const confirmOrder = ()=>{
           </View>
           <View style={{flexDirection:'row',padding:10}}>
             <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.3}}>Card Method</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('card')}</Text>
             <RadioButton
             color={selectedId === '3'?'#DE0C77':'#CCCCCC'}
             borderColor={selectedId === '3'?'#DE0C77':'#CCCCCC'}
@@ -252,21 +255,23 @@ const confirmOrder = ()=>{
           </View>
           
         </View>
-        <View>
+        </View>
+        
+        <View style={{borderWidth:1,borderColor:'#ccc',marginHorizontal:10,marginVertical:10}}>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>Subtotal</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>{t('subTotal')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ {totalPrice}</Text>
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>Delivery Charges</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('deliveryCharges')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ 50.00</Text>
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>Vat & taxes</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('valueAndTaxes')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ 0.00</Text>
           </View>
           <View style={{flexDirection:'row',padding:10}}>
-            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>Total Amounts</Text>
+            <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>{t('totalAmounts')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ {(parseInt(totalPrice)+50).toString()}</Text>
           </View>
           
@@ -275,13 +280,13 @@ const confirmOrder = ()=>{
         <Pressable onPress={()=>{
           confirmOrder();
       }}  style={{backgroundColor:'#691883',width:sizes.width-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
-        {loadingState?<ActivityIndicator color={theme === 'dark'?colors.lightModeBg:colors.lightModeBg} />:<Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.lightModeBg}}>Order Confirmed</Text>}
+        {loadingState?<ActivityIndicator color={theme === 'dark'?colors.lightModeBg:colors.lightModeBg} />:<Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.lightModeBg}}>{t('orderConfirmed')}</Text>}
         
       </Pressable>
         <Pressable onPress={()=>{
         navigation.navigate('HomeTabs');
       }}  style={{marginTop:10,borderWidth:1,borderColor:'#691883',width:sizes.width-30,borderRadius:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
-        <Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Continue Shopping</Text>
+        <Text style={{fontSize:20,fontWeight:600,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('continueShopping')}</Text>
       </Pressable>
       </StackContainer>
       

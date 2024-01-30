@@ -2,7 +2,7 @@ import {NavigationContainer, useNavigation} from "@react-navigation/native"
 import React,{useEffect} from 'react'
 import { useDispatch,useSelector } from "react-redux";
 import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
-import {About, Cart, Categories, Checkout, Delivery, EditProfile, Favourites, Home,Login, MyOrders, MyVideo, Offers, OrderDetails, PaymentWindow, ProductDetails, Profile, ReturnPolicy, Settings, SingleBrand, SingleCategory, SingleOrderHistory, Success, Support, TermsAndConditions, Voucher} from "./src"
+import {About, Cart, Categories, Checkout, Delivery, EditProfile, Favourites, Home,Login, MyOrders, MyVideo, Notifications, Offers, OrderDetails, PaymentWindow, ProductDetails, Profile, ReturnPolicy, Settings, SingleBrand, SingleCategory, SingleOrderHistory, Success, Support, TermsAndConditions, Voucher} from "./src"
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -15,8 +15,7 @@ import basicValues from "../api/BasicValues";
 import newArrivalsApi from "../api/NewArrivalApi";
 import bestSellingApi from "../api/BestSellingApi";
 import favouritesApi from "../api/FavouritesApi";
-import CustomBottomTab from "./CustomBottomTab";
-import { StatusBar } from "react-native";
+import { StatusBar,Pressable,Text,View } from "react-native";
 import { colors } from "../constants";
 import cartApi from "../api/cartApi";
 import { useColorScheme } from "react-native";
@@ -25,46 +24,102 @@ import instantCategory from "../api/InstantCategory";
 import getOrders from "../api/GetOrders";
 import FullScreenLoader from "../components/FullScreenLoader";
 import HelpCenter from "../screens/HelpCenter";
+import allCategoriesFetch from "../api/AllCategoriesFetch";
+import MyPlays from "../screens/MyPlays";
+import LiveSchedule from "../screens/LiveSchedule";
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import Feather from 'react-native-vector-icons/Feather'; 
+import LiveVideos from "../screens/LiveVideos";
+import discountedProducts from "../api/DiscountedProducts";
+import { useTranslation } from "react-i18next";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+import BootSplash from "react-native-bootsplash"
 
 function HomeTabs() {
-  const loggedIn = useSelector(state=>state.auth.loggedIn);
+  const loggedIn = useSelector((state) => state.auth.loggedIn);
   const navigation = useNavigation();
-  return (
-    <Tab.Navigator tabBar={props => <CustomBottomTab {...props} />}>
-      <Tab.Group
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <Tab.Screen
-          options={{tabBarLabel: 'Home'}}
-          name="Home"
-          component={Home}
-        />
-        <Tab.Screen
-          options={{tabBarLabel: 'Categories'}}
-          name="Categories"
-          component={Categories}
-        />
-        <Tab.Screen
-          options={{tabBarLabel: 'Cart'}}
-          name="Cart"
-          component={Cart}
-        />
 
-        <Tab.Screen
-          options={{tabBarLabel: 'Offers'}}
-          name="Offers"
-          component={Offers}
-        />
-        <Tab.Screen
-          options={{tabBarLabel: 'Profile'}}
-          name="Profile"
-          component={Profile}
-        />
-      </Tab.Group>
+  const tabBarOptions = {
+    headerShown:false,
+    tabBarActiveTintColor:'#DE0C77',
+    tabBarInactiveTintColor:'#fff',
+    tabBarShowLabel:false,
+    tabBarStyle:{
+      backgroundColor:'#000'
+    }
+  };
+
+  return (
+    <Tab.Navigator screenOptions={tabBarOptions} 
+    >
+      <Tab.Screen
+        name="Home"
+      
+        component={Home}
+        options={{
+          
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ focused,color, size }) => (
+            <View style={{alignItems:'center'}}><MaterialCommunityIcons name="home" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Home</Text>:null}</View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Categories"
+        component={Categories}
+        options={{
+          tabBarLabel: 'Categories',
+          tabBarIcon: ({focused, color, size }) => (
+            <View style={{alignItems:'center'}}><Feather name="grid" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Categories</Text>:null}</View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Favourites"
+        component={Favourites}
+        options={{
+          tabBarLabel: 'Favourites',
+          tabBarIcon: ({focused, color, size }) => (
+            <View style={{alignItems:'center'}}><Feather name="heart" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Favourites</Text>:null}</View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Offers"
+        component={Offers}
+        options={{
+          tabBarLabel: 'Offers',
+          tabBarIcon: ({focused, color, size }) => (
+            <View style={{alignItems:'center'}}><Feather name="gift" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Offers</Text>:null}</View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        listeners={{
+          tabPress: e => {
+            e.preventDefault();
+            if(loggedIn){
+              navigation.jumpTo('Profile');
+            }else{
+              navigation.navigate('Login');
+            }
+            
+            
+          },
+        }}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({focused, color, size }) => (
+            <View style={{alignItems:'center'}}><FontAwesome name="user-o" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Profile</Text>:null}</View>
+          ),
+        }}
+      />
+      
     </Tab.Navigator>
   );
 }
@@ -138,8 +193,8 @@ function BaseStack() {
         component={Checkout} />
       <Stack.Screen name="OrderDetails"  options={slideRightToLeftAnimation}
         component={OrderDetails} />
-      <Stack.Screen name="Favourites"  options={slideRightToLeftAnimation}
-        component={Favourites} />
+      <Stack.Screen name="Cart"  options={slideRightToLeftAnimation}
+        component={Cart} />
       <Stack.Screen name="MyOrders"  options={slideRightToLeftAnimation}
         component={MyOrders} />
       <Stack.Screen name="Settings"  options={slideRightToLeftAnimation}
@@ -169,6 +224,14 @@ function BaseStack() {
         component={SingleBrand} />
       <Stack.Screen name="PaymentWindow"  options={slideRightToLeftAnimation}
         component={PaymentWindow} />
+      <Stack.Screen name="Notifications"  options={slideRightToLeftAnimation}
+        component={Notifications} />
+      <Stack.Screen name="LiveVideo"  options={slideRightToLeftAnimation}
+        component={LiveVideos} />
+      <Stack.Screen name="LiveSchedule"  options={slideRightToLeftAnimation}
+        component={LiveSchedule} />
+      <Stack.Screen name="MyPlays"  options={slideRightToLeftAnimation}
+        component={MyPlays} />
       <Stack.Screen name="Success" component={Success} />
     </Stack.Navigator>
   );
@@ -176,12 +239,15 @@ function BaseStack() {
 
 
 const Index =() => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const loadingState = useSelector(state=>state.auth.loadingState);
   const currentTheme = useColorScheme();
   useEffect(()=>{
     const init = async() =>{
-      const [imageApi,randomProductFetch,allBrands,newArrival,bestSelling,favourites,colorSceme,storeValues,instantCat,totalOrders] = await Promise.all([
+      await dispatch({type:'UPDATE_LOADING_STATE',loadingState:true});
+      await BootSplash.hide({ fade: true });
+      const [imageApi,randomProductFetch,allBrands,newArrival,bestSelling,favourites,colorSceme,storeValues,instantCat,totalOrders,allCategoriesFetching,discounted] = await Promise.all([
       carouselOffersApi(dispatch),
       randomProducts(dispatch),
       brandsApi(dispatch),
@@ -190,13 +256,15 @@ const Index =() => {
       favouritesApi(dispatch),
       cartApi(dispatch),
       initialTheme(dispatch,currentTheme),
-      basicValues(dispatch),
+      basicValues(dispatch,i18n),
       instantCategory(dispatch),
-      getOrders(dispatch)
+      getOrders(dispatch),
+      allCategoriesFetch(dispatch),
+      discountedProducts(dispatch)
     ]);
     }
     init().finally(async () => {
-      
+      dispatch({type:'UPDATE_LOADING_STATE',loadingState:false});
     });
   },[])
   return (<NavigationContainer>

@@ -6,20 +6,15 @@ import SingleProductList from './SingleProductList';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch,useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-const BestSellingList = ({products=[],productLimit=null}) => {
+const DiscountedProductList = ({products=[],productLimit=null}) => {
   const {t,i18n} = useTranslation();
   const navigation = useNavigation();
   const theme = useSelector(state=>state.auth.theme);
   return (
     <View style={styles.brandSection}>
-      <View style={styles.brandTitleSection}>
-        <Text style={[styles.brandText,{color:theme === 'dark'?'#fff':'#691883'}]}>{t('offer')}</Text>
-        <Pressable
-        onPress={()=>{
-          navigation.navigate('SingleCategory',{title:'Best Selling',categoryId:771});
-        }}
-        style={[styles.seemoreButton,{backgroundColor:'#DE0C77'}]}><Text style={styles.seeMoreButtonText}>{t('seeMore')}</Text></Pressable>
-      </View>
+     <View style={{alignItems:'center',marginTop:40,marginBottom:20}}><Text style={{color:theme ==='dark'?'#fff':'#691883',fontWeight:'bold',letterSpacing:1.3}}>{t('cycloneOffer')}</Text>
+          <View style={{width:44,height:3,backgroundColor:'#DE0C77',marginTop:10}}></View>
+          </View>
       <View style={styles.productSection}>
         {products.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'center',paddingLeft:10}}><LottieView
       style={{width:150,height:180,marginTop:10}}
@@ -46,7 +41,7 @@ const BestSellingList = ({products=[],productLimit=null}) => {
   )
 }
 
-export default BestSellingList
+export default DiscountedProductList
 
 const styles = StyleSheet.create({
     productSection:{

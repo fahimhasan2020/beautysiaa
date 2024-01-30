@@ -1,29 +1,69 @@
-import { StyleSheet, Text, View,Pressable,FlatList } from 'react-native'
-import React,{useEffect} from 'react'
+import { StyleSheet, Text, View,Pressable,FlatList,Animated } from 'react-native'
+import React,{useEffect,useState,useRef} from 'react'
 import BrandSingle from './BrandSingle'
-import { useNavigation } from '@react-navigation/native'
-const BrandsList = ({brands=[]}) => {
-  const navigation = useNavigation()
-  return (
-    <View style={styles.brandSection}>
-      <View style={styles.brandTitleSection}>
-        <Text style={styles.brandText}>Choose Brand</Text>
-        <Pressable
-         onPress={()=>{
-          navigation.navigate('SingleBrand',{title:'3W Clinic',categoryId:'3w-clinic'})
-         }}
-         style={styles.seemoreButton}><Text style={styles.seeMoreButtonText}>See More</Text></Pressable>
+import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+const BrandsList = ({ brands = [] }) => {
+    const { t, i18n } = useTranslation();
+    const theme = useSelector((state) => state.auth.theme);
+    const flatListRef = useRef(null);
+    const scrollX = new Animated.Value(0);
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (brands.length > 0) {
+          flatListRef.current.scrollToIndex({
+            index: (Math.floor(scrollX._value / 150) + 1) % brands.length,
+          });
+        }
+      }, 3000); // Change the interval time as needed
+  
+      return () => clearInterval(interval);
+    }, [brands, scrollX]);
+  
+    return (
+      <View style={styles.brandSection}>
+        <View
+          style={{
+            alignItems: 'center',
+            marginTop: 40,
+            marginBottom: 20,
+          }}
+        >
+          <Text
+            style={{
+              color: theme === 'dark' ? '#fff' : '#691883',
+              fontWeight: 'bold',
+              letterSpacing: 1.3,
+            }}
+          >
+            {t('populaBrands')}
+          </Text>
+          <View style={{ width: 44, height: 3, backgroundColor: '#DE0C77', marginTop: 10 }}></View>
+        </View>
+        <FlatList
+          ref={flatListRef}
+          data={brands}
+          horizontal
+          renderItem={({ item, index }) => <BrandSingle brandSingle={item} position={index} />}
+          keyExtractor={(item, index) => index.toString()}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+            useNativeDriver: false,
+          })}
+          scrollEventThrottle={16}
+          snapToAlignment="start"
+          decelerationRate="fast"
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          getItemLayout={(data, index) => ({
+            length: 150,
+            offset: 150 * index,
+            index,
+          })}
+        />
       </View>
-      <FlatList
-      data={brands}
-      horizontal={true}
-      renderItem={({item,index})=>(<BrandSingle brandSingle={item} position={index} />)}
-      keyExtractor={(item,index)=>index.toString()}
-      />
-      
-    </View>
-  )
-}
+    );
+  };
 
 export default BrandsList
 

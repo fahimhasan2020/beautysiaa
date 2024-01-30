@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { View, Text, TouchableOpacity,Image,Pressable,StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -10,13 +10,43 @@ import { colors, sizes } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 const CustomDrawerContent =({ navigation })=> {
+  const replaceAnd = (value)=>{
+    let newValue = value.replace("&amp;", '&');
+  return newValue;
+  }
   const { t, i18n } = useTranslation();
   const theme = useSelector(state=>state.auth.theme);
   const categoriesFromStore = useSelector(state=>state.auth.categories);
+  const categoriesFromStores = useSelector(state=>state.auth.categoriesHighererchy);
   const dispatch = useDispatch();
   const [showCat,setShowCat] = useState(false);
   const toggleCat = ()=>{
     setShowCat(!showCat);
+  }
+  const SubCategoryItems = ({datas})=>{
+    const [showSub,setShowSub] = useState(false);
+    return (<View><Pressable
+      onPress={()=>{ toggleCat();navigation.closeDrawer();navigation.navigate('SingleCategory',{title:datas.name,categoryId:datas.id})}}
+      style={styles.subCategories}>
+        <Text style={{color:'#83899F'}}>{replaceAnd(datas.name.slice(0,18))}</Text>
+       {datas.children.length>0?(!showSub>0?(
+          <TouchableOpacity style={{paddingRight:15}} onPress={()=>setShowSub(!showSub)}>
+           <Entypo name="plus" size={20} color={theme === 'dark'?colors.lightModeBg:'#262E3D'}  />
+          </TouchableOpacity>
+        ):(
+          <TouchableOpacity style={{paddingRight:15}} onPress={()=>setShowSub(!showSub)}>
+           <Entypo name="minus" size={20} color={theme === 'dark'?colors.lightModeBg:'#262E3D'} />
+          </TouchableOpacity>
+        )):null}
+      </Pressable>
+        {showSub?<View style={{marginLeft:25}}>
+       {datas.children.map((item,index)=>(<Pressable onPress={()=>{
+        toggleCat();
+        setShowSub(!showSub);
+        navigation.closeDrawer();
+        navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id});
+       }} style={styles.childSubCategories} key={index}><Text>{item.name}</Text></Pressable>))}
+        </View>:null}</View>)
   }
   const CustomDrawerItem = ({ label, onPress, icon, rightIcon }) => (
     <Pressable onPress={onPress}>
@@ -53,7 +83,7 @@ const CustomDrawerContent =({ navigation })=> {
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M14.14 10.8333H14.1933C14.5588 10.8333 14.8743 10.8333 15.1353 10.8511C15.4102 10.8699 15.6851 10.9111 15.9567 11.0236C16.5693 11.2774 17.056 11.7641 17.3097 12.3766C17.4222 12.6482 17.4635 12.9232 17.4822 13.198C17.5 13.4591 17.5 13.7745 17.5 14.14V14.1933C17.5 14.5589 17.5 14.8743 17.4822 15.1353C17.4635 15.4102 17.4222 15.6851 17.3097 15.9567C17.056 16.5693 16.5693 17.056 15.9567 17.3097C15.6851 17.4222 15.4102 17.4635 15.1353 17.4822C14.8743 17.5 14.5589 17.5 14.1933 17.5H14.14C13.7745 17.5 13.4591 17.5 13.198 17.4822C12.9232 17.4635 12.6482 17.4222 12.3766 17.3097C11.7641 17.056 11.2774 16.5693 11.0236 15.9567C10.9111 15.6851 10.8699 15.4102 10.8511 15.1353C10.8333 14.8743 10.8333 14.5589 10.8333 14.1934V14.14C10.8333 13.7745 10.8333 13.4591 10.8511 13.198C10.8699 12.9232 10.9111 12.6482 11.0236 12.3766C11.2774 11.7641 11.7641 11.2774 12.3766 11.0236C12.6482 10.9111 12.9232 10.8699 13.198 10.8511C13.4591 10.8333 13.7745 10.8333 14.14 10.8333ZM13.3115 12.5139C13.1215 12.5269 13.0491 12.5491 13.0144 12.5634C12.8102 12.648 12.648 12.8102 12.5634 13.0144C12.5491 13.0491 12.5269 13.1215 12.5139 13.3115C12.5005 13.509 12.5 13.767 12.5 14.1667C12.5 14.5664 12.5005 14.8244 12.5139 15.0219C12.5269 15.2119 12.5491 15.2842 12.5634 15.3189C12.648 15.5231 12.8102 15.6853 13.0144 15.7699C13.0491 15.7843 13.1215 15.8064 13.3115 15.8194C13.509 15.8329 13.767 15.8333 14.1667 15.8333C14.5664 15.8333 14.8244 15.8329 15.0219 15.8194C15.2119 15.8064 15.2842 15.7843 15.3189 15.7699C15.5231 15.6853 15.6853 15.5231 15.7699 15.3189C15.7843 15.2842 15.8064 15.2119 15.8194 15.0219C15.8329 14.8244 15.8333 14.5664 15.8333 14.1667C15.8333 13.767 15.8329 13.509 15.8194 13.3115C15.8064 13.1215 15.7843 13.0491 15.7699 13.0144C15.6853 12.8102 15.5231 12.648 15.3189 12.5634C15.2842 12.5491 15.2119 12.5269 15.0219 12.5139C14.8244 12.5005 14.5664 12.5 14.1667 12.5C13.767 12.5 13.509 12.5005 13.3115 12.5139Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M5.80668 2.5H5.85999C6.22553 2.49999 6.54094 2.49998 6.80199 2.51779C7.07684 2.53655 7.35177 2.5778 7.62338 2.6903C8.23595 2.94404 8.72263 3.43072 8.97637 4.04329C9.08887 4.3149 9.13012 4.58982 9.14888 4.86468C9.16669 5.12573 9.16668 5.44114 9.16667 5.80668V5.85999C9.16668 6.22553 9.16669 6.54094 9.14888 6.80199C9.13012 7.07684 9.08887 7.35177 8.97637 7.62338C8.72263 8.23595 8.23595 8.72263 7.62338 8.97637C7.35177 9.08887 7.07684 9.13012 6.80199 9.14888C6.54094 9.16669 6.22553 9.16668 5.85999 9.16667H5.80668C5.44114 9.16668 5.12573 9.16669 4.86468 9.14888C4.58982 9.13012 4.3149 9.08887 4.04329 8.97637C3.43072 8.72263 2.94404 8.23595 2.6903 7.62338C2.5778 7.35177 2.53655 7.07684 2.51779 6.80199C2.49998 6.54094 2.49999 6.22553 2.5 5.85999V5.80668C2.49999 5.44114 2.49998 5.12573 2.51779 4.86468C2.53655 4.58982 2.5778 4.3149 2.6903 4.04329C2.94404 3.43072 3.43072 2.94404 4.04329 2.6903C4.3149 2.5778 4.58982 2.53655 4.86468 2.51779C5.12573 2.49998 5.44114 2.49999 5.80668 2.5ZM4.97813 4.18059C4.78814 4.19356 4.71578 4.21574 4.6811 4.2301C4.47691 4.31468 4.31468 4.47691 4.2301 4.6811C4.21574 4.71578 4.19356 4.78814 4.18059 4.97813C4.16712 5.17562 4.16667 5.43365 4.16667 5.83333C4.16667 6.23302 4.16712 6.49105 4.18059 6.68853C4.19356 6.87853 4.21574 6.95089 4.2301 6.98557C4.31468 7.18976 4.47691 7.35199 4.6811 7.43657C4.71578 7.45093 4.78814 7.47311 4.97813 7.48608C5.17562 7.49955 5.43365 7.5 5.83333 7.5C6.23302 7.5 6.49105 7.49955 6.68853 7.48608C6.87853 7.47311 6.95089 7.45093 6.98557 7.43657C7.18976 7.35199 7.35199 7.18976 7.43657 6.98557C7.45093 6.95089 7.47311 6.87853 7.48608 6.68853C7.49955 6.49105 7.5 6.23302 7.5 5.83333C7.5 5.43365 7.49955 5.17562 7.48608 4.97813C7.47311 4.78814 7.45093 4.71578 7.43657 4.6811C7.35199 4.47691 7.18976 4.31468 6.98557 4.2301C6.95089 4.21574 6.87853 4.19356 6.68853 4.18059C6.49105 4.16712 6.23302 4.16667 5.83333 4.16667C5.43365 4.16667 5.17562 4.16712 4.97813 4.18059Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => {navigation.closeDrawer();navigation.navigate('HomeScreen')}}
       />
        
       <CustomDrawerItem
@@ -73,11 +103,7 @@ const CustomDrawerContent =({ navigation })=> {
         onPress={() => toggleCat()}
       />
       {showCat?<View style={{paddingLeft:35,paddingVertical:10}}>
-        {categoriesFromStore.length>0?categoriesFromStore.map((item,index)=>(<Pressable
-        onPress={()=>{ navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id})}}
-        key={item.id.toString()}  style={styles.subCategories}>
-          <Text style={{color:'#83899F'}}>{item.name.slice(0,10)}</Text>
-        </Pressable>)):null}
+        {categoriesFromStores.length>0?categoriesFromStores.map((item,index)=>(<SubCategoryItems key={index} datas={item} />)):null}
         
       </View>:null}
       
@@ -91,7 +117,9 @@ const CustomDrawerContent =({ navigation })=> {
         <Path d="M10.8334 8.33333C10.8334 8.79357 10.4603 9.16667 10 9.16667C9.5398 9.16667 9.16671 8.79357 9.16671 8.33333C9.16671 7.8731 9.5398 7.5 10 7.5C10.4603 7.5 10.8334 7.8731 10.8334 8.33333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
         <Path d="M14.1667 8.33333C14.1667 8.79357 13.7936 9.16667 13.3334 9.16667C12.8731 9.16667 12.5 8.79357 12.5 8.33333C12.5 7.8731 12.8731 7.5 13.3334 7.5C13.7936 7.5 14.1667 7.8731 14.1667 8.33333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('LiveVideo')}}
       />
      
       <DrawerItem
@@ -101,7 +129,9 @@ const CustomDrawerContent =({ navigation })=> {
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M9.16671 6.66659C9.16671 6.20635 9.5398 5.83325 10 5.83325H13.3334C13.7936 5.83325 14.1667 6.20635 14.1667 6.66659C14.1667 7.12682 13.7936 7.49992 13.3334 7.49992H10C9.5398 7.49992 9.16671 7.12682 9.16671 6.66659ZM10 9.16659C9.5398 9.16659 9.16671 9.53968 9.16671 9.99992C9.16671 10.4602 9.5398 10.8333 10 10.8333H13.3334C13.7936 10.8333 14.1667 10.4602 14.1667 9.99992C14.1667 9.53968 13.7936 9.16659 13.3334 9.16659H10ZM10 12.4999C9.5398 12.4999 9.16671 12.873 9.16671 13.3333C9.16671 13.7935 9.5398 14.1666 10 14.1666H13.3334C13.7936 14.1666 14.1667 13.7935 14.1667 13.3333C14.1667 12.873 13.7936 12.4999 13.3334 12.4999H10ZM6.66671 14.1666C7.12694 14.1666 7.50004 13.7935 7.50004 13.3333C7.50004 12.873 7.12694 12.4999 6.66671 12.4999C6.20647 12.4999 5.83337 12.873 5.83337 13.3333C5.83337 13.7935 6.20647 14.1666 6.66671 14.1666ZM7.50004 9.99992C7.50004 10.4602 7.12694 10.8333 6.66671 10.8333C6.20647 10.8333 5.83337 10.4602 5.83337 9.99992C5.83337 9.53968 6.20647 9.16659 6.66671 9.16659C7.12694 9.16659 7.50004 9.53968 7.50004 9.99992ZM6.66671 7.49992C7.12694 7.49992 7.50004 7.12682 7.50004 6.66659C7.50004 6.20635 7.12694 5.83325 6.66671 5.83325C6.20647 5.83325 5.83337 6.20635 5.83337 6.66659C5.83337 7.12682 6.20647 7.49992 6.66671 7.49992Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
         <Path fill-rule="evenodd" clip-rule="evenodd" d="M8.63099 2.5H11.369C12.2722 2.49999 13.0006 2.49999 13.5905 2.54818C14.1979 2.59781 14.7314 2.70265 15.225 2.95414C16.009 3.35361 16.6464 3.99103 17.0459 4.77504C17.2973 5.26862 17.4022 5.80211 17.4518 6.40948C17.5 6.99938 17.5 7.72783 17.5 8.63097V11.369C17.5 12.2722 17.5 13.0006 17.4518 13.5905C17.4022 14.1979 17.2973 14.7314 17.0459 15.225C16.6464 16.009 16.009 16.6464 15.225 17.0459C14.7314 17.2973 14.1979 17.4022 13.5905 17.4518C13.0006 17.5 12.2722 17.5 11.369 17.5H8.63097C7.72783 17.5 6.99937 17.5 6.40948 17.4518C5.80211 17.4022 5.26862 17.2973 4.77504 17.0459C3.99103 16.6464 3.35361 16.009 2.95414 15.225C2.70265 14.7314 2.59781 14.1979 2.54818 13.5905C2.49999 13.0006 2.49999 12.2722 2.5 11.369V8.63099C2.49999 7.72784 2.49999 6.99938 2.54818 6.40948C2.59781 5.80211 2.70265 5.26862 2.95414 4.77504C3.35361 3.99103 3.99103 3.35361 4.77504 2.95414C5.26862 2.70265 5.80211 2.59781 6.40948 2.54818C6.99938 2.49999 7.72784 2.49999 8.63099 2.5ZM6.5452 4.20931C6.04089 4.25052 5.75115 4.32733 5.53169 4.43915C5.06129 4.67883 4.67883 5.06129 4.43915 5.53169C4.32733 5.75115 4.25052 6.04089 4.20931 6.5452C4.16732 7.05924 4.16667 7.7195 4.16667 8.66667V11.3333C4.16667 12.2805 4.16732 12.9408 4.20931 13.4548C4.25052 13.9591 4.32733 14.2488 4.43915 14.4683C4.67883 14.9387 5.06129 15.3212 5.53169 15.5609C5.75115 15.6727 6.04089 15.7495 6.5452 15.7907C7.05924 15.8327 7.7195 15.8333 8.66667 15.8333H11.3333C12.2805 15.8333 12.9408 15.8327 13.4548 15.7907C13.9591 15.7495 14.2488 15.6727 14.4683 15.5609C14.9387 15.3212 15.3212 14.9387 15.5609 14.4683C15.6727 14.2488 15.7495 13.9591 15.7907 13.4548C15.8327 12.9408 15.8333 12.2805 15.8333 11.3333V8.66667C15.8333 7.7195 15.8327 7.05924 15.7907 6.5452C15.7495 6.04089 15.6727 5.75115 15.5609 5.53169C15.3212 5.06129 14.9387 4.67883 14.4683 4.43915C14.2488 4.32733 13.9591 4.25052 13.4548 4.20931C12.9408 4.16732 12.2805 4.16667 11.3333 4.16667H8.66667C7.7195 4.16667 7.05924 4.16732 6.5452 4.20931Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('MyPlays')}}
       />
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
@@ -112,7 +142,9 @@ const CustomDrawerContent =({ navigation })=> {
         <Path d="M14.1667 3.33333C14.1667 2.8731 13.7936 2.5 13.3334 2.5C12.8731 2.5 12.5 2.8731 12.5 3.33333V5C12.5 5.46024 12.8731 5.83333 13.3334 5.83333C13.7936 5.83333 14.1667 5.46024 14.1667 5V3.33333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
         <Path d="M8.33333 7.5C7.8731 7.5 7.5 7.8731 7.5 8.33333C7.5 8.79357 7.8731 9.16667 8.33333 9.16667H9.16667V12.5H8.33333C7.8731 12.5 7.5 12.8731 7.5 13.3333C7.5 13.7936 7.8731 14.1667 8.33333 14.1667H11.6667C12.1269 14.1667 12.5 13.7936 12.5 13.3333C12.5 12.8731 12.1269 12.5 11.6667 12.5H10.8333V8.33333C10.8333 7.8731 10.4602 7.5 10 7.5H8.33333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
       </Svg>}
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('LiveSchedule')}}
       />
       <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>{t('companyProfile')}</Text></View>
       <DrawerItem
@@ -122,7 +154,9 @@ const CustomDrawerContent =({ navigation })=> {
         <Circle cx="10" cy="10" r="7" fill="#E26262" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#E26262"/>
       </Svg>}
-        onPress={() => navigation.navigate('About')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('About')}}
       />
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
@@ -131,7 +165,9 @@ const CustomDrawerContent =({ navigation })=> {
         <Circle cx="10" cy="10" r="7" fill="#4877F2" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#4877F2"/>
       </Svg>}
-        onPress={() => navigation.navigate('TermsAndConditions')}
+        onPress={() => {
+          navigation.closeDrawer();
+          navigation.navigate('TermsAndConditions')}}
       />
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
@@ -140,7 +176,10 @@ const CustomDrawerContent =({ navigation })=> {
         <Circle cx="10" cy="10" r="7" fill="#B148F2" fill-opacity="0.1"/>
         <Circle cx="10" cy="10" r="4" fill="#B148F2"/>
       </Svg>}
-        onPress={() => navigation.navigate('ReturnPolicy')}
+        onPress={() => {
+          navigation.navigate('ReturnPolicy');
+          navigation.closeDrawer();
+      }}
       />
       </View>
       <View style={{backgroundColor:'#e8e7e6',marginHorizontal:45,padding:5,borderRadius:10,flexDirection:'row',justifyContent:'space-between'}}>
@@ -178,7 +217,13 @@ const CustomDrawerContent =({ navigation })=> {
 
 const styles = StyleSheet.create({
   subCategories:{
-    padding:10
+    padding:10,
+    alignItems:'center',
+    flexDirection:'row',
+    justifyContent:'space-between'
+  },
+  childSubCategories:{
+    padding:5
   }
 })
 

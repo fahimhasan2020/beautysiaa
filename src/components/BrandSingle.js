@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
         width:70,
         elevation:3,
         backgroundColor:'#FFFFFF',
+        marginBottom:10,
+        marginTop:10
         
     },
     brandContainer:{

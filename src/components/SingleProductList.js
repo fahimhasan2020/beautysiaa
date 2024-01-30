@@ -38,11 +38,11 @@ const SingleProductList = ({datas={}}) => {
     onPress={()=>{
         navigation.navigate('ProductDetails',{productId:datas.id,details:datas});
     }}
-    style={[styles.productCard,{backgroundColor:theme === 'dark'?'#adadad':colors.lightModeBg}]}>
+    style={[styles.productCard,{backgroundColor:theme === 'dark'?'#adadad':colors.lightModeBg},{padding:0}]}>
       <FastImage
       source={{uri:datas.images[0].src}}
       style={styles.cardImage}
-      resizeMode={FastImage.resizeMode.contain}
+      resizeMode={FastImage.resizeMode.cover}
       />
       <View style={styles.topContents}>
         <View style={[styles.badge,{height:20}]}>
@@ -51,10 +51,10 @@ const SingleProductList = ({datas={}}) => {
         style={{padding:5,margin:3,borderRadius:10,backgroundColor:'rgba(222, 12, 119, 0.15)'}}
         onPress={()=>toggleFavorite(datas)}
         >
-        {favourites.includes(datas.id)?<AntDesign name={'heart'} size={15} color="#691883" />:<AntDesign name={'hearto'} size={15} color="#691883" />}
+        {favourites.includes(datas.id)?<AntDesign name={'heart'} size={10} color="#691883" />:<AntDesign name={'hearto'} size={10} color="#691883" />}
         </Pressable>
     </View>
-      <Text style={styles.productName}>{datas.name.slice(0,30)}...</Text>
+      <Text style={styles.productName}>{datas.name.slice(0,25)}...</Text>
       <View style={[styles.brand,{backgroundColor:'rgba(105, 24, 131, 0.20)'}]}><Text style={[styles.brandText,{color:'#691883'}]}>FREE SHIPPING</Text></View>
       <View style={styles.priceSection}>
         <View style={styles.valuePrice}>
@@ -65,7 +65,7 @@ const SingleProductList = ({datas={}}) => {
       {datas.brands.length>0?<Text style={{fontSize:8,color:'#691883'}}>{datas.brands[0].name.slice(0,10)}</Text>:null}
       <View style={{paddingHorizontal:10,paddingVertical:3,backgroundColor:'#691883',borderRadius:10,flexDirection:'row',marginLeft:10}}>
       <AntDesign name="star" size={12} color={'#fff'} />
-      <Text style={{color:'#fff',fontSize:10}}>{Math.floor(parseInt(datas.average_rating))}</Text>
+      <Text style={{color:'#fff',fontSize:10,marginLeft:6}}>{Math.floor(parseInt(datas.average_rating))}</Text>
       </View>      
       </View>
     </Pressable>
@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
         width:sizes.width/3.1-10,
         margin:5,
         elevation:2,
-        height:280,
-        padding:5,
-        borderRadius:5
+        height:230,
+        borderRadius:5,
     },
     cardImage:{
         height:120,
-        width:sizes.width/3-20,
+        width:sizes.width/3.1-10,
+        marginTop:0
     },
     brandText:{
         color:'#fff',
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     brand:{
         padding:3,
         backgroundColor:'#DE0C77',
-        margin:10,
+        margin:2,
         alignSelf:'center',
         alignItems:'center',
         justifyContent:'center',
@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         textAlign:'center',
         lineHeight:12,
-        letterSpacing:1.3,
-        color:'#303733'
+        color:'#303733',
+        marginTop:10
     },
     originalPrice:{
         textDecorationLine: 'line-through',
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     },
     priceSection:{alignItems:'center',
         justifyContent:'space-between',
-        marginTop:10
     },
     valuePrice:{
         flexDirection:'row',
@@ -170,6 +169,6 @@ const styles = StyleSheet.create({
         top:0,
         left:0,
         right:0,
-        width:'100%'
+        width:sizes.width/3.1-10,
     }
 })

@@ -7,6 +7,8 @@ const data = {
     'phoneNumber':'',
     'email':'',
     'firstName':'',
+    'profilePicture':'',
+    'leftAlign':32,
     'lastName':'',
     'address':'',
     'postCode':'',
@@ -14,17 +16,20 @@ const data = {
     "loader": false,
     "mainCarouselImages":[],
     "allProducts":[],
+    "allCategories":[],
     "brands":[],
+    "discountedProducts":[],
     "newArrivals":[],
     "bestSelling":[],
     "favourites":[],
     "favouritesList":[],
     "cartProducts":[],
     "categories":[],
+    "categoriesHighererchy":[],
     "theme":'light',
     "orders":[],
     "loadingState":false,
-    "paymentSuccess":false
+    "paymentSuccess":false,
 };
 
 const reducer = (state = data, action) => {
@@ -35,11 +40,37 @@ const reducer = (state = data, action) => {
                 ...state,
                 loggedIn: action.logged,
             };
+        case 'UPDATE_CATEGORIES_HIGHERERCHY':
+            return {
+                ...state,
+                categoriesHighererchy: action.categoriesHighererchy,
+            };
+        case 'UPDATE_PROFILE_PICTURE':
+            AsyncStorage.setItem('profilePicture', action.profilePicture.toString())
+            return {
+                ...state,
+                profilePicture: action.profilePicture,
+            };
         case 'UPDATE_PHONE_NUMBER':
             AsyncStorage.setItem('phone', action.phone.toString())
             return {
                 ...state,
                 phoneNumber: action.phone,
+            };
+        case 'UPDATE_ALL_CATEGORIES':
+            return {
+                ...state,
+                allCategories: action.allCategories,
+            };
+        case 'SET_LEFT_ALIGN':
+            return {
+                ...state,
+                leftAlign: action.leftAlign,
+            };
+        case 'UPDATE_DISCOUNTED_PRODUCTS':
+            return {
+                ...state,
+                discountedProducts: action.discountedProducts,
             };
         case 'UPDATE_LOGIN_CONDITION':
             return {
