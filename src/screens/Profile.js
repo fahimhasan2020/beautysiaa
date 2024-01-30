@@ -8,17 +8,28 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 const Profile = () => {
+  const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const theme = useSelector(state=>state.auth.theme);
   const firstName = useSelector(state=>state.auth.firstName);
   const lastName = useSelector(state=>state.auth.lastName);
   const phoneNumber = useSelector(state=>state.auth.phoneNumber);
+  const profilePicture = useSelector(state=>state.auth.profilePicture);
   const email = useSelector(state=>state.auth.email);
   const navigation = useNavigation();
-  return (<StackContainer title="Profile" isTab={true}>
+  const logoutAction = async()=>{
+    await dispatch({type:'LOGOUT',logged:false});
+    await dispatch({type:'UPDATE_LAST_NAME',lastName:""});
+    await dispatch({type:'UPDATE_FIRST_NAME',firstName:""});
+    await dispatch({type:'UPDATE_EMAIL',email:""});
+    await dispatch({type:'UPDATE_PHONE_NUMBER',phone:""});
+    await dispatch({type:'UPDATE_PROFILE_PICTURE',profilePicture:""});
+    navigation.jumpTo("Home");
+  }
+  return (<StackContainer title={t('profile')} isTab={true}>
         <View style={[styles.mainContainer,{backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}]}>  
         <Pressable onPress={()=>navigation.navigate('EditProfile')} style={styles.profileSegment}>
-          <Image source={require('../assets/user.png')} style={styles.avatar} />
+          {profilePicture === ''?<Image source={require('../assets/user.png')} style={styles.avatar} />:<Image source={{uri:profilePicture}} style={styles.avatar} />}
           <View>
             <Text style={[styles.username,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{firstName+" "+lastName}</Text>
             <Text style={[styles.phoneNumber,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{phoneNumber}</Text>
@@ -69,6 +80,10 @@ const Profile = () => {
           <Pressable onPress={()=>navigation.navigate('Support')} style={styles.singleOptions}>
           <MaterialIcons name="support-agent" size={20} color={theme==='dark'?'#fff':'#000'} />
           <Text style={[styles.captions,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{t('supports')}</Text>
+          </Pressable>
+          <Pressable onPress={()=>{logoutAction()}} style={styles.singleOptions}>
+          <MaterialIcons name="logout" size={20} color={theme==='dark'?'#fff':'#000'} />
+          <Text style={[styles.captions,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{t('logout')}</Text>
           </Pressable>
         </View>
             <Pressable
@@ -135,6 +150,7 @@ const styles = StyleSheet.create({
   avatar:{
     height:40,
     width:40,
+    borderRadius:20,
     marginRight:20
   },
   textContainer:{marginLeft:20},

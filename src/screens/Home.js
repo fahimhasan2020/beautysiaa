@@ -15,35 +15,33 @@ import FilterButton from '../components/FilterButton';
 import { sizes } from '../constants';
 import CategoriesList from '../components/CategoriesList';
 import TestimonialSlider from '../components/TestimonialSlider';
+import ShopBySkinConcern from '../components/ShopBySkinConcern';
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
+  const {t,i18n} = useTranslation();
   const dispatch = useDispatch();
   const host = useSelector(state=>state.auth.host);
   const allProducts = useSelector(state=>state.auth.allProducts);
   const allBrands = useSelector(state=>state.auth.brands);
+  const theme = useSelector(state=>state.auth.theme);
   const categories = useSelector(state=>state.auth.categories);
   const newArrivals = useSelector(state=>state.auth.newArrivals);
   const bestSelling = useSelector(state=>state.auth.bestSelling);
   useEffect(() => {
-    const init = async () => {
-      
-    };
-    init().finally(async () => {
-      BootSplash.hide({ fade: true });
-      
-    });
-
   }, []);
   return (
       <TabContainer>
         <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
           <CarouselOffers />
           <BestSellingList products={bestSelling} productLimit={3} />
+          <View style={{alignItems:'center',marginTop:40,marginBottom:20}}><Text style={{color:theme ==='dark'?'#fff':'#691883',fontWeight:'bold',letterSpacing:1.3}}>{t('shopByCategory')}</Text>
+          <View style={{width:44,height:3,backgroundColor:'#DE0C77',marginTop:10}}></View>
+          </View>
           <CategoriesList categories={categories} categoryLimit={12}  />
           <BannerOne />
+          <ShopBySkinConcern />
           <BrandsList brands={allBrands} />
-          
-          <ProductListView products={allProducts} />
           <TestimonialSlider />
         </ScrollView>
       </TabContainer>

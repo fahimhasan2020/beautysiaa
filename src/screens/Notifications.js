@@ -4,7 +4,7 @@ import StackContainer from '../components/StackContainer'
 import { useTranslation } from 'react-i18next'
 import { sizes } from '../constants'
 
-const MyVideo = () => {
+const Notifications = () => {
   const {t,i18n} = useTranslation();
   return (
    <StackContainer title={t('notification')}>
@@ -15,6 +15,6 @@ const MyVideo = () => {
   )
 }
 
-export default MyVideo
+export default Notifications
 
 const styles = StyleSheet.create({})

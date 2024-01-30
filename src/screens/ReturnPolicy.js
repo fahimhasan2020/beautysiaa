@@ -5,17 +5,19 @@ import StackContainer from '../components/StackContainer'
 import {WebView} from "react-native-webview"
 import { sizes,colors } from '../constants'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 const ReturnPolicy = () => {
 const theme = useSelector(state=>state.auth.theme);
+const {t,i18n}  = useTranslation();
   return (
     <Container>
-        <StackContainer title="Return Policy">
+        <StackContainer title={t('returnPolicy')}>
             <ScrollView contentContainerStyle={{paddingBottom:200,paddingLeft:20,paddingRight:20,paddingTop:20}} showsVerticalScrollIndicator={false}>
             
                 <Text style={[styles.title,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Refund and Returns Policy</Text>
                 <WebView
                     showsVerticalScrollIndicator={false}
-                    source={{ html: `<p style="text-align:justify;font-size:40px;color:${theme === 'dark'?colors.lightModeBg:colors.darkModeBg};font-family: sans-serif;">The Return and Refund Policy of Beautysiaa is designed to provide customers with a hassle-free return and refund experience. At Beautysiaa, we want all of our customers to be completely satisfied with their purchases. However, we understand that there may be occasions when a customer is not satisfied with their purchase and would like to return the product for a refund. If you are not satisfied with your purchase, you can return the product to us within 30 days of the purchase date. All returned products must be in their original packaging and in the same condition as when they were received.Once we receive the returned product, we will process the refund within 7-10 business days. The refund will be issued to the original method of payment.Please note that original shipping charges are non-refundable. In the event of a refund, the customer will be responsible for covering the cost of return shipping.If you have any questions about our Return and Refund Policy, please don’t hesitate to contact us at info@beautysiaa.com. We will be happy to assist you.</p>` }}
+                    source={{ html: `<p style="text-align:justify;font-size:40px;color:${theme === 'dark'?colors.lightModeBg:colors.darkModeBg};font-family: sans-serif;">${t('returnPolicyDetails')}</p>` }}
                     style={{width:sizes.width-40,height:600,backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}}
                 />
                 

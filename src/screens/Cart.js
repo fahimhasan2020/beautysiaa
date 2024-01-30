@@ -5,19 +5,13 @@ import TabContainer from '../components/TabContainer';
 import { colors, sizes } from '../constants';
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import Entypo from "react-native-vector-icons/Entypo"
 import {Svg,Path} from "react-native-svg"
 import StackContainer from '../components/StackContainer';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch,useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FastImage from 'react-native-fast-image';
-const discountedProducts = [
-  {id:1,image:require('../assets/image-18.png')},
-  {id:2,image:require('../assets/image-18.png')},
-  {id:3,image:require('../assets/image-18.png')},
-  {id:4,image:require('../assets/image-18.png')},
-  {id:5,image:require('../assets/image-18.png')},
-];
+import { useTranslation } from 'react-i18next';
 const Cart = () => {
   const dispatch = useDispatch();
   const [voucher,setVoucher] = useState("");
@@ -27,6 +21,7 @@ const Cart = () => {
   const loggedIn = useSelector(state=>state.auth.loggedIn);
   const theme = useSelector(state=>state.auth.theme);
   const navigation = useNavigation();
+  const {t,i18n} = useTranslation();
   const totalPrice = cartProducts.reduce((acc, item) => {
     return acc + item.price;
   }, 0);
@@ -74,6 +69,45 @@ const Cart = () => {
     dispatch({ type: 'UPDATE_CART', cartProducts: updatedCart });
     AsyncStorage.setItem("cartItems",JSON.stringify(updatedCart));
   };
+
+  const cartAdding = async (item) => {
+    const numericPrice = parseInt(item.price);
+    const modifiedItem = {
+      id: item.id,
+      name: item.name,
+      picture: item.images[0].src,
+      size: 'L',
+      quantity: 1,
+      price: numericPrice,
+    };
+  
+    const existingItemIndex = cartProducts.findIndex((cartItem) => cartItem.id === item.id);
+  
+    if (existingItemIndex !== -1) {
+      const updatedCartProducts = cartProducts.map((cartItem, index) => {
+        if (index === existingItemIndex) {
+          return {
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+            price: parseInt(cartItem.price) + parseInt(item.price),
+          };
+        }
+        return cartItem;
+      });
+  
+      await dispatch({ type: 'UPDATE_CART', cartProducts: updatedCartProducts });
+      AsyncStorage.setItem("cartItems",JSON.stringify(updatedCartProducts));
+      console.log('new value', updatedCartProducts);
+    } else {
+      const updatedCartProducts = [...cartProducts, modifiedItem];
+      await dispatch({ type: 'UPDATE_CART', cartProducts: updatedCartProducts });
+      AsyncStorage.setItem("cartItems",JSON.stringify(updatedCartProducts));
+      console.log('new value', updatedCartProducts);
+    }
+  
+    
+    ToastAndroid.show("Item added to cart", ToastAndroid.SHORT);
+  };
   
 
 
@@ -86,13 +120,17 @@ const Cart = () => {
     },3000);
   }
  
-  return ( <StackContainer isTab={true} title={'Cart'}>
-{!loggedIn && cartProducts.length>0? <View style={styles.signinContainer}>
-          <Text style={styles.regularText}>Sign in</Text>
+  return (<StackContainer isTab={false} title={t('cart')}>
+{/* {!loggedIn && cartProducts.length>0? <View style={styles.signinContainer}>
+          <Text style={styles.regularText}>{t('signIn')}</Text>
           <Pressable onPress={()=>{
             navigation.navigate("Login");
-          }} style={styles.signinButton}><Text style={styles.signInButtonText}>Sign in Now</Text></Pressable>
-        </View>:null}
+          }} style={styles.signinButton}><Text style={styles.signInButtonText}>{t('signInNow')}</Text></Pressable>
+        </View>:null} */}
+    {cartProducts.length>0?<View style={{width:'100%',flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10}}>
+      <Text style={{fontSize:16,color:theme === 'dark'?'white':'black'}}>Item({cartProducts.length})</Text>
+      <Text style={{fontSize:16,color:theme === 'dark'?'white':'black'}}>Total: BDT {totalPrice.toString()}</Text>
+    </View>:null}
        
         <View style={styles.productsContainer}>
           <FlatList
@@ -103,57 +141,61 @@ const Cart = () => {
             <View style={styles.productDetailsContainer}>
               <Text style={[styles.regularText,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{item.name}</Text>
               <View style={styles.priceAndCounter}>
-                <Text style={styles.priceText}>৳ {item.price.toString()}</Text>
+                <Text style={[styles.priceText,{color:theme === 'dark'?'white':'black'}]}>৳ {item.price.toString()}</Text>
                 <View style={styles.counterContainer}>
                 <View style={styles.minusButton}>
-                  <Pressable onPress={()=>{decrementItem(item)}}><Svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <Path d="M10.3904 7.98462H2.73413C2.58909 7.98462 2.44999 7.927 2.34743 7.82444C2.24487 7.72188 2.18726 7.58278 2.18726 7.43774C2.18726 7.2927 2.24487 7.1536 2.34743 7.05105C2.44999 6.94849 2.58909 6.89087 2.73413 6.89087H10.3904C10.5354 6.89087 10.6745 6.94849 10.7771 7.05105C10.8796 7.1536 10.9373 7.2927 10.9373 7.43774C10.9373 7.58278 10.8796 7.72188 10.7771 7.82444C10.6745 7.927 10.5354 7.98462 10.3904 7.98462Z" fill="#231F20"/>
+                  <Pressable onPress={()=>{decrementItem(item)}}><Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 14 14" fill="none">
+                  <Path d="M10.3904 7.98462H2.73413C2.58909 7.98462 2.44999 7.927 2.34743 7.82444C2.24487 7.72188 2.18726 7.58278 2.18726 7.43774C2.18726 7.2927 2.24487 7.1536 2.34743 7.05105C2.44999 6.94849 2.58909 6.89087 2.73413 6.89087H10.3904C10.5354 6.89087 10.6745 6.94849 10.7771 7.05105C10.8796 7.1536 10.9373 7.2927 10.9373 7.43774C10.9373 7.58278 10.8796 7.72188 10.7771 7.82444C10.6745 7.927 10.5354 7.98462 10.3904 7.98462Z" fill="rgba(0,0,0,0.3)"/>
                   </Svg></Pressable>
                   
                 </View>
-               <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{item.quantity.toString()}</Text>
+               <Text style={{color:'rgba(0,0,0,0.3)',fontSize:20}}>{item.quantity.toString()}</Text>
                <Pressable onPress={()=>{
                 incrementItem(item);
-               }}>
-                <MaterialIcons name={'add-box'} size={20} color={'#DE0C77'}  />
+               }}
+               style={{borderLeftWidth:0.5,borderLeftColor:'#ccc',height:35}}
+               >
+                <MaterialIcons name={'add'} size={40} color={'rgba(0,0,0,0.3)'}  />
                </Pressable>
                   
                 </View>
               </View>
             </View>
-             <View style={styles.trashContainer}>
-            {/* <Text>L</Text> */}
-            <Pressable onPress={()=>{removeItemFromCart(index)}}>
-              <EvilIcons name="trash" color={'#DE0C77'} size={20} />
-            </Pressable>
             
-          </View>
           </View>)}
           />
-          
         </View>
+        <Pressable onPress={()=>{navigation.navigate("Favourites")}} style={{width:'95%',marginLeft:10,backgroundColor:'#fcfcfc',padding:10,borderRadius:3,marginVertical:10,borderWidth:0.5,borderColor:'#ccc',flexDirection:'row',justifyContent:'space-between'}}>
+          <Text style={{color:'#000',fontSize:16}}>Add more from favourites</Text>
+          <Entypo name="chevron-small-right" size={20} />
+        </Pressable>
         {cartProducts.length>0?<View style={styles.totalPriceContainer}>
-          <Text style={[styles.regularText,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Total Amounts</Text>
-          <Text style={styles.priceText}>৳ {totalPrice.toString()}</Text>
+          <Text style={[styles.regularText,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{t('totalAmounts')}</Text>
+          <Text style={[styles.priceText,{color:theme === 'dark'?'white':'black'}]}>৳ {totalPrice.toString()}</Text>
         </View>:null}
         {cartProducts.length>0?<View style={styles.voucherContainer}>
-          <TextInput value={voucher} onChangeText={(value)=>setVoucher(value)} placeholderTextColor={'#DE0C77'} placeholder='Enter Voucher Code...' style={styles.voucherInput} />
-          <Pressable onPress={()=>addVoucher()} style={[styles.signinButton,{height:35,margin:0}]}>{loadingState?<ActivityIndicator color={'#fff'} />:<Text style={styles.signInButtonText}>Apply</Text>}</Pressable>
+          <TextInput value={voucher} onChangeText={(value)=>setVoucher(value)} placeholderTextColor={'#DE0C77'} placeholder={t('enteraVoucherCode')} style={styles.voucherInput} />
+          <Pressable onPress={()=>addVoucher()} style={[styles.signinButton,{height:35,margin:0}]}>{loadingState?<ActivityIndicator color={'#fff'} />:<Text style={styles.signInButtonText}>{t('apply')}</Text>}</Pressable>
         </View>:null}
         
-        {cartProducts.length>0?<View>
+        {/* {cartProducts.length>0?<View>
           <View style={styles.discountedContainer}>
-            <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>Discounted Products</Text>
-            <Pressable style={styles.seeMoreButton}><Text style={styles.seeMore}>See more</Text></Pressable>
+            <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('discountedProducts')}</Text>
+            <Pressable style={styles.seeMoreButton}><Text style={[styles.seeMore,{color:'#fff'}]}>{t('seeMore')}</Text></Pressable>
           </View>
           <FlatList
           horizontal={true}
           data={allProducts}
-          renderItem={({item,index})=>(<View style={{marginLeft:10,marginBottom:20,backgroundColor:'#fff',elevation:3}}>
+          renderItem={({item,index})=>(<View style={{marginLeft:10,marginBottom:20,backgroundColor:'#fff',elevation:3}}><Pressable onPress={()=>{
+            //navigation.navigate('ProductDetails',{productId:item.id,details:item});
+            cartAdding(item);
+          }}>
             <Image source={{uri:item.images[0].src}} style={{height:100,width:100}} />
+            <MaterialIcons name="shopping-cart" size={30} style={{position:'absolute',bottom:10,right:2}}  />
+          </Pressable>
           </View>)}
           />
-        </View>:null} 
+        </View>:null}  */}
         {cartProducts.length>0?<Pressable
         onPress={()=>{
           if(loggedIn){
@@ -165,7 +207,7 @@ const Cart = () => {
           }
         }}
         style={styles.checkoutButton}>
-          <Text style={styles.signInButtonText}>Proceed to Checkout</Text>
+          <Text style={styles.signInButtonText}>{t('proceedToCheckout')}</Text>
         </Pressable>:null}
         {cartProducts.length<1?<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
           <Image source={require('../assets/cartempty.jpg')} style={{height:150,width:150,opacity:0.3}} />
@@ -207,17 +249,16 @@ const styles = StyleSheet.create({
     fontSize:14
   },
   checkoutButton:{
-    width:'95%',
+    width:'100%',
     height:55,
     alignItems:'center',
     justifyContent:'center',
     backgroundColor:'#691883',
-    alignSelf:'center',
-    borderRadius:15,
-    marginBottom:15
+    position:'absolute',
+    bottom:0,
   },
   seeMoreButton:{
-    backgroundColor:'rgba(222, 12, 119, 0.22)',
+    backgroundColor:colors.primary,
     padding:1,
     paddingHorizontal:5,
     
@@ -253,19 +294,23 @@ const styles = StyleSheet.create({
     paddingHorizontal:10
   },
   priceAndCounter:{
-    flexDirection:'row',
   },
   counterContainer:{
-    marginLeft:10,
+    borderWidth:0.5,
+    borderColor:'#ccc',
+    borderRadius:5,
     flexDirection:'row',
     alignItems:'center',
+    backgroundColor:'#fff',
     justifyContent:'space-around',
-    width:sizes.width/5
+    width:sizes.width/3.5
   },
   minusButton:{
-    height:15,
-    width:15,
-    backgroundColor:'#ccc',
+    height:35,
+    width:35,
+    backgroundColor:'#fff',
+    borderRightWidth:0.5,
+    borderRightColor:'#ccc',
     alignItems:'center',
     justifyContent:'center'
   },
@@ -282,24 +327,25 @@ const styles = StyleSheet.create({
     width:sizes.width/2
   },
   priceText:{
-    color:'#DE0C77',
-    fontSize:14,
-    fontWeight:'bold'
+    color:'#403d3d',
+    fontSize:24,
+    marginBottom:10,
   },
   singleProductContainer:{
-    justifyContent:'space-between',
+    justifyContent:'space-around',
     alignItems:'center',
     flexDirection:'row',
     marginBottom:15
   },
   regularText:{
     fontSize:14,
+    minWidth:200,
     fontWeight:'bold',
-    color:'#000',
+    color:'#1f1e1e',
   },
   cartImage:{
-    height:50,
-    width:50
+    height:70,
+    width:70
   },
   signinButton:{
     width:100,

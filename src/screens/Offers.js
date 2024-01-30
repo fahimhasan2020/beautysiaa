@@ -6,16 +6,21 @@ import CarouselOffers from '../components/CarouselOffers';
 import { useDispatch,useSelector } from 'react-redux';
 import NewArrival from '../components/NewArrival';
 import BestSellingList from '../components/BestSellingList';
+import StackContainer from '../components/StackContainer';
+import OfferCategories from '../components/OfferCategories';
+import DiscountedProductList from '../components/DiscountedProductList';
+import { useTranslation } from 'react-i18next';
 const Offers = () => {
+  const {t,i18n} = useTranslation();
   const newArrivals = useSelector(state=>state.auth.newArrivals);
-  const bestSelling = useSelector(state=>state.auth.bestSelling);
-  return ( <TabContainer>
+  const discountedProducts = useSelector(state=>state.auth.discountedProducts);
+  return (<StackContainer isTab={true} title={t('offer')}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
           <CarouselOffers />
-          <BestSellingList products={bestSelling} productLimit={3} />
-          <NewArrival products={newArrivals} productLimit={4} />
+          <OfferCategories />
+          <DiscountedProductList products={discountedProducts} />
         </ScrollView>
-      </TabContainer>
+      </StackContainer>
   )
 }
 

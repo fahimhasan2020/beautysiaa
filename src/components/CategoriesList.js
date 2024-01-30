@@ -6,6 +6,10 @@ import LottieView from "lottie-react-native";
 import { useNavigation } from '@react-navigation/native';
 const CategoriesList = ({categories=[],categoryLimit = null}) => {
     const navigation = useNavigation();
+    const replaceAnd = (value)=>{
+      let newValue = value.replace("&amp;", '&');
+    return newValue;
+    }
   return (
     <View style={styles.container}>
          {categories.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',paddingLeft:10,width:sizes.width}}><LottieView
@@ -22,7 +26,7 @@ const CategoriesList = ({categories=[],categoryLimit = null}) => {
       numColumns={3}
       renderItem={({item,index})=>(<Pressable
       onPress={()=>{
-        navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id})
+        navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id,image:item.image.src})
       }}
       style={styles.listContainer}>
         <FastImage
@@ -31,7 +35,7 @@ const CategoriesList = ({categories=[],categoryLimit = null}) => {
  resizeMode={FastImage.resizeMode.contain}
  />
  <View style={styles.overlay}></View>
- <Text style={styles.categoryName}>{item.name.slice(0,15)}</Text>
+ <Text style={styles.categoryName}>{replaceAnd(item.name.slice(0,30))}</Text>
    </Pressable>)}
       keyExtractor={(item,index)=>index.toString()}
       />}
@@ -51,7 +55,8 @@ const styles = StyleSheet.create({
     categoryName:{
         color:'white',
         fontWeight:'bold',
-        textTransform:'uppercase'
+        textTransform:'uppercase',
+        textAlign:'center'
     },
     cardImage:{
         width:sizes.width/3-20,
@@ -65,7 +70,7 @@ const styles = StyleSheet.create({
         height:sizes.width/3-20,
         width:sizes.width/3-20,
         marginBottom:10,
-        backgroundColor:'rgba(0,0,0,0.6)',
+        backgroundColor:'rgba(176, 14, 117,0.3)',
         position:'absolute',
         top:0,
         left:0,

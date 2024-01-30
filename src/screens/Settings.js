@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import StackContainer from '../components/StackContainer'
 import Toggle from "react-native-toggle-element";
 import { useDispatch,useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import baseUri from '../constants/urls';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Settings = () => {
   const dispatch = useDispatch();
   const theme = useSelector(state=>state.auth.theme);
@@ -12,12 +14,27 @@ const Settings = () => {
   const [toggleValue, setToggleValue] = useState(true);
   const [toggleNoty, setToggleNoty] = useState(true);
   const [toggleTheme, setToggleTheme] = useState(true);
+  useEffect(()=>{
+    const currentLanguage = i18n.language;
+    if(currentLanguage === 'en'){
+        setToggleValue(true);
+    }else{
+        setToggleValue(false);
+    }
+    if(theme === 'light'){
+        setToggleTheme(true);
+    }else{
+        setToggleTheme(false);
+    }
+  },[]);
   const toggleLanguage = (value)=>{
     console.log(value);
     if(value === true){
         i18n.changeLanguage('en');
+        AsyncStorage.setItem("currentLanguage","en");
     }else{
         i18n.changeLanguage('bd');
+        AsyncStorage.setItem("currentLanguage","bd");
     }
     setToggleValue(value);
   }
@@ -27,8 +44,10 @@ const Settings = () => {
   const toggleMode = (value)=>{
     if(value){
         dispatch({type:'UPDATE_THEME',theme:'light'});
+        AsyncStorage.setItem("theme","light");
     }else{
         dispatch({type:'UPDATE_THEME',theme:'dark'});
+        AsyncStorage.setItem("theme","dark");
     }
     setToggleTheme(value);
   }
@@ -113,6 +132,10 @@ const Settings = () => {
             rightComponent={<MaterialIcons name="light-mode" />}
             leftComponent={<MaterialIcons name="dark-mode" />}
             />
+     </View>
+    <View style={styles.singleSettings}>
+        <Text style={{color:theme==='dark'?'#fff':'#000',fontSize:14,fontWeight:'bold'}}>{t('appVersion')}</Text>
+        <Text style={{color:theme==='dark'?'#fff':'#000',fontSize:14,fontWeight:'bold'}}>{baseUri.appVersion}</Text>
      </View>
     
    </StackContainer>
