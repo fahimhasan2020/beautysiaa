@@ -36,7 +36,9 @@ import { useTranslation } from "react-i18next";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+const RightDrawer = createDrawerNavigator();
 import BootSplash from "react-native-bootsplash"
+import CommonCart from "../components/CommonCart";
 
 function HomeTabs() {
   const loggedIn = useSelector((state) => state.auth.loggedIn);
@@ -129,11 +131,19 @@ function HomeTabs() {
 
 function HomeDrawer() {
   return (
-      <Drawer.Navigator initialRouteName="HomeTabs" screenOptions={{headerShown:false}} drawerContent={(props) => <CustomDrawerContent {...props}/>}>
-        <Drawer.Screen name="HomeTabs" component={HomeTabs} />
+      <Drawer.Navigator id="normalDrawer" initialRouteName="CustomCartDrawer" screenOptions={{headerShown:false,drawerPosition:"left"}} drawerContent={(props) => <CustomDrawerContent {...props}/>}>
+        <Drawer.Screen name="CustomCartDrawer" component={CustomCartDrawer} />
       </Drawer.Navigator>
   );
 }
+function CustomCartDrawer() {
+  return (
+      <RightDrawer.Navigator id="rightDrawer" initialRouteName="HomeTabs" screenOptions={{headerShown:false,drawerPosition:"Right"}} drawerContent={(props) => <CommonCart {...props}/>}>
+        <RightDrawer.Screen name="HomeTabs" component={HomeTabs} />
+      </RightDrawer.Navigator>
+  );
+}
+
 const slideRightToLeftAnimation = {
   cardStyleInterpolator: ({ current, layouts }) => {
     return {
@@ -271,6 +281,7 @@ const Index =() => {
     <StatusBar barStyle={'light-content'} backgroundColor={colors.pinkStatusBar} />
     <BaseStack />
     {loadingState?<FullScreenLoader />:null}
+    
     </NavigationContainer>)
 }
 
