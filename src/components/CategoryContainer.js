@@ -31,7 +31,7 @@ const CategoryContainer = ({children}) => {
     <View style={{flex:1,backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}}>
       <View style={{backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg,padding:5}}>
         <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between',paddingLeft:13,paddingRight:13,paddingTop:11,paddingBottom:9}}>
-          <Pressable onPress={()=>{navigation.toggleDrawer()}}><Svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <Pressable onPress={()=>{navigation.getParent("normalDrawer").toggleDrawer()}}><Svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
   <Path d="M21.7208 11.9167H4.27917C3.71077 11.9167 3.25 12.3775 3.25 12.9459V13.0542C3.25 13.6226 3.71077 14.0834 4.27917 14.0834H21.7208C22.2892 14.0834 22.75 13.6226 22.75 13.0542V12.9459C22.75 12.3775 22.2892 11.9167 21.7208 11.9167Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
   <Path d="M21.7208 17.3333H4.27917C3.71077 17.3333 3.25 17.794 3.25 18.3624V18.4708C3.25 19.0391 3.71077 19.4999 4.27917 19.4999H21.7208C22.2892 19.4999 22.75 19.0391 22.75 18.4708V18.3624C22.75 17.794 22.2892 17.3333 21.7208 17.3333Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>
   <Path d="M21.7208 6.5H4.27917C3.71077 6.5 3.25 6.96077 3.25 7.52917V7.6375C3.25 8.20589 3.71077 8.66667 4.27917 8.66667H21.7208C22.2892 8.66667 22.75 8.20589 22.75 7.6375V7.52917C22.75 6.96077 22.2892 6.5 21.7208 6.5Z" fill={theme === 'dark'?colors.lightModeBg:'#262E3D'}/>

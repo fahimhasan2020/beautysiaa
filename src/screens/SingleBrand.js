@@ -26,7 +26,6 @@ const SingleBrand = () => {
   return (
     <Container>
         <StackContainer title={route.params.title}>
-          <Text style={styles.title}>{route.params.title}</Text>
           <ProductListView products={categoryProducts}  />
         </StackContainer>
     </Container>

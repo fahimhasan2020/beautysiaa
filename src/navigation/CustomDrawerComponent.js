@@ -9,6 +9,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { colors, sizes } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import { skippableCategory } from '../constants/customData';
 const CustomDrawerContent =({ navigation })=> {
   const replaceAnd = (value)=>{
     let newValue = value.replace("&amp;", '&');
@@ -103,8 +104,7 @@ const CustomDrawerContent =({ navigation })=> {
         onPress={() => toggleCat()}
       />
       {showCat?<View style={{paddingLeft:35,paddingVertical:10}}>
-        {categoriesFromStores.length>0?categoriesFromStores.map((item,index)=>(<SubCategoryItems key={index} datas={item} />)):null}
-        
+        {categoriesFromStores.length>0?categoriesFromStores.map((item,index)=>!skippableCategory.includes(item.name)?(<SubCategoryItems key={index} datas={item} />):null):null}
       </View>:null}
       
       <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>{t('video')}</Text></View>

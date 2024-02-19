@@ -40,7 +40,7 @@ const SingleProductList = ({datas={}}) => {
     }}
     style={[styles.productCard,{backgroundColor:theme === 'dark'?'#adadad':colors.lightModeBg},{padding:0}]}>
       <FastImage
-      source={{uri:datas.images[0].src}}
+      source={{uri:datas.images[0]?.src}}
       style={styles.cardImage}
       resizeMode={FastImage.resizeMode.cover}
       />
