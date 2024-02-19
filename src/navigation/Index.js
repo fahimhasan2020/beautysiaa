@@ -47,10 +47,10 @@ function HomeTabs() {
   const tabBarOptions = {
     headerShown:false,
     tabBarActiveTintColor:'#DE0C77',
-    tabBarInactiveTintColor:'#fff',
+    tabBarInactiveTintColor:'#333',
     tabBarShowLabel:false,
     tabBarStyle:{
-      backgroundColor:'#000'
+      backgroundColor:'#fff'
     }
   };
 
@@ -65,7 +65,7 @@ function HomeTabs() {
           
           tabBarLabel: 'Home',
           tabBarIcon: ({ focused,color, size }) => (
-            <View style={{alignItems:'center'}}><MaterialCommunityIcons name="home" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Home</Text>:null}</View>
+            <View style={{alignItems:'center'}}><MaterialCommunityIcons style={{opacity:focused?1:0.5}} name="home" color={color} size={18} /><Text style={{color:focused?color:'#333',fontSize:9,textTransform:'uppercase',marginTop:5,opacity:0.5}}>Home</Text></View>
           ),
         }}
       />
@@ -75,7 +75,7 @@ function HomeTabs() {
         options={{
           tabBarLabel: 'Categories',
           tabBarIcon: ({focused, color, size }) => (
-            <View style={{alignItems:'center'}}><Feather name="grid" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Categories</Text>:null}</View>
+            <View style={{alignItems:'center'}}><Feather style={{opacity:focused?1:0.5}} name="grid" color={color} size={18} /><Text style={{color:focused?color:'#333',fontSize:9,textTransform:'uppercase',marginTop:5,opacity:0.5}}>Categories</Text></View>
           ),
         }}
       />
@@ -85,7 +85,7 @@ function HomeTabs() {
         options={{
           tabBarLabel: 'Favourites',
           tabBarIcon: ({focused, color, size }) => (
-            <View style={{alignItems:'center'}}><Feather name="heart" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Favourites</Text>:null}</View>
+            <View style={{alignItems:'center'}}><Feather style={{opacity:focused?1:0.5}} name="heart" color={color} size={18} /><Text style={{color:focused?color:'#333',fontSize:9,textTransform:'uppercase',marginTop:5,opacity:0.5}}>Favourites</Text></View>
           ),
         }}
       />
@@ -95,7 +95,7 @@ function HomeTabs() {
         options={{
           tabBarLabel: 'Offers',
           tabBarIcon: ({focused, color, size }) => (
-            <View style={{alignItems:'center'}}><Feather name="gift" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Offers</Text>:null}</View>
+            <View style={{alignItems:'center'}}><Feather style={{opacity:focused?1:0.5}} name="gift" color={color} size={18} /><Text style={{color:focused?color:'#333',fontSize:9,textTransform:'uppercase',marginTop:5,opacity:0.5}}>Offers</Text></View>
           ),
         }}
       />
@@ -117,7 +117,7 @@ function HomeTabs() {
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({focused, color, size }) => (
-            <View style={{alignItems:'center'}}><FontAwesome name="user-o" color={color} size={size} />{focused?<Text style={{color:focused?color:'#fff',fontSize:12,textTransform:'uppercase',fontWeight:'bold'}}>Profile</Text>:null}</View>
+            <View style={{alignItems:'center'}}><FontAwesome style={{opacity:focused?1:0.5}} name="user-o" color={color} size={18} /><Text style={{color:focused?color:'#333',fontSize:9,textTransform:'uppercase',marginTop:5,opacity:0.5}}>Profile</Text></View>
           ),
         }}
       />

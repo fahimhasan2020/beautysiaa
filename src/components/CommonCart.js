@@ -125,7 +125,7 @@ export default function CommonCart({navigation}) {
             navigation.navigate("Login");
           }} style={styles.signinButton}><Text style={styles.signInButtonText}>{t('signInNow')}</Text></Pressable>
         </View>:null}
-    {cartProducts.length>0?<View style={{width:'100%',flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10}}>
+    {cartProducts.length>0?<View style={{width:'100%',flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10,padding:10}}>
       <Text style={{fontSize:16,color:theme === 'dark'?'white':'black'}}>Item({cartProducts.length})</Text>
       <Text style={{fontSize:16,color:theme === 'dark'?'white':'black'}}>Total: BDT {totalPrice.toString()}</Text>
     </View>:null}
@@ -142,18 +142,18 @@ export default function CommonCart({navigation}) {
                 <Text style={[styles.priceText,{color:theme === 'dark'?'white':'black'}]}>৳ {item.price.toString()}</Text>
                 <View style={styles.counterContainer}>
                 <View style={styles.minusButton}>
-                  <Pressable onPress={()=>{decrementItem(item)}}><Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 14 14" fill="none">
+                  <Pressable onPress={()=>{decrementItem(item)}}><Svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 14 14" fill="none">
                   <Path d="M10.3904 7.98462H2.73413C2.58909 7.98462 2.44999 7.927 2.34743 7.82444C2.24487 7.72188 2.18726 7.58278 2.18726 7.43774C2.18726 7.2927 2.24487 7.1536 2.34743 7.05105C2.44999 6.94849 2.58909 6.89087 2.73413 6.89087H10.3904C10.5354 6.89087 10.6745 6.94849 10.7771 7.05105C10.8796 7.1536 10.9373 7.2927 10.9373 7.43774C10.9373 7.58278 10.8796 7.72188 10.7771 7.82444C10.6745 7.927 10.5354 7.98462 10.3904 7.98462Z" fill="rgba(0,0,0,0.3)"/>
                   </Svg></Pressable>
                   
                 </View>
-               <Text style={{color:'rgba(0,0,0,0.3)',fontSize:20}}>{item.quantity.toString()}</Text>
+               <Text style={{color:'rgba(0,0,0,0.3)',fontSize:16}}>{item.quantity.toString()}</Text>
                <Pressable onPress={()=>{
                 incrementItem(item);
                }}
-               style={{borderLeftWidth:0.5,borderLeftColor:'#ccc',height:35}}
+               style={{borderLeftWidth:0.5,borderLeftColor:'#ccc',height:35,alignItems:'center',justifyContent:'center'}}
                >
-                <MaterialIcons name={'add'} size={40} color={'rgba(0,0,0,0.3)'}  />
+                <MaterialIcons name={'add'} size={20} color={'rgba(0,0,0,0.3)'}  />
                </Pressable>
                   
                 </View>
@@ -197,6 +197,7 @@ export default function CommonCart({navigation}) {
         {cartProducts.length>0?<Pressable
         onPress={()=>{
           if(loggedIn){
+            navigation.getParent("rightDrawer").toggleDrawer();
             navigation.navigate("OrderDetails");
           }else{
             dispatch({type:'UPDATE_LOGIN_CONDITION',loginCondition:'order'});
@@ -225,5 +226,149 @@ const styles = StyleSheet.create({
     elevation:3,
     margin:10,
     padding:10
+  },
+  seeMore:{
+    fontSize:10,color:'#DE0C77'
+  },
+  continueShoppingButton:{
+    width:'95%',
+    height:55,
+    alignItems:'center',
+    justifyContent:'center',
+    borderColor:'#691883',
+    borderWidth:1,
+    backgroundColor:'#fff',
+    alignSelf:'center',
+    borderRadius:15,
+    marginBottom:15
+  },
+  continueSHoppingText:{
+    color:'#691883',
+    fontSize:14
+  },
+  checkoutButton:{
+    width:'100%',
+    height:55,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#691883',
+    position:'absolute',
+    bottom:0,
+  },
+  seeMoreButton:{
+    backgroundColor:colors.primary,
+    padding:1,
+    paddingHorizontal:5,
+    
+    borderRadius:10
+    
+  },
+  voucherContainer:{
+    paddingHorizontal:10,
+    marginVertical:10,
+    flexDirection:'row',
+    justifyContent:'space-between'
+  },
+  discountedContainer:{
+    paddingHorizontal:10,
+    paddingVertical:5,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center'
+  },
+  voucherInput:{
+    height:35,
+    width:sizes.width/2.5,
+    borderRadius:5,
+    paddingLeft:10,
+    backgroundColor:'#F5F5F5',
+    borderColor:'#DE0C77',
+    borderWidth:0.5
+
+  },
+  totalPriceContainer:{
+    justifyContent:'space-between',
+    flexDirection:'row',
+    paddingHorizontal:10
+  },
+  priceAndCounter:{
+  },
+  counterContainer:{
+    borderWidth:0.5,
+    borderColor:'#ccc',
+    borderRadius:5,
+    flexDirection:'row',
+    alignItems:'center',
+    backgroundColor:'#fff',
+    justifyContent:'space-around',
+    width:sizes.width/3.5
+  },
+  minusButton:{
+    height:35,
+    width:35,
+    backgroundColor:'#fff',
+    borderRightWidth:0.5,
+    borderRightColor:'#ccc',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  trashContainer:{
+    alignItems:'center',
+    justifyContent:'space-between',
+    height:50
+  },
+  productsContainer:{
+    padding:15,
+
+  },
+  productDetailsContainer:{
+    width:sizes.width/2
+  },
+  priceText:{
+    color:'#403d3d',
+    fontSize:18,
+    marginBottom:10,
+  },
+  singleProductContainer:{
+    justifyContent:'space-around',
+    alignItems:'center',
+    flexDirection:'row',
+    marginBottom:15
+  },
+  regularText:{
+    fontSize:12,
+    minWidth:200,
+    fontWeight:'bold',
+    color:'#1f1e1e',
+  },
+  cartImage:{
+    height:70,
+    width:70,
+    marginRight:15
+  },
+  signinButton:{
+    width:100,
+    height:38,
+    alignItems:'center',
+    justifyContent:'center',
+    margin:10,
+    padding:5,
+    backgroundColor:'#DE0C77',
+    borderRadius:5
+  },
+  signInButtonText:{
+    color:'#fff',
+    fontSize:14,
+    fontWeight:'bold'
+  },
+  signinContainer:{
+    width:'95%',
+    alignSelf:'center',
+    backgroundColor:'#ccc',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    paddingHorizontal:15,
+    borderRadius:5
   }
 })

@@ -209,12 +209,7 @@ const confirmOrder = ()=>{
   return (
     <Container>
       <StackContainer title={t('checkout')}>
-        <View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10}}>
-          <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('address')}</Text>
-        {/* <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('changeAddress')}</Text> */}
-        </View>
-        <TextInput editable={false} value={finalAddress} onChangeText={(value)=>{setFinalAddress(value)}} style={{width:sizes.width-20,alignSelf:'center',padding:10,borderWidth:1,borderColor:'#ccc', color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}} />
-        <View style={{borderWidth:1,borderColor:'#ccc',marginHorizontal:10,marginVertical:10}}>
+       <View style={{marginHorizontal:10,marginVertical:10}}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:10,paddingRight:10,}}>
           <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('paymentMethod')}</Text>
         {/* <Text style={{fontSize:20,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('showAll')}</Text> */}
@@ -257,7 +252,7 @@ const confirmOrder = ()=>{
         </View>
         </View>
         
-        <View style={{borderWidth:1,borderColor:'#ccc',marginHorizontal:10,marginVertical:10}}>
+        <View style={{backgroundColor:'#f5f7f7',elevation:3,marginHorizontal:10,marginVertical:30,borderRadius:10}}>
           <View style={{flexDirection:'row',padding:10}}>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>{t('subTotal')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ {totalPrice}</Text>
@@ -270,6 +265,7 @@ const confirmOrder = ()=>{
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('valueAndTaxes')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ 0.00</Text>
           </View>
+          <View style={{height:1,width:'100%',backgroundColor:'#ccc'}}></View>
           <View style={{flexDirection:'row',padding:10}}>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5,fontWeight:'bold'}}>{t('totalAmounts')}</Text>
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>৳ {(parseInt(totalPrice)+50).toString()}</Text>

@@ -48,7 +48,7 @@ export const resources ={
         "postCode":"Post code",
         "continueCheckout":"Continue Checkout",
         "changeAddress":"Change Address",
-        "paymentMethod":"Payment Method",
+        "paymentMethod":"Select payment method",
         "showAll":"Show All",
         "cod":"Cash on Delivery (COD)",
         "bkash":"Bkash/Nagad/Rocket",
