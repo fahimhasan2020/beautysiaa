@@ -58,7 +58,7 @@ const SingleProductList = ({datas={}}) => {
       <View style={[styles.brand,{backgroundColor:'rgba(105, 24, 131, 0.20)'}]}><Text style={[styles.brandText,{color:'#691883'}]}>FREE SHIPPING</Text></View>
       <View style={styles.priceSection}>
         <View style={styles.valuePrice}>
-            <Text style={styles.discountedPrice}>৳ <Text style={{color:'#691883',fontWeight:"bold",fontSize:20}}>{datas.sale_price}</Text></Text>
+            <Text style={styles.discountedPrice}>৳ <Text style={{color:'#691883',fontWeight:"bold",fontSize:20}}>{datas.sale_price === ''?datas.price:datas.sale_price}</Text></Text>
         </View>
       </View>
       <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>

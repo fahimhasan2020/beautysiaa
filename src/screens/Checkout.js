@@ -118,7 +118,6 @@ const checkoutNow = async() =>{
   });
 }
 const placeOrder = async()=>{
-  console.log(cartProducts);
   setLoadingState(true);
   let data = JSON.stringify({
     "payment_method": "cod",
@@ -156,7 +155,7 @@ const placeOrder = async()=>{
       {
         "method_id": "flat_rate",
         "method_title": "Flat Rate",
-        "total": (parseInt(totalPrice)+50).toFixed(2)
+        "total": (50).toFixed(2).toString()
       }
     ]
   });
@@ -226,7 +225,7 @@ const confirmOrder = ()=>{
             size={16}
             id="1"  />
           </View>
-          <View style={{flexDirection:'row',padding:10}}>
+          {/* <View style={{flexDirection:'row',padding:10}}>
             <EvilIcons name="image" size={30} color={theme === 'dark'?colors.lightModeBg:colors.darkModeBg} />
             <Text style={{fontSize:16,color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,width:sizes.width/1.5}}>{t('bkash')}</Text>
             <RadioButton
@@ -247,7 +246,7 @@ const confirmOrder = ()=>{
             selected={selectedId === '3'?true:false}
             size={16}
             id="3"  />
-          </View>
+          </View> */}
           
         </View>
         </View>

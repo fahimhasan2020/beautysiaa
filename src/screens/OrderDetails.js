@@ -49,6 +49,9 @@ const OrderDetails = () => {
     if(email === '' || email === null){
        return ToastAndroid.show("Email required",ToastAndroid.SHORT);
     }
+    if(!validateEmail()){
+      return ToastAndroid.show("Invalid email. Enter valid email address",ToastAndroid.SHORT);
+    }
     if(phone === '' || phone === null){
        return ToastAndroid.show("Phone number required",ToastAndroid.SHORT);
     }
@@ -57,9 +60,6 @@ const OrderDetails = () => {
     }
     if(postCode === '' || postCode === null){
        return ToastAndroid.show("Post code required",ToastAndroid.SHORT);
-    }
-    if(!validateEmail()){
-      return ToastAndroid.show("Invalid email. Enter valid email address",ToastAndroid.SHORT);
     }
     if(phone.length>10 || phone.length<10){
       return ToastAndroid.show("Please enter a valid number",ToastAndroid.SHORT);

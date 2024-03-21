@@ -17,6 +17,7 @@ import CategoriesList from '../components/CategoriesList';
 import TestimonialSlider from '../components/TestimonialSlider';
 import ShopBySkinConcern from '../components/ShopBySkinConcern';
 import { useTranslation } from 'react-i18next';
+import SpecialCategoriesList from '../components/SpecialCategoryList';
 
 const Home = () => {
   const {t,i18n} = useTranslation();
@@ -34,11 +35,11 @@ const Home = () => {
       <TabContainer>
         <ScrollView contentContainerStyle={{paddingBottom:200}} showsVerticalScrollIndicator={false}>
           <CarouselOffers />
-          <BestSellingList products={bestSelling} productLimit={3} />
-          <View style={{alignItems:'center',marginTop:40,marginBottom:20}}><Text style={{color:theme ==='dark'?'#fff':'#691883',fontWeight:'bold',letterSpacing:1.3}}>{t('shopByCategory')}</Text>
+          {/* <View style={{alignItems:'center',marginTop:40,marginBottom:20}}><Text style={{color:theme ==='dark'?'#fff':'#691883',fontWeight:'bold',letterSpacing:1.3}}>{t('shopByCategory')}</Text>
           <View style={{width:44,height:3,backgroundColor:'#DE0C77',marginTop:10}}></View>
-          </View>
-          <CategoriesList categories={categories} categoryLimit={12}  />
+          </View> */}
+          <SpecialCategoriesList categories={categories} categoryLimit={12}  />
+          <BestSellingList products={bestSelling} productLimit={3} />
           <BannerOne />
           <ShopBySkinConcern />
           <BrandsList brands={allBrands} />

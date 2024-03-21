@@ -26,7 +26,7 @@ const Profile = () => {
     await dispatch({type:'UPDATE_PROFILE_PICTURE',profilePicture:""});
     navigation.jumpTo("Home");
   }
-  return (<StackContainer title={t('profile')} isTab={true}>
+  return (<StackContainer bottomSpace={false} title={t('profile')} isTab={true}>
         <View style={[styles.mainContainer,{backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}]}>  
         <Pressable onPress={()=>navigation.navigate('EditProfile')} style={styles.profileSegment}>
           {profilePicture === ''?<Image source={require('../assets/user.png')} style={styles.avatar} />:<Image source={{uri:profilePicture}} style={styles.avatar} />}

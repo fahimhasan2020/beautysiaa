@@ -9,6 +9,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import ProductListView from './ProductListView';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
+import replaceAmp from '../utils/replaceAmp';
 const ShopBySkinConcern = () => {
   const navigation = useNavigation();
   const {t,i18n} = useTranslation();
@@ -79,7 +80,7 @@ const ShopBySkinConcern = () => {
  resizeMode={FastImage.resizeMode.cover}
  />
  <View style={styles.overlay}></View>
-        <Text style={styles.title}>{item.name}</Text>
+        <Text style={styles.title}>{replaceAmp(item.name)}</Text>
         
       </Pressable>)}
       />

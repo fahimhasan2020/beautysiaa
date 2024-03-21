@@ -123,6 +123,7 @@ const TabContainer = ({children}) => {
       <FlatList showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
       data={searchResults} 
+      keyboardShouldPersistTaps='always'
       keyExtractor={(item)=>item.id.toString()}
       renderItem={({item,index})=>(<Pressable
       onPress={()=>{
@@ -132,7 +133,7 @@ const TabContainer = ({children}) => {
       }}
       contentContainerStyle={{paddingBottom:500}}
       style={styles.singleSearchResult}>
-      <FastImage source={{uri:item.images[0].src}} style={{height:100,width:100,marginRight:10,borderRadius:5}} />
+      <FastImage source={{uri:item?.images[0]?.src}} style={{height:100,width:100,marginRight:10,borderRadius:5}} />
       <View>
         <Text style={[styles.singleResultStyle,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{item.name}</Text>
         <Text style={[styles.singleResultStyleSmall,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{Math.floor(parseInt(item.average_rating))} <AntDesign name="star" /></Text>

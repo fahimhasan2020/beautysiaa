@@ -26,5 +26,6 @@ import Delivery from "../screens/Delivery";
 import Notifications from "../screens/Notifications";
 import LiveVideos from "../screens/LiveVideos";
 import LiveSchedule from "../screens/LiveSchedule";
+import AllBrands from "../screens/AllBrands";
 
-export {Home,Categories,Favourites,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory,OrderDetails,MyOrders,SingleOrderHistory,PaymentWindow,Settings,Support,EditProfile,Voucher,Delivery,MyVideo,Notifications}
+export {Home,AllBrands,Categories,Favourites,SingleBrand,ProductDetails,Cart,Checkout,Success,Offers,Profile,Login,About,TermsAndConditions,ReturnPolicy,SingleCategory,OrderDetails,MyOrders,SingleOrderHistory,PaymentWindow,Settings,Support,EditProfile,Voucher,Delivery,MyVideo,Notifications}

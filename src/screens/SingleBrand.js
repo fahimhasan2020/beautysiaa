@@ -6,11 +6,12 @@ import { useNavigation,useRoute } from '@react-navigation/native'
 import ProductListView from '../components/ProductListView'
 import axios from "axios"
 import baseUri from '../constants/urls'
+
 const SingleBrand = () => {
   const [categoryProducts,setCategoryProducts] = useState([]);
   const route = useRoute();
   useEffect(()=>{
-    axios.get(`${baseUri.hostExtend}products?brand=${route.params.categoryId}`, {
+    axios.get(`${baseUri.hostExtend}products?brand=${route.params.categoryId}&page=1&per_page=100`, {
       headers: {
           Authorization: `Basic ${btoa(`${baseUri.consumerKey}:${baseUri.consumerSecret}`)}`,
           'Content-Type':'application/json'

@@ -7,15 +7,14 @@ import { useDispatch,useSelector } from 'react-redux';
 import ProductListView from '../components/ProductListView';
 import CategoriesList from '../components/CategoriesList';
 import CategoryContainer from '../components/CategoryContainer';
+import AllCategoryList from '../components/AllCategoryList';
 const Categories = () => {
   const allProducts = useSelector(state=>state.auth.allProducts);
   const categories = useSelector(state=>state.auth.categories);
-  //return (<View style={styles.container}><Text>Home</Text></View>)
   return (<CategoryContainer>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:200}}>
           <CategoriesList categories={categories} categoryLimit={6} />
-          <CarouselOffers />
-          <ProductListView products={allProducts} />
+          <AllCategoryList />
         </ScrollView>
       </CategoryContainer>  
   )

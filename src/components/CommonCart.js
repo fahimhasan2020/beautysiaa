@@ -6,6 +6,7 @@ import { colors,sizes,uri } from '../constants';
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Entypo from "react-native-vector-icons/Entypo"
+import FontAwesome from "react-native-vector-icons/FontAwesome"
 import {Svg,Path} from "react-native-svg"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -119,11 +120,11 @@ export default function CommonCart({navigation}) {
 
   return (
     <View style={styles.container}>
-      {!loggedIn && cartProducts.length>0? <View style={styles.signinContainer}>
-          <Text style={styles.regularText}>{t('signIn')}</Text>
+      {!loggedIn && cartProducts.length>0?<View style={[styles.signinContainer,{justifyContent:'space-evenly'}]}>
+          <Text style={[styles.regularText,{marginLeft:10}]}>{t('signIn')}</Text>
           <Pressable onPress={()=>{
             navigation.navigate("Login");
-          }} style={styles.signinButton}><Text style={styles.signInButtonText}>{t('signInNow')}</Text></Pressable>
+          }} style={[styles.signinButton,{}]}><Text style={styles.signInButtonText}>{t('signInNow')}</Text></Pressable>
         </View>:null}
     {cartProducts.length>0?<View style={{width:'100%',flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10,padding:10}}>
       <Text style={{fontSize:16,color:theme === 'dark'?'white':'black'}}>Item({cartProducts.length})</Text>
@@ -181,18 +182,29 @@ export default function CommonCart({navigation}) {
             <Text style={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}>{t('discountedProducts')}</Text>
             <Pressable style={styles.seeMoreButton}><Text style={[styles.seeMore,{color:'#fff'}]}>{t('seeMore')}</Text></Pressable>
           </View>
-          <FlatList
+          <View style={{width:sizes.width/1.1,paddingVertical:20}}>
+            <FlatList
           horizontal={true}
+          showsHorizontalScrollIndicator={false}
           data={allProducts}
-          renderItem={({item,index})=>(<View style={{marginLeft:10,marginBottom:20,backgroundColor:'#fff',elevation:3}}><Pressable onPress={()=>{
-            //navigation.navigate('ProductDetails',{productId:item.id,details:item});
+          renderItem={({item,index})=>(<View style={{marginLeft:10,marginBottom:20,backgroundColor:'#fff',elevation:3}}><Pressable 
+          style={{
+            width:200,
+            
+          }}
+          onPress={()=>{
             cartAdding(item);
           }}>
-            <Image source={{uri:item.images[0].src}} style={{height:100,width:100}} />
-            <MaterialIcons name="shopping-cart" size={30} style={{position:'absolute',bottom:10,right:2}}  />
+            <View style={{flexDirection:'row'}}>
+              <Image source={{uri:item.images[0].src}} style={{height:100,width:100}} />
+              <Text style={{marginLeft:10,fontSize:12,color:'#000',width:80}}>{item?.name?.slice(0,20)}...</Text>
+            </View>
+            <FontAwesome name="shopping-bag" size={25} style={{position:'absolute',bottom:10,right:8}}  />
           </Pressable>
           </View>)}
           />
+          </View>
+          
         </View>:null} 
         {cartProducts.length>0?<Pressable
         onPress={()=>{
@@ -278,7 +290,7 @@ const styles = StyleSheet.create({
   },
   voucherInput:{
     height:35,
-    width:sizes.width/2.5,
+    width:sizes.width/1.9,
     borderRadius:5,
     paddingLeft:10,
     backgroundColor:'#F5F5F5',
@@ -319,7 +331,7 @@ const styles = StyleSheet.create({
   },
   productsContainer:{
     padding:15,
-
+    maxHeight:sizes.height/3
   },
   productDetailsContainer:{
     width:sizes.width/2
@@ -344,6 +356,7 @@ const styles = StyleSheet.create({
   cartImage:{
     height:70,
     width:70,
+    borderRadius:5,
     marginRight:15
   },
   signinButton:{
@@ -362,13 +375,16 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   },
   signinContainer:{
-    width:'95%',
+    width:sizes.width-50,
+    height:60,
+    overflow:'hidden',
     alignSelf:'center',
     backgroundColor:'#ccc',
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
     paddingHorizontal:15,
-    borderRadius:5
+    borderRadius:5,
+    marginTop:10
   }
 })

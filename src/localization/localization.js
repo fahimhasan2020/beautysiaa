@@ -81,7 +81,7 @@ export const resources ={
         "cart":'Cart',
         "proceedToCheckout":'Place Order',
         "signIn":"Signin",
-        "signInNow":"SigninNow",
+        "signInNow":"Signin Now",
         "enteraVoucherCode":'Enter Voucher Code ...',
         "apply":'Apply',
         "cycloneOffer":'Cyclone Offer',

@@ -5,9 +5,11 @@ import { useNavigation } from '@react-navigation/native'
 import { useDispatch,useSelector } from 'react-redux';
 import { colors, sizes } from '../constants';
 const {height,width} = Dimensions.get("window");
-const StackContainer = ({children,title='',isTab=false}) => {
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+const StackContainer = ({children,title='',isTab=false,showCart = false,motherFunction= ()=>{},bottomSpace=true}) => {
   const navigation = useNavigation();
   const theme = useSelector(state=>state.auth.theme);
+  const cartProducts = useSelector(state=>state.auth.cartProducts);
   return (
     <View style={{width:width,flex:1,backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg}}>
       <View style={{width:width,height:62,padding:5,}}>
@@ -24,7 +26,7 @@ const StackContainer = ({children,title='',isTab=false}) => {
         </Pressable>}
           
           <Text style={styles.tabHeaderStyle}>{title}</Text>
-          <View>
+          <View style={{flexDirection:'row'}}>
           <Pressable onPress={()=>{
               navigation.navigate('Notifications');
             }}>           
@@ -35,7 +37,7 @@ const StackContainer = ({children,title='',isTab=false}) => {
 </View>
         </View>
       </View>
-      <ScrollView contentContainerStyle={{paddingBottom:100,minHeight:sizes.height-60}} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{paddingBottom:bottomSpace?100:0,minHeight:sizes.height-60}} showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
       

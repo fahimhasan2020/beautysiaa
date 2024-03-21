@@ -100,13 +100,17 @@ const CustomDrawerContent =({ navigation })=> {
           </TouchableOpacity>
         )}
         icon
-     
         onPress={() => toggleCat()}
       />
       {showCat?<View style={{paddingLeft:35,paddingVertical:10}}>
-        {categoriesFromStores.length>0?categoriesFromStores.map((item,index)=>!skippableCategory.includes(item.name)?(<SubCategoryItems key={index} datas={item} />):null):null}
+      <Pressable onPress={()=>navigation.navigate('AllBrands')} style={styles.subCategories}><Text style={{color:'#83899F'}}>Brands</Text></Pressable>
+      {categoriesFromStores.length > 0 ?
+  categoriesFromStores
+    .filter(item => !skippableCategory.includes(item.name))
+    .reverse()
+    .map((item, index) => <SubCategoryItems key={index} datas={item} />)
+  : null}
       </View>:null}
-      
       <View style={{ backgroundColor:theme === 'dark'?colors.darkModeBg:colors.lightModeBg, paddingLeft: 15,marginBottom:10 }}><Text style={{color:'#83899F',fontSize:14}}>{t('video')}</Text></View>
       <DrawerItem
         label={t('liveVideo')}
@@ -121,7 +125,6 @@ const CustomDrawerContent =({ navigation })=> {
           navigation.closeDrawer();
           navigation.navigate('LiveVideo')}}
       />
-     
       <DrawerItem
       labelStyle={{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}}
         label={t('myPlays')}

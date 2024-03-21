@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,Pressable,FlatList } from 'react-native'
+import { StyleSheet, Text, View,Pressable,FlatList, Image } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import React from 'react'
 import { sizes } from '../constants'
@@ -26,7 +26,7 @@ const CategoriesList = ({categories=[],categoryLimit = null}) => {
       numColumns={3}
       renderItem={({item,index})=>(<Pressable
       onPress={()=>{
-        navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id,image:item.image.src})
+   navigation.navigate('SingleCategory',{title:item.name,categoryId:item.id,image:item.image.src})
       }}
       style={styles.listContainer}>
         <FastImage
@@ -39,7 +39,6 @@ const CategoriesList = ({categories=[],categoryLimit = null}) => {
    </Pressable>)}
       keyExtractor={(item,index)=>index.toString()}
       />}
-        
       
     </View>
   )
@@ -51,6 +50,11 @@ const styles = StyleSheet.create({
     container:{
         padding:10,
         alignItems:'center'
+    },
+    singleCategoryImage:{
+      height:sizes.width/6,
+      width:sizes.width/6,
+      borderRadius:5
     },
     categoryName:{
         color:'white',

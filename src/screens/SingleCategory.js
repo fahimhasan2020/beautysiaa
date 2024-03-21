@@ -15,6 +15,7 @@ import FastImage from 'react-native-fast-image'
 const SingleCategory = () => {
   const [categoryProducts,setCategoryProducts] = useState([]);
   const [childCategories,setChildCategories] = useState([]);
+  const [showNoProducts,setShowNoProducts] = useState(false);
   const theme = useSelector(state=>state.auth.theme);
   const route = useRoute();
   const getProductsAll = ()=>{
@@ -25,11 +26,21 @@ const SingleCategory = () => {
         },
     })
     .then(response => {
-      setCategoryProducts(response.data);
+      if(response.data.length>0){
+        setCategoryProducts(response.data);
+      }else{
+        setShowNoProducts(true);
+      }
+      
     })
     .catch(error => {
       console.log(error);
     });
+  }
+
+  const replaceAnd = (value)=>{
+    let newValue = value.replace("&amp;", '&');
+  return newValue;
   }
 
   const getCategoriesAll = () =>{
@@ -56,19 +67,19 @@ const SingleCategory = () => {
   return (
     <Container>
         <StackContainer>
-          {route.params.image?<View style={styles.categoryBanner}>
+          {route.params?.image?<View style={styles.categoryBanner}>
           <FastImage
-            source={{uri:route.params.image}}
+            source={{uri:route.params?.image}}
             style={styles.cardImage}
             resizeMode={FastImage.resizeMode.cover}
             />
             <View style={styles.overlay}></View>
-            <Text style={[styles.title,{color:'#fff'}]}>{route.params.title}</Text>
-          </View>:<Text style={[styles.title,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,marginVertical:20}]}>{route.params.title}</Text>}
+            <Text style={[styles.title,{color:'#fff'}]}>{replaceAnd(route.params.title)}</Text>
+          </View>:<Text style={[styles.title,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg,marginVertical:20}]}>{replaceAnd(route.params.title)}</Text>}
           {childCategories.length>0?<CategoriesList categories={childCategories} />:null}
 
           <View style={{width:sizes.width,justifyContent:'center'}}>
-            {categoryProducts.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',paddingLeft:10,width:sizes.width}}><LottieView
+            {showNoProducts?<Text style={{fontSize:20,margin:20,alignSelf:'center'}}>No Products available</Text>:categoryProducts.length<1?<View style={{flexDirection:'row',width:sizes.width,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',paddingLeft:10,width:sizes.width}}><LottieView
             style={{width:150,height:180,marginTop:10}}
             autoPlay loop
             source={require("../assets/productloader.json")}

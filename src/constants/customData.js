@@ -1,1 +1,1 @@
-export const skippableCategory = ["Best Selling Offer","FREE DELIVERY","New Arrival","UPTO 70%","Offers","Uncategorized"];
+export const skippableCategory = ["Best Selling Offer","FREE DELIVERY","New Arrival","UPTO 70%","Offers","Uncategorized","Puja Sale","Skin Concern Combo","Skincare Kits","Vaseline Lotion"];

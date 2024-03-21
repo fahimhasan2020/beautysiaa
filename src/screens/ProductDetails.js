@@ -1,21 +1,32 @@
 import { StyleSheet, Text, View,Image,ScrollView,Pressable,useWindowDimensions,FlatList,Share,ToastAndroid } from 'react-native'
 import React,{useState,useEffect} from 'react'
-import Animated,{FadeInLeft,FadeOutLeft} from "react-native-reanimated"
-import { useNavigation,useRoute } from '@react-navigation/native'
+import Animated,{FadeInLeft,FadeOutLeft, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated"
+import { DrawerActions, useNavigation,useRoute } from '@react-navigation/native'
 import AntDesign from "react-native-vector-icons/AntDesign"
 import Entypo from "react-native-vector-icons/Entypo"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import { sizes,colors } from '../constants'
 import Container from '../components/Container'
 import FastImage from 'react-native-fast-image'
-import { Svg,Path,Circle } from 'react-native-svg'
 import StackContainer from '../components/StackContainer'
 import { WebView } from 'react-native-webview';
-import RenderHtml from 'react-native-render-html';
 import { useSelector,useDispatch } from 'react-redux'
 import ProductListView from '../components/ProductListView'
+import axios from "axios"
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import baseUri from '../constants/urls'
 const ProductDetails = () => {
   const dispatch = useDispatch();
+  const [relatedProductList,setRelatedProductList] = useState([]);
+  const animateX = useSharedValue(0);
+
+  const animateY = useSharedValue(0);
+  const scale = useSharedValue(0);
+  const animatedStyle = useAnimatedStyle(()=>{
+    return{
+      transform:[{translateX:animateX.value},{translateY:animateY.value},{scale:scale.value}]
+    }
+  })
   const allProducts = useSelector(state=>state.auth.allProducts);
   const theme = useSelector(state=>state.auth.theme);
   const cartProducts = useSelector(state=>state.auth.cartProducts);
@@ -23,12 +34,13 @@ const ProductDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [showDetails,setShowDetails] = useState(false);
+  const [isFavourite,setIsFavourite] = useState(false);
   const cartAdding = async (item) => {
     const numericPrice = parseInt(item.price);
     const modifiedItem = {
       id: item.id,
       name: item.name,
-      picture: item.images[0].src,
+      picture: item?.images[0]?.src,
       size: 'L',
       quantity: 1,
       price: numericPrice,
@@ -61,12 +73,30 @@ const ProductDetails = () => {
     }
   
     
-    ToastAndroid.show("Item added to cart", ToastAndroid.SHORT);
+    //ToastAndroid.show("Item added to cart", ToastAndroid.SHORT);
   };
 
   useEffect(()=>{
-    console.log(route.params.details);
-  },[])
+    console.log(route?.params?.details?.related_ids);
+    getRelatedProducts(route?.params?.details?.related_ids?route?.params?.details?.related_ids:[]);
+  },[]);
+
+
+  const getRelatedProducts = (arrayList)=>{
+    const concatenatedString = arrayList.join(',');
+    axios.get(`${baseUri.hostExtend}products?include=${concatenatedString}`, {
+     headers: {
+         Authorization: `Basic ${btoa(`${baseUri.consumerKey}:${baseUri.consumerSecret}`)}`,
+         'Content-Type':'application/json'
+       },
+   })
+   .then(response => {
+     setRelatedProductList(response.data);
+   })
+   .catch(error => {
+     console.log(error);
+   });
+ }
 
   const replaceDomain = (value)=>{
     let newValue = value.replace(/http:\/\/beautysiaa\.com\.bd\//g, 'https://demo.beautysiaa.com/');
@@ -91,10 +121,26 @@ const ProductDetails = () => {
   };
   return (
     <Container>
-      <StackContainer title={route.params.details.name.slice(0,10)+'...'}>
+      <StackContainer motherFunction={route.params.motherFunction} title={route.params.details.name.slice(0,10)+'...'}>
         <ScrollView showsVerticalScrollIndicator={false}>
-      <FastImage source={{uri:route.params.details.images[0].src}} style={styles.productImage} />
+      <FastImage source={{uri:route.params.details.images[0]?.src?route.params.details.images[0]?.src:''}} style={styles.productImage} />
+      <Pressable
+      style={{position:'absolute',top:20,right:20,padding:10,backgroundColor:'white',borderRadius:20,elevation:2}}
+      onPress={()=>{
+             navigation.navigate("Cart");
+            }}><MaterialIcons name="shopping-cart" color={colors.primary} size={23} />{cartProducts.length>0?<View style={{backgroundColor:'red',borderRadius:15,alignItems:'center',justifyContent:'center',position:'absolute',top:5,left:5,height:15,width:15}}><Text style={{color:'white',fontSize:8}}>{cartProducts.length}</Text></View>:null}
+            </Pressable>
       <Animated.View entering={FadeInLeft.duration(300).delay(400)} exiting={FadeOutLeft.duration(300).delay(400)} style={styles.contentProvider}>
+      <View style={styles.sizeSection}>
+      <View style={{width:sizes.width,marginTop:10}}>
+      <FlatList
+      contentContainerStyle={{paddingRight:100}}
+      data={route.params.details.images}
+      horizontal={true}
+      renderItem={({item,index})=>(<Image style={{height:114,width:114,marginRight:10}} source={{uri:item?.src}} />)}
+      />
+      </View>
+      </View>
         <Text style={[styles.productName,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>{route.params.details.name.slice(0,100)}...</Text>
       <View style={styles.priceSection}>
         <View style={styles.valuePrice}>
@@ -168,19 +214,6 @@ const ProductDetails = () => {
     </Pressable>
       </View>
       </View>:null}
-      
-
-      <View style={styles.sizeSection}>
-      <Text style={[styles.productName,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Images & Videos</Text>
-      <View style={{width:sizes.width,marginTop:10}}>
-      <FlatList
-      contentContainerStyle={{paddingRight:100}}
-      data={route.params.details.images}
-      horizontal={true}
-      renderItem={({item,index})=>(<Image style={{height:114,width:114,marginRight:10}} source={{uri:item.src}} />)}
-      />
-      </View>
-      </View>
       <View style={styles.shareSection}>
       <Text style={[styles.productName,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Share</Text>
       <View style={{width:sizes.width,marginTop:10,flexDirection:'row'}}>
@@ -195,17 +228,39 @@ const ProductDetails = () => {
       <View style={styles.relatedProductSection}>
       <Text style={[styles.productName,{color:theme === 'dark'?colors.lightModeBg:colors.darkModeBg}]}>Related Products</Text>
       <View style={{width:sizes.width,marginTop:10,alignItems:'flex-start'}}>
-      <ProductListView products={allProducts} productLimit={2} />
+      <ProductListView products={relatedProductList} productLimit={3} />
       </View>
       </View>
       </Animated.View>
         </ScrollView>
       </StackContainer>
-      <View style={{position:'absolute',bottom:0,left:0,width:sizes.width,paddingTop:10,height:60,justifyContent:'center',zIndex:10,paddingBottom:30}}>
+      <Animated.View style={[{
+        height:25,
+        width:25,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:'red',
+        borderRadius:20,
+        position:'absolute',
+        bottom:100,
+        alignSelf:'center'
+      },animatedStyle]}><Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>+1</Text></Animated.View>
+      <View style={{position:'absolute',bottom:0,left:0,width:sizes.width,paddingTop:10,height:60,justifyContent:'space-between',paddingHorizontal:10,zIndex:10,paddingBottom:30,flexDirection:'row'}}>
+      <Pressable onPress={()=>{setIsFavourite(!isFavourite)}} style={{backgroundColor:'#fff',width:sizes.width/2-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'space-around',flexDirection:'row',height:55,alignSelf:'center',paddingHorizontal:10}}>{isFavourite?<AntDesign name="heart" color="red" size={20} />:<AntDesign name="hearto" color="black" size={20} />}<Text style={{color:'#000'}}>Wishlist</Text></Pressable>
       {route.params.details.stock_status === 'instock'?<Pressable onPress={()=>{
-        cartAdding(route.params.details);
-       // navigation.navigate('Checkout');
-      }}  style={{backgroundColor:'#691883',width:sizes.width-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
+        //cartAdding(route.params.details);
+        if(animateX.value === 0){
+          scale.value = 1;
+          animateX.value = withTiming(130,{duration:500});
+          animateY.value = withTiming(-500,{duration:500});
+          setTimeout(()=>{
+            scale.value = 0;
+            animateX.value = withTiming(0,{duration:200});
+            animateY.value = withTiming(0,{duration:200});
+            cartAdding(route.params.details);
+          },500);
+        }
+      }}  style={{backgroundColor:'#691883',width:sizes.width/2-30,borderRadius:10,elevation:10,alignItems:'center',justifyContent:'center',height:55,alignSelf:'center'}}>
         <Text style={{fontSize:20,fontWeight:600,color:'#FFFFFF'}}>Buy Now</Text>
       </Pressable>:null}
     </View>

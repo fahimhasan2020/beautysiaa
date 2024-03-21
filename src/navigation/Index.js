@@ -2,7 +2,7 @@ import {NavigationContainer, useNavigation} from "@react-navigation/native"
 import React,{useEffect} from 'react'
 import { useDispatch,useSelector } from "react-redux";
 import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
-import {About, Cart, Categories, Checkout, Delivery, EditProfile, Favourites, Home,Login, MyOrders, MyVideo, Notifications, Offers, OrderDetails, PaymentWindow, ProductDetails, Profile, ReturnPolicy, Settings, SingleBrand, SingleCategory, SingleOrderHistory, Success, Support, TermsAndConditions, Voucher} from "./src"
+import {About, AllBrands, Cart, Categories, Checkout, Delivery, EditProfile, Favourites, Home,Login, MyOrders, MyVideo, Notifications, Offers, OrderDetails, PaymentWindow, ProductDetails, Profile, ReturnPolicy, Settings, SingleBrand, SingleCategory, SingleOrderHistory, Success, Support, TermsAndConditions, Voucher} from "./src"
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -16,7 +16,7 @@ import newArrivalsApi from "../api/NewArrivalApi";
 import bestSellingApi from "../api/BestSellingApi";
 import favouritesApi from "../api/FavouritesApi";
 import { StatusBar,Pressable,Text,View } from "react-native";
-import { colors } from "../constants";
+import { colors, sizes } from "../constants";
 import cartApi from "../api/cartApi";
 import { useColorScheme } from "react-native";
 import initialTheme from "../api/InitialTheme";
@@ -138,7 +138,9 @@ function HomeDrawer() {
 }
 function CustomCartDrawer() {
   return (
-      <RightDrawer.Navigator id="rightDrawer" initialRouteName="HomeTabs" screenOptions={{headerShown:false,drawerPosition:"Right"}} drawerContent={(props) => <CommonCart {...props}/>}>
+      <RightDrawer.Navigator id="rightDrawer" initialRouteName="HomeTabs" screenOptions={{headerShown:false,drawerPosition:"Right",swipeEnabled:false,drawerStyle: {
+        width: sizes.width/1.1,
+      }}} drawerContent={(props) => <CommonCart {...props}/>}>
         <RightDrawer.Screen name="HomeTabs" component={HomeTabs} />
       </RightDrawer.Navigator>
   );
@@ -161,9 +163,13 @@ const slideRightToLeftAnimation = {
   },
 }
 function BaseStack() {
+  const motherFunction = ()=>{
+  console.log("mother function called");  
+  }
   return (
     <Stack.Navigator screenOptions={{
         headerShown: false,
+        
       }}>
       <Stack.Screen name="HomeScreen" component={HomeDrawer} />
       <Stack.Screen name="Login" component={Login} />
@@ -211,6 +217,8 @@ function BaseStack() {
         component={Settings} />
       <Stack.Screen name="Support"  options={slideRightToLeftAnimation}
         component={Support} />
+      <Stack.Screen name="AllBrands"  options={slideRightToLeftAnimation}
+        component={AllBrands} />
       <Stack.Screen name="HelpCenter"  options={slideRightToLeftAnimation}
         component={HelpCenter} />
       <Stack.Screen name="About"  options={slideRightToLeftAnimation}
